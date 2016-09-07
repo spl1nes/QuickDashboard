@@ -3,9 +3,9 @@
 use phpOMS\Router\RouteVerb;
 
 return [
-	'^.*/sales/overview.*$' => [
+	'^$' => [
         [
-            'dest' => '\QuickDashboard\Controller\DashboardController:showSalesOverview', 
+            'dest' => 'QuickDashboard\Application\Controllers\OverviewController:showOverview',
             'verb' => RouteVerb::GET,
         ],
     ],

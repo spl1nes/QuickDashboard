@@ -1,8 +1,9 @@
 <?php
-namespace Web;
+namespace QuickDashboard\Application;
 
 use phpOMS\Account\AccountManager;
 use phpOMS\ApplicationAbstract;
+use phpOMS\Asset\AssetType;
 use phpOMS\DataStorage\Cache\Pool as CachePool;
 use phpOMS\DataStorage\Database\DataMapperAbstract;
 use phpOMS\DataStorage\Database\Pool;
@@ -12,10 +13,12 @@ use phpOMS\Event\EventManager;
 use phpOMS\Localization\Localization;
 use phpOMS\Message\Http\Request;
 use phpOMS\Message\Http\Response;
+use phpOMS\Model\Html\Head;
 use phpOMS\Module\ModuleManager;
 use phpOMS\Router\Router;
 use phpOMS\Uri\Http;
 use phpOMS\Autoloader;
+use Web\Views\Page\GenericView;
 
 class WebApplication extends ApplicationAbstract
 {
@@ -41,6 +44,7 @@ class WebApplication extends ApplicationAbstract
         }
 
         $response->getL11n()->setLanguage('en');
+        $request->getL11n()->setLanguage('en');
         $request->init();
 
         $this->dbPool = new Pool();
@@ -51,6 +55,7 @@ class WebApplication extends ApplicationAbstract
         $this->router->importFromFile(__DIR__ . '/Routes.php');
 
         $this->dispatcher = new Dispatcher($this);
+        $route = $this->router->route($request);
         $dispatched = $this->dispatcher->dispatch($this->router->route($request), $request, $response);
 
         $head    = new Head();
@@ -58,8 +63,9 @@ class WebApplication extends ApplicationAbstract
 
         $head->addAsset(AssetType::JS, $baseUri . 'Model/Message/DomAction.js');
 
-        $pageView = new GenericView($this->app, $request, $response);
+        $pageView = new GenericView($this, $request, $response);
         $pageView->setData('head', $head);
+        $pageView->setData('dispatch', $dispatched);
         $pageView->setTemplate('/QuickDashboard/Application/Templates/index');
 
         $response->set('Content', $pageView);
