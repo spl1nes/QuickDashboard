@@ -1,0 +1,1 @@
+<footer>Based on <a href="https://github.com/Orange-Management">Orange-Management</a></footer>

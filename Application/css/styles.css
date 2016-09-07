@@ -1,0 +1,35 @@
+html, body {
+	display: flex;
+	min-height: 100vh;
+	flex-direction: column;
+}
+
+nav {
+
+}
+
+header {
+	background: #00f;
+}
+
+#logo {
+
+}
+
+main {
+	flex: 1;
+}
+
+.box {
+	
+}
+
+a {
+	color: #f00;
+	text-decoration: none;
+}
+
+footer {
+	color: #fff;
+	background: #0f0;
+}
