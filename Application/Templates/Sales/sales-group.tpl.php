@@ -1,20 +1,28 @@
-<div id="canvas-holder-1" style="width: 50%; float: left">
-    <canvas id="sales-group-dist" height="200px">
-</div>
-
-<div id="canvas-holder-2" style="width: 50%; float: left">
-    <canvas
-        id="sales-history" height="200px">
-</div>
 <div id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 <div id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
 <div id="canvas-holder-3" style="width: 50%; float: left">
-    <canvas id="export-domestic-sales" height="200px">
+    <canvas id="export-domestic-sales" height="250px">
 </div>
 
 <div id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-sales" height="200px">
+    <canvas id="developed-undeveloped-sales" height="250px">
+</div>
+
+<div id="canvas-holder-5" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-domestic" height="250px">
+</div>
+
+<div id="canvas-holder-6" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-export" height="250px">
+</div>
+
+<div id="canvas-holder-7" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-developed" height="250px">
+</div>
+
+<div id="canvas-holder-7" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-undeveloped" height="250px">
 </div>
 <div class="clear"></div>
 <script>
@@ -297,17 +305,283 @@
         }
     };
 
+    let configSalesGroupDistDomestic = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Current year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year total'
+            }],
+            labels: [
+                "Alloys",
+                "Consumables",
+                "Digitigal",
+                "Impla",
+                "Misc.",
+                "MANI",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Domestic Sales By Groups'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            },
+        }
+    };
+
+    let configSalesGroupDistExport = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Current year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year total'
+            }],
+            labels: [
+                "Alloys",
+                "Consumables",
+                "Digitigal",
+                "Impla",
+                "Misc.",
+                "MANI",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Export Sales By Groups'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            },
+        }
+    };
+
+    let configSalesGroupDistDeveloped = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Current year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year total'
+            }],
+            labels: [
+                "Alloys",
+                "Consumables",
+                "Digitigal",
+                "Impla",
+                "Misc.",
+                "MANI",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Developed Sales By Groups'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            },
+        }
+    };
+
+    let configSalesGroupDistUndeveloped = {
+        type: 'doughnut',
+        data: {
+            datasets: [{
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Current year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year'
+            }, {
+                data: [
+                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
+                ],
+                backgroundColor: [
+                    "#F7464A",
+                    "#46BFBD",
+                    "#FDB45C",
+                    "#949FB1",
+                    "#4D5360",
+                ],
+                label: 'Previous year total'
+            }],
+            labels: [
+                "Alloys",
+                "Consumables",
+                "Digitigal",
+                "Impla",
+                "Misc.",
+                "MANI",
+            ]
+        },
+        options: {
+            responsive: true,
+            legend: {
+                position: 'top',
+            },
+            title: {
+                display: true,
+                text: 'Undeveloped Sales By Groups'
+            },
+            animation: {
+                animateScale: true,
+                animateRotate: true
+            },
+        }
+    };
+
     window.onload = function() {
-        let ctxSalesGroupDist = document.getElementById("sales-group-dist").getContext("2d");
-        window.salesGroupDist = new Chart(ctxSalesGroupDist, configSalesGroupDist);
-
-        let ctexSalesHistory = document.getElementById("sales-history").getContext("2d");
-        window.salesHistory = new Chart(ctexSalesHistory, configSalesHistory);
-
         let ctxDomesticExport = document.getElementById("export-domestic-sales").getContext("2d");
-        window.domesticExport = new Chart(ctxDomesticExport, configDomesticExport);
+        window.myPie = new Chart(ctxDomesticExport, configDomesticExport);
 
         let ctxDevelopedUndeveloped = document.getElementById("developed-undeveloped-sales").getContext("2d");
-        window.developedUndeveloped = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
+        window.myPie = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
+
+        let ctxSalesGroupDistDomestic = document.getElementById("sales-group-dist-domestic").getContext("2d");
+        window.myPie = new Chart(ctxSalesGroupDistDomestic, configSalesGroupDistDomestic);
+
+        let ctxSalesGroupDistExport = document.getElementById("sales-group-dist-export").getContext("2d");
+        window.myPie = new Chart(ctxSalesGroupDistExport, configSalesGroupDistExport);
+
+        let ctxSalesGroupDistDeveloped = document.getElementById("sales-group-dist-developed").getContext("2d");
+        window.myPie = new Chart(ctxSalesGroupDistDeveloped, configSalesGroupDistDeveloped);
+
+        let ctxSalesGroupDistUndeveloped = document.getElementById("sales-group-dist-undeveloped").getContext("2d");
+        window.myPie = new Chart(ctxSalesGroupDistUndeveloped, configSalesGroupDistUndeveloped);
     };
 </script>

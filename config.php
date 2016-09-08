@@ -29,4 +29,5 @@ $CONFIG = [
         'root'  => '/',
         'https' => false,
     ],
+    'fiscal_year' => 7
 ];

@@ -38,6 +38,7 @@ class WebApplication extends ApplicationAbstract
         $response->getHeader()->set('x-xss-protection', '1; mode=block');
         $response->getHeader()->set('x-content-type-options', 'nosniff');
         $response->getHeader()->set('x-frame-options', 'SAMEORIGIN');
+        $response->getHeader()->set('content-security-policy', 'script-src \'self\' \'unsafe-inline\' https://cdnjs.cloudflare.com; frame-src \'self\'', true);
 
         if($config['page']['https']) {
             $response->getHeader()->set('strict-transport-security', 'max-age=31536000');
@@ -55,7 +56,6 @@ class WebApplication extends ApplicationAbstract
         $this->router->importFromFile(__DIR__ . '/Routes.php');
 
         $this->dispatcher = new Dispatcher($this);
-        $route = $this->router->route($request);
         $dispatched = $this->dispatcher->dispatch($this->router->route($request), $request, $response);
 
         $head    = new Head();
