@@ -1,24 +1,24 @@
-<div id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
-<div id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
-<div style="width: 100%;">
-    <canvas id="active-customers" height="200px"></canvas>
+<div class="box" style="width: 100%;">
+    <canvas id="active-customers" height="100"></canvas>
 </div>
 
-<div id="canvas-holder-3" style="width: 50%; float: left">
-    <canvas id="customer-group" height="200px">
+<div class="box" id="canvas-holder-3" style="width: 50%; float: left">
+    <canvas id="customer-group" height="200"></canvas>
 </div>
 
-<div id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="group-sales" height="200px">
+<div class="box" id="canvas-holder-4" style="width: 50%; float: left">
+    <canvas id="group-sales" height="200"></canvas>
 </div>
 
-<div style="width: 50%; float: left;">
-    <canvas id="top-customers" height="250px"></canvas>
+<div class="box" style="width: 50%; float: left;">
+    <canvas id="top-customers" height="200"></canvas>
 </div>
 
-<div style="width: 50%; float: left;">
-    <canvas id="customer-dependency" height="250px"></canvas>
+<div class="box" style="width: 50%; float: left;">
+    <canvas id="customer-dependency" height="200"></canvas>
 </div>
 
 <div class="clear"></div>

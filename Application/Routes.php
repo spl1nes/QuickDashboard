@@ -15,15 +15,47 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^sales/month.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^sales/location.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showLocation',
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^sales/articles.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticles',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^sales/customers.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCustomers',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/reps.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showReps',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+
+    '^costs.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCosts',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+
+    '^analysis/reps.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showAnalysisReps',
             'verb' => RouteVerb::GET,
         ],
     ],

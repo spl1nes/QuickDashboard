@@ -25,6 +25,14 @@ class DashboardController {
 		return $view;
 	}
 
+	public function showMonth(RequestAbstract $request, ResponseAbstract $response)
+	{
+		$view = new View($this->app, $request, $response);
+		$view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-month');
+
+		return $view;
+	}
+
 	public function showLocation(RequestAbstract $request, ResponseAbstract $response)
 	{
 		$view = new View($this->app, $request, $response);
@@ -33,6 +41,14 @@ class DashboardController {
 		return $view;
 	}
 
+    public function showArticles(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-article');
+
+        return $view;
+    }
+
     public function showCustomers(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);
@@ -40,6 +56,30 @@ class DashboardController {
 
         return $view;
     }
+
+    public function showReps(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-reps');
+
+        return $view;
+    }
+
+    public function showCosts(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Costs/costs-positions');
+
+        return $view;
+    }
+
+	public function showAnalysisReps(RequestAbstract $request, ResponseAbstract $response)
+	{
+		$view = new View($this->app, $request, $response);
+		$view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-reps');
+
+		return $view;
+	}
 
 	public function showSalesOverview() 
 	{
@@ -50,7 +90,7 @@ class DashboardController {
 	{
 		$result = [];
 
-		$q = new Builder($this->app->dbPool->get());
+		$q = new Builder($this->app->dbPool->get('SD'));
 		$q->select('row_id', 'Kundennummer')
 			->from('Kunde_Belegkopf_Archiv', 'Kunden')
 			->where('BELEGDATUM', '>=', $start->format('Y-m-d H:m:i'))
@@ -79,7 +119,7 @@ class DashboardController {
 
 		}
 
-		$q->setDatabase();
+		$q->setConnection($this->app->dbPool->get('GDF'));
 
 		$result['GDF'] = $q->execute();
 
@@ -90,12 +130,12 @@ class DashboardController {
 	{
 		$result = [];
 
-		$q = new Builder($this->app->dbPool->get());
+		$q = new Builder($this->app->dbPool->get('SD'));
 		$q->select('row_id')
 			->from('Kunde_Belegkopf_Archiv')
 			->where('BELEGDATUM', '>=', $start->format('Y-m-d H:m:i'))
 			->where('BELEGDATUM', '<=', $start->format('Y-m-d H:m:i'), 'AND')
-			->and(
+			->andWhere(
 				(new Where())
 				->where('Belegtyp', '=', 'VR0')
 				->where('Belegtyp', '=', 'VRS')
@@ -103,12 +143,12 @@ class DashboardController {
 				->where('Belegtyp', '=', 'VW0')
 				->where('Belegtyp', '=', 'VG0')
 			)
-			->unique('row_id')
+			->distinct()
 			->count();
 
 		$result['SD'] = $q->execute();
 
-		$q->setDatabase();
+		$q->setConnection($this->app->dbPool->get('GDF'));
 
 		$result['GDF'] = $q->execute();
 

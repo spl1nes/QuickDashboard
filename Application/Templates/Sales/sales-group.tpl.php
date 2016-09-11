@@ -1,28 +1,28 @@
-<div id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
-<div id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
 <div id="canvas-holder-3" style="width: 50%; float: left">
-    <canvas id="export-domestic-sales" height="250px">
+    <canvas id="export-domestic-sales" height="250px"></canvas>
 </div>
 
-<div id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-sales" height="250px">
+<div class="box" id="canvas-holder-4" style="width: 50%; float: left">
+    <canvas id="developed-undeveloped-sales" height="250px"></canvas>
 </div>
 
-<div id="canvas-holder-5" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-domestic" height="250px">
+<div class="box" id="canvas-holder-5" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-domestic" height="250px"></canvas>
 </div>
 
-<div id="canvas-holder-6" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-export" height="250px">
+<div class="box" id="canvas-holder-6" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-export" height="250px"></canvas>
 </div>
 
-<div id="canvas-holder-7" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-developed" height="250px">
+<div class="box" id="canvas-holder-7" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-developed" height="250px"></canvas>
 </div>
 
-<div id="canvas-holder-7" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-undeveloped" height="250px">
+<div class="box" id="canvas-holder-7" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-undeveloped" height="250px"></canvas>
 </div>
 <div class="clear"></div>
 <script>

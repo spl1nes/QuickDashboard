@@ -1,20 +1,20 @@
-<div id="canvas-holder-1" style="width: 50%; float: left">
-    <canvas id="sales-group-dist" height="200px">
+<div class="box" id="canvas-holder-1" style="width: 50%; float: left">
+    <canvas id="sales-group-dist" height="200"></canvas>
 </div>
 
-<div id="canvas-holder-2" style="width: 50%; float: left">
+<div class="box" id="canvas-holder-2" style="width: 50%; float: left">
     <canvas
-        id="sales-history" height="200px">
+        id="sales-history" height="200"></canvas>
 </div>
-<div id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
-<div id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
-<div id="canvas-holder-3" style="width: 50%; float: left">
-    <canvas id="export-domestic-sales" height="200px">
+<div class="box" id="canvas-holder-3" style="width: 50%; float: left">
+    <canvas id="export-domestic-sales" height="200"></canvas>
 </div>
 
-<div id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-sales" height="200px">
+<div class="box" id="canvas-holder-4" style="width: 50%; float: left">
+    <canvas id="developed-undeveloped-sales" height="200"></canvas>
 </div>
 <div class="clear"></div>
 <script>
