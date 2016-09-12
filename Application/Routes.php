@@ -5,13 +5,13 @@ use phpOMS\Router\RouteVerb;
 return [
 	'^$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\OverviewController:showOverview',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showOverview',
             'verb' => RouteVerb::GET,
         ],
     ],
     '^sales/history.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showOverview',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showSalesOverview',
             'verb' => RouteVerb::GET,
         ],
     ],

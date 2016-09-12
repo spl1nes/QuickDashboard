@@ -6,6 +6,7 @@ html, body {
     color: #000;
     line-height: 1.3em;
     font-size: 0.9em;
+    height: 100%;
 }
 
 .floater {
@@ -109,6 +110,7 @@ nav > ul ul ul {
 }
 
 main {
+    min-height: 100%;
 }
 
 .box {

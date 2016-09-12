@@ -4,42 +4,80 @@ namespace QuickDashboard\Application\Controllers;
 
 use phpOMS\ApplicationAbstract;
 use phpOMS\DataStorage\Database\Query\Builder;
-use phpOMS\DataStorage\Database\Query\Where;
+use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
 
-class DashboardController {
-	private $app = null;
+class DashboardController
+{
+    private $app = null;
 
-	public function __construct(ApplicationAbstract $app) 
-	{
-		$this->app = $app;
-	}
+    public function __construct(ApplicationAbstract $app)
+    {
+        $this->app = $app;
+    }
 
-	public function showOverview(RequestAbstract $request, ResponseAbstract $response)
-	{
-		$view = new View($this->app, $request, $response);
-		$view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-history');
+    public function showOverview(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/overview');
 
-		return $view;
-	}
+        $current = new SmartDateTime('now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+        $iterator = clone $start;
+        $year     = $iterator->format('Y');
 
-	public function showMonth(RequestAbstract $request, ResponseAbstract $response)
-	{
-		$view = new View($this->app, $request, $response);
-		$view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-month');
+        $currentMonth = (int) $start->format('m');
+        $sales        = [];
 
-		return $view;
-	}
+        while ($iterator->getTimestamp() < $current->getTimestamp()) {
+            $endOfMonth = $iterator->getEndOfMonth();
+            $month      = ($currentMonth - $this->app->config['fiscal_year'] - 1) % 12 + 1;
 
-	public function showLocation(RequestAbstract $request, ResponseAbstract $response)
-	{
-		$view = new View($this->app, $request, $response);
-		$view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location');
+            $monthSales           = $this->getSalesPerMonth($iterator, $endOfMonth, 'sd');
+            $sales[$year][$month] = array_sum($monthSales);
 
-		return $view;
-	}
+            $monthSales = $this->getSalesPerMonth($iterator, $endOfMonth, 'gdf');
+            $sales[$year][$month] += array_sum($monthSales);
+
+            if ($currentMonth % 12 === 0) {
+                $year++;
+            }
+
+            $currentMonth++;
+            $iterator->modify('+1 month');
+        }
+
+        $view->setData('sales', $sales);
+
+        return $view;
+    }
+
+    public function showSalesOverview(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-history');
+
+        return $view;
+    }
+
+    public function showMonth(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-month');
+
+        return $view;
+    }
+
+    public function showLocation(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location');
+
+        return $view;
+    }
 
     public function showArticles(RequestAbstract $request, ResponseAbstract $response)
     {
@@ -73,127 +111,39 @@ class DashboardController {
         return $view;
     }
 
-	public function showAnalysisReps(RequestAbstract $request, ResponseAbstract $response)
-	{
-		$view = new View($this->app, $request, $response);
-		$view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-reps');
+    public function showAnalysisReps(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-reps');
 
-		return $view;
-	}
+        return $view;
+    }
 
-	public function showSalesOverview() 
-	{
+    private function calcCurrentMonth(\DateTime $date) : int
+    {
+        return ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1) % 12 + 1;
+    }
 
-	}
+    private function getFiscalYearStart(SmartDateTime $date) : SmartDateTime
+    {
+        $newDate = new SmartDateTime($date->format('Y') . '-' . $date->format('m') . '-01');
 
-	private function countActiveCustomers(\DateTime $start, \DateTime $end) : array
-	{
-		$result = [];
+        return $newDate->modify('-' . ($this->calcCurrentMonth($date) - 1) . ' month');
+    }
 
-		$q = new Builder($this->app->dbPool->get('SD'));
-		$q->select('row_id', 'Kundennummer')
-			->from('Kunde_Belegkopf_Archiv', 'Kunden')
-			->where('BELEGDATUM', '>=', $start->format('Y-m-d H:m:i'))
-			->where('BELEGDATUM', '<=', $start->format('Y-m-d H:m:i'), 'AND')
-			->where('KUNDENID', '=', 'ROW_ID', 'AND')
-			->unique('KUNDENID')
-			->count();
+    private function getSalesPerMonth(\DateTime $start, \DateTime $end, string $company)
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(
+            'SELECT 
+                SUM(Kunde_Belegzeilen_Archiv.STATUMSATZ) AS Sales, 
+            FROM Kunde_Belegzeilen_Archiv
+            WHERE 
+                Kunde_Belegzeilen_Archiv.BELEGART IN (\'VR0\', \'VR1\', \'VRS\', \'VRT\', \'VW0\', \'VG0\') 
+                AND CONVERT(VARCHAR(30), Kunde_Belegzeilen_Archiv.BELEGDATUM, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                AND CONVERT(VARCHAR(30), Kunde_Belegzeilen_Archiv.BELEGDATUM, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102);');
+        $result = $query->execute();
 
-		$customers = $q->execute();
-
-		$result['SD'] = [
-			'total' => 0.0,
-			'eu' => 0.0,
-			'asia' => 0.0,
-			'america' => 0.0,
-			'africa' => 0.0,
-			'oceania' => 0.0,
-			'domestic' => 0.0,
-			'export' => 0.0,
-			'developed' => 0.0,
-			'undeveloped' => 0.0,
-			'country' => [],
-		];
-
-		foreach($customers as $customer) {
-
-		}
-
-		$q->setConnection($this->app->dbPool->get('GDF'));
-
-		$result['GDF'] = $q->execute();
-
-		return $result;
-	}
-
-	private function countInvoices(\DateTime $start, \DateTime $end) : array
-	{
-		$result = [];
-
-		$q = new Builder($this->app->dbPool->get('SD'));
-		$q->select('row_id')
-			->from('Kunde_Belegkopf_Archiv')
-			->where('BELEGDATUM', '>=', $start->format('Y-m-d H:m:i'))
-			->where('BELEGDATUM', '<=', $start->format('Y-m-d H:m:i'), 'AND')
-			->andWhere(
-				(new Where())
-				->where('Belegtyp', '=', 'VR0')
-				->where('Belegtyp', '=', 'VRS')
-				->where('Belegtyp', '=', 'VRT')
-				->where('Belegtyp', '=', 'VW0')
-				->where('Belegtyp', '=', 'VG0')
-			)
-			->distinct()
-			->count();
-
-		$result['SD'] = $q->execute();
-
-		$q->setConnection($this->app->dbPool->get('GDF'));
-
-		$result['GDF'] = $q->execute();
-
-		return $result;
-	}
-
-	private function sumNetSales(\DateTime $start, \DateTime $end) : array
-	{
-		$result = [];
-
-		$q = new Builder($this->app->dbPool->get());
-		$q->select('WARENWERTNETTO', 'Vertreter', 'Belegtyp', 'LAENDERKUERZEL')
-			->from('Kunde_Belegkopf_Archiv', 'Kunden')
-			->where('BELEGDATUM', '>=', $start->format('Y-m-d H:m:i'))
-			->where('BELEGDATUM', '<=', $start->format('Y-m-d H:m:i'), 'AND')
-			->where('KUNDENID', '=', 'ROW_ID', 'AND')
-			->and(
-				(new Where())
-				->where('Belegtyp', '=', 'VR0')
-				->where('Belegtyp', '=', 'VRS')
-				->where('Belegtyp', '=', 'VRT')
-				->where('Belegtyp', '=', 'VW0')
-				->where('Belegtyp', '=', 'VG0')
-			);
-
-		$invoices = $q->execute();
-
-		$result['SD'] = [
-			'total' => 0.0,
-			'eu' => 0.0,
-			'asia' => 0.0,
-			'america' => 0.0,
-			'africa' => 0.0,
-			'oceania' => 0.0,
-			'domestic' => 0.0,
-			'export' => 0.0,
-			'developed' => 0.0,
-			'undeveloped' => 0.0,
-			'country' => [],
-		];
-
-		foreach($invoices as $invoice) {
-
-		}
-
-		return $result;
-	}
+        return $result;
+    }
 }
