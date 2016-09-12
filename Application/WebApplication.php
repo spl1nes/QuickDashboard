@@ -1,24 +1,17 @@
 <?php
 namespace QuickDashboard\Application;
 
-use phpOMS\Account\AccountManager;
 use phpOMS\ApplicationAbstract;
 use phpOMS\Asset\AssetType;
-use phpOMS\DataStorage\Cache\Pool as CachePool;
-use phpOMS\DataStorage\Database\DataMapperAbstract;
 use phpOMS\DataStorage\Database\Pool;
-use phpOMS\DataStorage\Session\HttpSession;
 use phpOMS\Dispatcher\Dispatcher;
-use phpOMS\Event\EventManager;
 use phpOMS\Localization\Localization;
 use phpOMS\Message\Http\Request;
 use phpOMS\Message\Http\Response;
 use phpOMS\Model\Html\Head;
-use phpOMS\Module\ModuleManager;
 use phpOMS\Router\Router;
 use phpOMS\Uri\Http;
-use phpOMS\Autoloader;
-use Web\Views\Page\GenericView;
+use phpOMS\Views\View;
 
 class WebApplication extends ApplicationAbstract
 {
@@ -63,7 +56,7 @@ class WebApplication extends ApplicationAbstract
 
         $head->addAsset(AssetType::JS, $baseUri . 'Model/Message/DomAction.js');
 
-        $pageView = new GenericView($this, $request, $response);
+        $pageView = new View($this, $request, $response);
         $pageView->setData('head', $head);
         $pageView->setData('dispatch', $dispatched);
         $pageView->setTemplate('/QuickDashboard/Application/Templates/index');
