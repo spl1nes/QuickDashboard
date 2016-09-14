@@ -10,6 +10,12 @@
                             <li><a href="">SD</a>
                             <li><a href="">GDF</a>
                         </ul>
+                    <li>Year
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Consolidated</a>
+                            <li><a href="">SD</a>
+                            <li><a href="">GDF</a>
+                        </ul>
                     <li>Month
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Consolidated</a>

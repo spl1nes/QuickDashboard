@@ -5,13 +5,110 @@ $salesLast = $this->getData('salesLast');
 $salesAccLast = $this->getData('salesAccLast');
 $days = $this->getData('maxDays');
 $today = $this->getData('today');
+
+$salesExportDomestic = $this->getData('salesExportDomestic');
+$salesDevUndev = $this->getData('salesDevUndev');
+$salesRegion = $this->getData('salesRegion');
 ?>
 
-<div class="box" style="width: 100%;">
-    <canvas id="sales-month" height="100"></canvas>
-</div>
+<table class="width: 50%; float: left;">
+    <caption>Sales By Domestic/Export</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last Year
+        <th>Current Year
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Export
+        <td><?= number_format($salesExportDomestic['old']['Export'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['new']['Export'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['new']['Export']-$salesExportDomestic['old']['Export'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesExportDomestic['old']['Export']) ? 0 : ($salesExportDomestic['new']['Export']/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Domestic
+        <td><?= number_format($salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['new']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['new']['Domestic']-$salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) ? 0 : ($salesExportDomestic['new']['Domestic']/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
+</table>
+
+<table class="width: 50%; float: left;">
+    <caption>Sales By Developed/Undeveloped</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last Year
+        <th>Current Year
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Developed
+        <td><?= number_format($salesDevUndev['old']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['new']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['new']['Developed']-$salesDevUndev['old']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesDevUndev['old']['Developed']) ? 0 : ($salesDevUndev['new']['Developed']/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Undeveloped
+        <td><?= number_format($salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['new']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['new']['Undeveloped']-$salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) ? 0 : ($salesDevUndev['new']['Undeveloped']/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
+</table>
+
+<table class="width: 50%; float: left;">
+    <caption>Sales By Region</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last Year
+        <th>Current Year
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Europe
+        <td><?= number_format($salesRegion['old']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Europe']-$salesRegion['old']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Europe']) ? 0 : ($salesRegion['new']['Europe']/$salesRegion['old']['Europe']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>America
+        <td><?= number_format($salesRegion['old']['America'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['America'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['America']-$salesRegion['old']['America'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['America']) ? 0 : ($salesRegion['new']['America']/$salesRegion['old']['America']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Asia
+        <td><?= number_format($salesRegion['old']['Asia'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Asia'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Asia']-$salesRegion['old']['Asia'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Asia']) ? 0 : ($salesRegion['new']['Asia']/$salesRegion['old']['Asia']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Africa
+        <td><?= number_format($salesRegion['old']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Europe']-$salesRegion['old']['Europe'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Europe']) ? 0 : ($salesRegion['new']['Europe']/$salesRegion['old']['Europe']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Oceania
+        <td><?= number_format($salesRegion['old']['Oceania'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Oceania'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Oceania']-$salesRegion['old']['Oceania'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Oceania']) ? 0 : ($salesRegion['new']['Oceania']/$salesRegion['old']['Oceania']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Other
+        <td><?= number_format($salesRegion['old']['Other'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Other'], 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['new']['Other']-$salesRegion['old']['Other'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Other']) ? 0 : ($salesRegion['new']['Other']/$salesRegion['old']['Other']-1)*100, 0, ',', '.') ?> %
+</table>
 
 <table>
+    <caption>Sales By Day</caption>
     <thead>
     <tr>
         <th>Day
@@ -48,5 +145,3 @@ $today = $this->getData('today');
         <th><?= number_format($salesAccLast[$today] == 0 ? 0 : ($salesAcc[$days]/$salesAccLast[$today] - 1) * 100, 2, ',', '.'); ?> %
 </table>
 <div class="clear"></div>
-<script>
-</script>
