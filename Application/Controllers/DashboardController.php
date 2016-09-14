@@ -7,6 +7,7 @@ use phpOMS\DataStorage\Database\Query\Builder;
 use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
+use phpOMS\Utils\ArrayUtils;
 use phpOMS\Views\View;
 
 class DashboardController
@@ -14,10 +15,10 @@ class DashboardController
     private $app = null;
 
     const ACCOUNTS = [
-        8050, 8052, 8592, 8055, 8090, 8095, 8100, 8105, 8106, 8110, 8113, 8115, 8120, 8121, 8122, 8125, 8130, 8140, 8160, 
+        8050, 8052, 8055, 8090, 8095, 8100, 8105, 8106, 8110, 8113, 8115, 8120, 8121, 8122, 8125, 8130, 8140, 8160, 8592,
         8161, 8162, 8300, 8305, 8306, 8310, 8315, 8320, 8330, 8340, 8360, 8361, 8362, 8367, 8368, 8380, 8740, 8746, 8749, 
         8765, 8781, 8791, 8793, 8841, 8843, 8851, 8853, 8861, 8863, 8871, 8873, 8955, 8000, 8005, 8006, 8010, 8013, 8020, 
-        8021, 8022, 8030, 8040, 8060, 8062, 8064, 8591, 8065, 8070, 8075, 8400, 8405, 8406, 8410, 8413, 8415, 8420, 8425, 
+        8021, 8022, 8030, 8040, 8060, 8062, 8064, 8065, 8070, 8075, 8400, 8405, 8406, 8410, 8413, 8415, 8420, 8425, 
         8430, 8440, 8460, 8461, 8462, 8463, 8464, 8465, 8487, 8488, 8489, 8502, 8505, 8506, 8507, 8508, 8509, 8690, 8733, 
         8734, 8736, 8739, 8756, 8757, 8794, 8796, 8799, 8840, 8850, 8860, 8870, 8998, 8865, 8500, 8503, 8510, 8511, 8512, 
         8520, 8530, 8584, 8585, 8730, 8855, 2894, 8700, 8200, 8205, 8206, 8210, 8213, 8215, 8220, 8221, 8225, 8230, 8240, 
@@ -25,7 +26,7 @@ class DashboardController
     ];
 
     const ACCOUNTS_DOMESTIC = [
-        8000, 8005, 8006, 8010, 8013, 8020, 8021, 8022, 8030, 8040, 8060, 8062, 8064, 8591, 8065, 8070, 8075, 8400, 8405, 
+        8000, 8005, 8006, 8010, 8013, 8020, 8021, 8022, 8030, 8040, 8060, 8062, 8064, 8065, 8070, 8075, 8400, 8405, 
         8406, 8410, 8413, 8415, 8420, 8425, 8430, 8440, 8460, 8461, 8462, 8463, 8464, 8465, 8487, 8488, 8489, 8502, 8505, 
         8506, 8507, 8508, 8509, 8690, 8733, 8734, 8736, 8739, 8756, 8757, 8794, 8796, 8799, 8840, 8850, 8860, 8870, 8998, 
         8865, 8500, 8503, 8510, 8511, 8512, 8520, 8530, 8584, 8585, 8730, 8855, 2894, 8700,
@@ -161,28 +162,52 @@ class DashboardController
         $current = new SmartDateTime('now');
         $start   = $this->getFiscalYearStart($current);
         $start->modify('-2 year');
-        $iterator = clone $start;
-        $year     = $iterator->format('Y');
 
-        $currentMonth = (int) $start->format('m');
-        $sales        = [];
+        $totalSales = [];
+        $accTotalSales = [];
+        $salesSD = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
+        $salesGDF = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
 
-        while ($iterator->getTimestamp() < $current->getTimestamp()) {
-            $endOfMonth = $iterator->getEndOfMonth();
-            $month      = ($currentMonth - $this->app->config['fiscal_year'] - 1) % 12 + 1;
+        foreach($salesSD as $line) {
+            $fiscalYear = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod = $line['months'] - $this->app->config['fiscal_year'];
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod)  % 12) + 1;
 
-            $sales[$year][$month] = $this->selectSales($iterator, $endOfMonth, 'sd', self::ACCOUNTS)
-            $sales[$year][$month] += $this->selectSales($iterator, $endOfMonth, 'gdf', self::ACCOUNTS);
-
-            if ($currentMonth % 12 === 0) {
-                $year++;
-            }
-
-            $currentMonth++;
-            $iterator->modify('+1 month');
+            $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
         }
 
-        $view->setData('sales', $sales);
+        foreach($salesGDF as $line) {
+            $fiscalYear = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod)  % 12) + 1;
+
+            if(!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
+
+        foreach($totalSales as $year => $months) {
+            ksort($totalSales[$year]);
+
+            foreach($totalSales[$year] as $month => $value) {
+                $prev = $accTotalSales[$year][$month-1] ?? 0.0;
+                $accTotalSales[$year][$month] = $prev + $value;
+            }
+        }
+
+        $currentYear = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod = $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod)  % 12) + 1;
+
+        unset($totalSales[$currentYear][$currentMonth]);
+        unset($accTotalSales[$currentYear][$currentMonth]);
+
+        $view->setData('currentFiscalYear', $currentYear);
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('sales', $totalSales);
+        $view->setData('salesAcc', $accTotalSales);
 
         return $view;
     }
@@ -199,6 +224,74 @@ class DashboardController
     {
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-month');
+
+        $current = new SmartDateTime('now');
+
+        if($current->format('d') < 5) {
+            $current->modify('-5 day');
+            $current = $current->getEndOfMonth();
+        }
+        
+        $startCurrent   = $current->getStartOfMonth();
+        $endCurrent = $current->getEndOfMonth();
+        $startLast = clone $startCurrent;
+        $startLast = $startLast->modify('-1 year');
+        $endLast = $startLast->getEndOfMonth();
+
+        $totalSales = [];
+        $totalSalesLast = [];
+        $accTotalSales = [];
+        $accTotalSalesLast = [];
+        $salesSDLast = $this->selectSalesDaily($startLast, $endLast, 'sd', self::ACCOUNTS);
+        $salesGDFLast = $this->selectSalesDaily($startLast, $endLast, 'gdf', self::ACCOUNTS);
+        $salesSD = $this->selectSalesDaily($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+        $salesGDF = $this->selectSalesDaily($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+
+        foreach($salesSD as $line) {
+            $totalSales[$line['days']] = $line['sales'];
+        }
+
+        foreach($salesGDF as $line) {
+            if(!isset($totalSales[$line['days']])) {
+                $totalSales[$line['days']] = 0.0;
+            }
+
+            $totalSales[$line['days']] += $line['sales'];
+        }
+
+        foreach($salesSDLast as $line) {
+            $totalSalesLast[$line['days']] = $line['sales'];
+        }
+
+        foreach($salesGDFLast as $line) {
+            if(!isset($totalSalesLast[$line['days']])) {
+                $totalSalesLast[$line['days']] = 0.0;
+            }
+
+            $totalSalesLast[$line['days']] += $line['sales'];
+        }
+
+        ksort($totalSales);
+        ksort($totalSalesLast);
+
+        $days = $endCurrent->format('d');
+        for($i = 1; $i <= $days; $i++) {
+            $prev = $accTotalSales[$i-1] ?? 0;
+            $accTotalSales[$i] = $prev + ($totalSales[$i] ?? 0);
+        }
+
+        $days = $endLast->format('d');
+        for($i = 1; $i <= $days; $i++) {
+            $prev = $accTotalSalesLast[$i-1] ?? 0;
+            $accTotalSalesLast[$i] = $prev + ($totalSalesLast[$i] ?? 0);
+        }
+
+        $view->setData('sales', $totalSales);
+        $view->setData('salesAcc', $accTotalSales);
+        $view->setData('salesLast', $totalSalesLast);
+        $view->setData('salesAccLast', $accTotalSalesLast);
+        $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
+        $view->setData('today', $current->format('d')-1);
 
         return $view;
     }
@@ -260,35 +353,83 @@ class DashboardController
     {
         $newDate = new SmartDateTime($date->format('Y') . '-' . $date->format('m') . '-01');
 
-        return $newDate->modify('-' . ($this->calcCurrentMonth($date) - 1) . ' month');
+        return $newDate->modify('-' . $this->calcCurrentMonth($date) . ' month');
     }
 
-    private function selectSales(\DateTime $start, \DateTime $end, string $company, array $accounts) : float
+    private function selectSalesYearMonth(\DateTime $start, \DateTime $end, string $company, array $accounts) : array
     {
         $query = new Builder($this->app->dbPool->get($company));
         $query->raw(
             'SELECT 
-                SUM(FiBuchungsArchiv.Betrag) AS Sales
-            FROM FiBuchungsArchiv
-            WHERE 
-                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102);');
-        $result1 = $query->execute()->fetchAll();
-        $result1 = empty($result1) ? 0 : $result1[0][0];
+                t.years, t.months, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104))
+                UNION ALL
+                    SELECT 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104))
+                ) t
+            GROUP BY t.years, t.months;');
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
 
+        return $result;
+    }
+
+    private function selectSalesDaily(\DateTime $start, \DateTime $end, string $company, array $accounts) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
         $query->raw(
             'SELECT 
-                SUM(FiBuchungen.Betrag) AS Sales
-            FROM FiBuchungen
-            WHERE 
-                FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102);');
-        $result2 = $query->execute()->fetchAll();
-        $result2 = empty($result2) ? 0 : $result2[0][0];
+                t.days, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        datepart(d, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS days, 
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(d, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104))
+                UNION ALL
+                    SELECT 
+                        datepart(d, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS days, 
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(d, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104))
+                ) t
+            GROUP BY t.days;');
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
 
-        return $result1+$result2;
+        return $result;
     }
 
     private function selectSalesByX(\DateTime $start, \DateTime $end, string $company, string $groupBy = 'KUNDENADRESSE.LAENDERKUERZEL') : float

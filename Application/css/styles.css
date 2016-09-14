@@ -10,9 +10,7 @@ html, body {
 }
 
 .floater {
-    width: 80%;
-    max-width: 800px;
-    min-width: 600px;
+    width: 800px;
     margin: 0 auto;
 }
 
@@ -145,10 +143,15 @@ thead th {
 th, td {
     padding: 10px;
     text-align: left;
+    white-space: nowrap;
 }
 
 tr {
     border-bottom: 1px solid #ffeb75;
+}
+
+tr.bold {
+    font-weight: bold;
 }
 
 tbody tr:nth-child(2n) {
