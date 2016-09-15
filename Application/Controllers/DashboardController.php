@@ -292,33 +292,38 @@ class DashboardController
         $accTotalSales     = [];
         $accTotalSalesLast = [];
 
-        $salesSDLast  = $this->selectSalesDaily($startLast, $endLast, 'sd', self::ACCOUNTS);
-        $salesGDFLast = $this->selectSalesDaily($startLast, $endLast, 'gdf', self::ACCOUNTS);
-        $salesSD      = $this->selectSalesDaily($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
-        $salesGDF     = $this->selectSalesDaily($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+        if($request->getData('u') !== 'gdf') {
+            $salesSD      = $this->selectSalesDaily($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+            $salesSDLast  = $this->selectSalesDaily($startLast, $endLast, 'sd', self::ACCOUNTS);
 
-        foreach ($salesSD as $line) {
-            $totalSales[$line['days']] = $line['sales'];
-        }
-
-        foreach ($salesGDF as $line) {
-            if (!isset($totalSales[$line['days']])) {
-                $totalSales[$line['days']] = 0.0;
+            foreach ($salesSD as $line) {
+                $totalSales[$line['days']] = $line['sales'];
             }
 
-            $totalSales[$line['days']] += $line['sales'];
+            foreach ($salesSDLast as $line) {
+                $totalSalesLast[$line['days']] = $line['sales'];
+            }
         }
 
-        foreach ($salesSDLast as $line) {
-            $totalSalesLast[$line['days']] = $line['sales'];
-        }
+        if($request->getData('u') !== 'sd') {
+            $salesGDFLast = $this->selectSalesDaily($startLast, $endLast, 'gdf', self::ACCOUNTS);
+            $salesGDF     = $this->selectSalesDaily($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
 
-        foreach ($salesGDFLast as $line) {
-            if (!isset($totalSalesLast[$line['days']])) {
-                $totalSalesLast[$line['days']] = 0.0;
+            foreach ($salesGDF as $line) {
+                if (!isset($totalSales[$line['days']])) {
+                    $totalSales[$line['days']] = 0.0;
+                }
+
+                $totalSales[$line['days']] += $line['sales'];
             }
 
-            $totalSalesLast[$line['days']] += $line['sales'];
+            foreach ($salesGDFLast as $line) {
+                if (!isset($totalSalesLast[$line['days']])) {
+                    $totalSalesLast[$line['days']] = 0.0;
+                }
+
+                $totalSalesLast[$line['days']] += $line['sales'];
+            }
         }
 
         ksort($totalSales);
@@ -357,35 +362,39 @@ class DashboardController
 
         $totalSales    = [];
         $accTotalSales = [];
-        $salesSD       = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
-        $salesGDF      = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
 
-        foreach ($salesSD as $line) {
-            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-            $mod         = $line['months'] - $this->app->config['fiscal_year'];
-            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        if($request->getData('u') !== 'gdf') {
+            $salesSD       = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
+            foreach ($salesSD as $line) {
+                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+                $mod         = $line['months'] - $this->app->config['fiscal_year'];
+                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-            $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
+                $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
+            }
         }
 
-        foreach ($salesGDF as $line) {
-            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
-            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        if($request->getData('u') !== 'sd') {
+            $salesGDF      = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
+            foreach ($salesGDF as $line) {
+                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+                $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
-                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+                if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                    $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+                }
+
+                $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
             }
-
-            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
         }
 
         foreach ($totalSales as $year => $months) {
             ksort($totalSales[$year]);
 
-            foreach ($totalSales[$year] as $month => $value) {
-                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
-                $accTotalSales[$year][$month] = $prev + $value;
+            for ($i = 1; $i <= 12; $i++) {
+                $prev                         = $accTotalSales[$year][$i - 1] ?? 0.0;
+                $accTotalSales[$year][$i] = $prev + ($totalSales[$year][$i] ?? 0);
             }
         }
 
@@ -394,14 +403,13 @@ class DashboardController
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
         unset($totalSales[$currentYear][$currentMonth]);
-        unset($accTotalSales[$currentYear][$currentMonth]);
 
-        $view->setData('sales', $totalSales);
-        $view->setData('salesAcc', $accTotalSales);
-        $view->setData('salesLast', $totalSalesLast);
-        $view->setData('salesAccLast', $accTotalSalesLast);
+        $view->setData('sales', $totalSales[$currentYear]);
+        $view->setData('salesAcc', $accTotalSales[$currentYear]);
+        $view->setData('salesLast', $totalSales[$currentYear-1]);
+        $view->setData('salesAccLast', $accTotalSales[$currentYear-1]);
         $view->setData('currentFiscalYear', $currentYear);
-        $view->setData('currentMonth', $currentMonth);
+        $view->setData('currentMonth', $currentMonth-1);
 
         return $view;
     }

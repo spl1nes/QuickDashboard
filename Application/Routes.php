@@ -3,7 +3,7 @@
 use phpOMS\Router\RouteVerb;
 
 return [
-	'^$' => [
+	'^(u=.*)*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showOverview',
             'verb' => RouteVerb::GET,
