@@ -116,9 +116,8 @@ $currentMonth = $this->getData('currentMonth');
         }
     };
 
-    let configConsolidatedAcc = {
-        type: 'line',
-        data: {
+    let configConsolidatedAcc = configConsolidated;
+    configConsolidatedAcc.data = {
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: "Current Year",
@@ -148,46 +147,10 @@ $currentMonth = $this->getData('currentMonth');
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderWidth: 0
             }]
-        },
-        options: {
-            responsive: true,
-            title:{
-                display:true,
-                text:'Consolidated Accumulated Sales'
-            },
-            tooltips: {
-                mode: 'label',
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                            let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
+        };
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
-                          }
-                }
-            },
-            hover: {
-                mode: 'dataset'
-            },
-            scales: {
-                xAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'Month'
-                    }
-                }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'Sales'
-                    },
-                    ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
-                    }
-                }]
-            }
-        }
+    configConsolidatedAcc.options.title = {
+        display:true,
+        text:'Consolidated Accumulated Sales'
     };
 </script>

@@ -234,9 +234,8 @@ $salesRegion = $this->getData('salesRegion');
         }
     };
 
-    let configDevelopedUndeveloped = {
-        type: 'bar',
-        data: {
+    let configDevelopedUndeveloped = configExportDomestic;
+    configDevelopedUndeveloped.data = {
             labels: ["Undeveloped", "Developed"],
             datasets: [{
                 label: 'Last Year',
@@ -249,44 +248,10 @@ $salesRegion = $this->getData('salesRegion');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesDevUndev['now']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['now']['Developed'] ?? 0; ?>]
             }]
-        },
-        options: {
-            responsive: true,
-            hoverMode: 'label',
-            hoverAnimationDuration: 400,
-            stacked: false,
-            title:{
-                display:false,
-                text:"Developed/Undeveloped Sales"
-            },
-            tooltips: {
-                mode: 'label',
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                            let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
+        };
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
-                          }
-                }
-            },
-            scales: {
-                yAxes: [{
-                    type: "linear",
-                    display: true,
-                    position: "left",
-                    id: "y-axis-1",
-                    ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
-                    }
-                }],
-            }
-        }
-    };
-
-    let configRegion = {
-        type: 'bar',
-        data: {
+    let configRegion = configExportDomestic;
+    configRegion.data = {
             labels: ["Other", "Oceania", "Africa", "Asia", "America", "Europe"],
             datasets: [{
                 label: 'Last Year',
@@ -299,40 +264,7 @@ $salesRegion = $this->getData('salesRegion');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesRegion['now']['Other'] ?? 0; ?>, <?= $salesRegion['now']['Oceania'] ?? 0; ?>, <?= $salesRegion['now']['Africa'] ?? 0; ?>, <?= $salesRegion['now']['Asia'] ?? 0; ?>, <?= $salesRegion['now']['America'] ?? 0; ?>, <?= $salesRegion['now']['Europe'] ?? 0; ?>]
             }]
-        },
-        options: {
-            responsive: true,
-            hoverMode: 'label',
-            hoverAnimationDuration: 400,
-            stacked: false,
-            title:{
-                display:false,
-                text:"Developed/Undeveloped Sales"
-            },
-            tooltips: {
-                mode: 'label',
-                callbacks: {
-                    label: function(tooltipItem, data) {
-                            let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
-
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
-                          }
-                }
-            },
-            scales: {
-                yAxes: [{
-                    type: "linear",
-                    display: true,
-                    position: "left",
-                    id: "y-axis-1",
-                    ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
-                    }
-                }],
-            }
-        }
-    };
+        };
 
     window.onload = function() {
         let ctxExportDomestic = document.getElementById("domestic-export-chart");
