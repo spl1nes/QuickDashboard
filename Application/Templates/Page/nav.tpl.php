@@ -6,45 +6,38 @@
                 <ul>
                     <li>Overview
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/history'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/history'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
                     <li>Year
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
-                    <li>Month
+                    <li>List
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/list?{?}?i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/list?{?}?i=year'); ?>">Year</a>
                         </ul>
                     <li>Location
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
                     <li>Articles
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
                     <li>Customers
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/customers'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/customers'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
                     <li>Sales Reps
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps'); ?>">Consolidated</a>
-                            <li><a href="">SD</a>
-                            <li><a href="">GDF</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps'); ?>">Month</a>
+                            <li><a href="">Year</a>
                         </ul>
                 </ul>
             <li>Costs

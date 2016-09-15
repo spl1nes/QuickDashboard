@@ -7,6 +7,18 @@
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/d3.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/topojson.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/datamaps.world.min.js'); ?>"></script>
+
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Utils/oLib.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/ActionManager.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Views/FormView.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/FormManager.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/TableManager.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/TabManager.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/UIManager.js'); ?>"></script>
+
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Model/Message/Redirect.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Model/Message/Reload.js'); ?>"></script>
+
 	<link rel="stylesheet" type="text/css" href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/css/font-awesome.css'); ?>">
 	<link rel="stylesheet" type="text/css" href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/css/styles.css'); ?>">
 	<link rel="shortcut icon" href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/img/favicon.ico'); ?>" type="image/x-icon">
