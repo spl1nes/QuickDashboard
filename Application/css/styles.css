@@ -220,6 +220,9 @@ select.plain {
     appearance: none;
     cursor: pointer;
     box-shadow: none;
+    background: none;
+    font-size: 1.2em;
+    font-weight: bold;
 }
 
 @media print {

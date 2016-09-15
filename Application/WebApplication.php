@@ -80,6 +80,7 @@ class WebApplication extends ApplicationAbstract
         $baseUri  = $request->getUri()->getBase();
 
         $head->addAsset(AssetType::JS, $baseUri . 'Model/Message/DomAction.js');
+        $pageView->setData('unit', $request->getData('u') ?? 'consolidated');
         $pageView->setData('head', $head);
         $pageView->setData('dispatch', $dispatched);
         $pageView->setTemplate('/QuickDashboard/Application/Templates/index');

@@ -8,7 +8,11 @@
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/topojson.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/datamaps.world.min.js'); ?>"></script>
 
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Asset/AssetManager.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Autoloader.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Utils/oLib.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Uri/UriFactory.js'); ?>"></script>
+	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Event/EventManager.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/ActionManager.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/Views/FormView.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}jsOMS/UI/FormManager.js'); ?>"></script>

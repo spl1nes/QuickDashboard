@@ -211,27 +211,31 @@ class DashboardController
 
         $totalSales    = [];
         $accTotalSales = [];
-        $salesSD       = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
-        $salesGDF      = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
 
-        foreach ($salesSD as $line) {
-            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-            $mod         = $line['months'] - $this->app->config['fiscal_year'];
-            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        if($request->getData('u') !== 'gdf') {
+            $salesSD       = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
+            foreach ($salesSD as $line) {
+                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+                $mod         = $line['months'] - $this->app->config['fiscal_year'];
+                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-            $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
+                $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
+            }
         }
 
-        foreach ($salesGDF as $line) {
-            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
-            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        if($request->getData('u') !== 'sd') {
+            $salesGDF      = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
+            foreach ($salesGDF as $line) {
+                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+                $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
-                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+                if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                    $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+                }
+
+                $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
             }
-
-            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
         }
 
         foreach ($totalSales as $year => $months) {

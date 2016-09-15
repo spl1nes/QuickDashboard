@@ -1,17 +1,17 @@
 <div class="floater">
     <nav>
         <ul>
-            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}'); ?>">Overview</a>
+            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}?{?}'); ?>">Overview</a>
             <li>Sales
                 <ul>
                     <li>Overview
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/history'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/history?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                     <li>Year
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/month?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                     <li>List
@@ -21,22 +21,22 @@
                         </ul>
                     <li>Location
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                     <li>Articles
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                     <li>Customers
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/customers'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/customers?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                     <li>Sales Reps
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}'); ?>">Month</a>
                             <li><a href="">Year</a>
                         </ul>
                 </ul>
@@ -44,12 +44,12 @@
                 <ul>
                     <li>Overview
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}costs'); ?>">Accumulated</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}costs?{?}'); ?>">Accumulated</a>
                             <li><a href="">Month</a>
                         </ul>
                     <li>Department
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps'); ?>">Marketing</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}'); ?>">Marketing</a>
                             <li><a href="">Production</a>
                             <li><a href="">R&D</a>
                             <li><a href="">Sales</a>
@@ -68,8 +68,8 @@
                 </ul>
             <li>Analysis
                 <ul>
-                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps'); ?>">Sales Rep</a>
-                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/article'); ?>">Article</a>
+                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps?{?}'); ?>">Sales Rep</a>
+                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/article?{?}'); ?>">Article</a>
                     <li><a href="">Customer</a>
                     <li><a href="">Account</a>
                     <li><a href="">Cost Center</a>
