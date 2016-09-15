@@ -35,7 +35,7 @@ class DashboardController
         'Europe'  => [
             'AX', 'AL', 'AD', 'AT', 'BY', 'BE', 'BA', 'BG', 'HR', 'CZ', 'DK', 'EE', 'FO', 'FI', 'FR', 'DE', 'GI', 'GR',
             'GG', 'VA', 'HU', 'IS', 'IE', 'IM', 'IT', 'JE', 'LV', 'LI', 'LT', 'LU', 'MK', 'MT', 'MD', 'MC', 'ME', 'NL',
-            'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'RS', 'SK', 'SI', 'ES', 'SJ', 'SE', 'CH', 'UA', 'GB', 'XK',
+            'NO', 'PL', 'PT', 'RO', 'RU', 'SM', 'RS', 'SK', 'SI', 'ES', 'SJ', 'SE', 'CH', 'UA', 'GB', 'XK', 'QU'
         ],
         'Asia'    => [
             'AF', 'AM', 'AZ', 'BH', 'BD', 'BT', 'BN', 'KH', 'CN', 'CY', 'GE', 'HK', 'IN', 'ID', 'IR', 'IQ', 'IL', 'JP',
@@ -62,7 +62,7 @@ class DashboardController
 
     const DEVELOPED = [
         'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'GR', 'ES', 'FR', 'GR', 'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL',
-        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU'
+        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU', 'QU'
     ];
 
     const SELECT_SALES_BY = [
@@ -179,13 +179,13 @@ class DashboardController
 
     private function getDevelopedUndeveloped(string $code) : string
     {
-        return in_array(strtoupper($code), self::DEVELOPED) ? 'Developed' : 'Undeveloped';
+        return in_array(strtoupper(trim($code)), self::DEVELOPED) ? 'Developed' : 'Undeveloped';
     }
 
     private function getRegion(string $code) : string
     {
         foreach (self::REGIONS as $key => $region) {
-            if (in_array(strtoupper($code), $region)) {
+            if (in_array(strtoupper(trim($code)), $region)) {
                 return $key;
             }
         }
@@ -195,7 +195,7 @@ class DashboardController
 
     private function getExportDomestic(string $code) : string
     {
-        return strtoupper($code) === 'DE' ? 'Domestic' : 'Export';
+        return strtoupper(trim($code)) === 'DE' || strtoupper(trim($code)) === 'QU' ? 'Domestic' : 'Export';
     }
 
     private function getSegmentOfArticle(int $id) : int
@@ -370,13 +370,6 @@ class DashboardController
             }
 
             $salesDevUndev['now'][$devundev] += $line['sales'];
-
-            $exportDomestic = $this->getExportDomestic($line['countryChar']);
-            if (!isset($salesExportDomestic['now'][$exportDomestic])) {
-                $salesExportDomestic['now'][$exportDomestic] = 0.0;
-            }
-
-            $salesExportDomestic['now'][$exportDomestic] += $line['sales'];
         }
 
         foreach ($countryGDF as $line) {
@@ -393,13 +386,6 @@ class DashboardController
             }
 
             $salesDevUndev['now'][$devundev] += $line['sales'];
-
-            $exportDomestic = $this->getExportDomestic($line['countryChar']);
-            if (!isset($salesExportDomestic['now'][$exportDomestic])) {
-                $salesExportDomestic['now'][$exportDomestic] = 0.0;
-            }
-
-            $salesExportDomestic['now'][$exportDomestic] += $line['sales'];
         }
 
         foreach ($countrySDLast as $line) {
@@ -416,13 +402,6 @@ class DashboardController
             }
 
             $salesDevUndev['old'][$devundev] += $line['sales'];
-
-            $exportDomestic = $this->getExportDomestic($line['countryChar']);
-            if (!isset($salesExportDomestic['old'][$exportDomestic])) {
-                $salesExportDomestic['old'][$exportDomestic] = 0.0;
-            }
-
-            $salesExportDomestic['old'][$exportDomestic] += $line['sales'];
         }
 
         foreach ($countryGDFLast as $line) {
@@ -439,14 +418,24 @@ class DashboardController
             }
 
             $salesDevUndev['old'][$devundev] += $line['sales'];
-
-            $exportDomestic = $this->getExportDomestic($line['countryChar']);
-            if (!isset($salesExportDomestic['old'][$exportDomestic])) {
-                $salesExportDomestic['old'][$exportDomestic] = 0.0;
-            }
-
-            $salesExportDomestic['old'][$exportDomestic] += $line['sales'];
         }
+
+        // Cleanup
+        $domesticSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS_DOMESTIC);
+        $domesticGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS_DOMESTIC);
+        $domesticSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS_DOMESTIC);
+        $domesticGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS_DOMESTIC);
+
+        $salesExportDomestic['now']['Domestic'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
+        $salesExportDomestic['old']['Domestic'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
+        $salesExportDomestic['now']['Export'] = $accTotalSales[count($accTotalSales)] - $salesExportDomestic['now']['Domestic'];
+        $salesExportDomestic['old']['Export'] = $accTotalSalesLast[count($accTotalSalesLast)] - $salesExportDomestic['old']['Domestic'];
+
+        $salesDevUndev['now']['Developed'] += array_sum($salesExportDomestic['now']) - array_sum($salesDevUndev['now']);
+        $salesDevUndev['old']['Developed'] += array_sum($salesExportDomestic['old']) - array_sum($salesDevUndev['old']);
+
+        $salesRegion['now']['Europe'] += array_sum($salesExportDomestic['now']) - array_sum($salesRegion['now']);
+        $salesRegion['old']['Europe'] += array_sum($salesExportDomestic['old']) - array_sum($salesRegion['old']);
 
         $view->setData('salesRegion', $salesRegion);
         $view->setData('salesDevUndev', $salesDevUndev);
@@ -623,6 +612,35 @@ class DashboardController
                         KUNDENADRESSE.LAENDERKUERZEL
                 ) t
             GROUP BY t.countryChar;');
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
+
+        return $result;
+    }
+
+    private function selectSales(\DateTime $start, \DateTime $end, string $company, array $accounts) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(
+            'SELECT DISTINCT
+                SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                UNION ALL
+                    SELECT 
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                ) t;');
         $result = $query->execute()->fetchAll();
         $result = empty($result) ? [] : $result;
 

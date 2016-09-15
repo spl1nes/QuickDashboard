@@ -31,6 +31,7 @@ class WebApplication extends ApplicationAbstract
         set_error_handler(['\phpOMS\UnhandledHandler', 'errorHandler']);
         register_shutdown_function(['\phpOMS\UnhandledHandler', 'shutdownHandler']);
         mb_internal_encoding('UTF-8');
+        date_default_timezone_set('Europe/Berlin');
 
         $uri = new Http(Http::getCurrent());
         $uri->setRootPath($this->config['page']['root']);
