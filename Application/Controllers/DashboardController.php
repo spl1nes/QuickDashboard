@@ -5,6 +5,7 @@ namespace QuickDashboard\Application\Controllers;
 use phpOMS\ApplicationAbstract;
 use phpOMS\DataStorage\Database\Query\Builder;
 use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
@@ -414,10 +415,10 @@ class DashboardController
         return $view;
     }
 
-    public function showMonth(RequestAbstract $request, ResponseAbstract $response)
+    public function showLocationMonth(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-month');
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location-month');
 
         $current = new SmartDateTime('now');
         if ($current->format('d') < 5) {
@@ -431,59 +432,6 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        $totalSales        = [];
-        $totalSalesLast    = [];
-        $accTotalSales     = [];
-        $accTotalSalesLast = [];
-
-        $salesSDLast  = $this->selectSalesDaily($startLast, $endLast, 'sd', self::ACCOUNTS);
-        $salesGDFLast = $this->selectSalesDaily($startLast, $endLast, 'gdf', self::ACCOUNTS);
-        $salesSD      = $this->selectSalesDaily($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
-        $salesGDF     = $this->selectSalesDaily($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
-
-        foreach ($salesSD as $line) {
-            $totalSales[$line['days']] = $line['sales'];
-        }
-
-        foreach ($salesGDF as $line) {
-            if (!isset($totalSales[$line['days']])) {
-                $totalSales[$line['days']] = 0.0;
-            }
-
-            $totalSales[$line['days']] += $line['sales'];
-        }
-
-        foreach ($salesSDLast as $line) {
-            $totalSalesLast[$line['days']] = $line['sales'];
-        }
-
-        foreach ($salesGDFLast as $line) {
-            if (!isset($totalSalesLast[$line['days']])) {
-                $totalSalesLast[$line['days']] = 0.0;
-            }
-
-            $totalSalesLast[$line['days']] += $line['sales'];
-        }
-
-        ksort($totalSales);
-        ksort($totalSalesLast);
-
-        $days = $endCurrent->format('d');
-        for ($i = 1; $i <= $days; $i++) {
-            $prev              = $accTotalSales[$i - 1] ?? 0;
-            $accTotalSales[$i] = $prev + ($totalSales[$i] ?? 0);
-        }
-
-        $days = $endLast->format('d');
-        for ($i = 1; $i <= $days; $i++) {
-            $prev                  = $accTotalSalesLast[$i - 1] ?? 0;
-            $accTotalSalesLast[$i] = $prev + ($totalSalesLast[$i] ?? 0);
-        }
-
-        $view->setData('sales', $totalSales);
-        $view->setData('salesAcc', $accTotalSales);
-        $view->setData('salesLast', $totalSalesLast);
-        $view->setData('salesAccLast', $accTotalSalesLast);
         $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
         $view->setData('today', $current->format('d') - 1);
 
@@ -495,6 +443,7 @@ class DashboardController
         $salesRegion         = [];
         $salesDevUndev       = [];
         $salesExportDomestic = [];
+        $salesCountry = [];
 
         foreach ($countrySD as $line) {
             $region = $this->getRegion($line['countryChar']);
@@ -510,6 +459,12 @@ class DashboardController
             }
 
             $salesDevUndev['now'][$devundev] += $line['sales'];
+
+            if (!isset($salesCountry['now'][$line['countryChar']])) {
+                $salesCountry['now'][$line['countryChar']] = 0.0;
+            }
+
+            $salesCountry['now'][$line['countryChar']] += $line['sales'];
         }
 
         foreach ($countryGDF as $line) {
@@ -526,6 +481,12 @@ class DashboardController
             }
 
             $salesDevUndev['now'][$devundev] += $line['sales'];
+
+            if (!isset($salesCountry['now'][$line['countryChar']])) {
+                $salesCountry['now'][$line['countryChar']] = 0.0;
+            }
+
+            $salesCountry['now'][$line['countryChar']] += $line['sales'];
         }
 
         foreach ($countrySDLast as $line) {
@@ -542,6 +503,12 @@ class DashboardController
             }
 
             $salesDevUndev['old'][$devundev] += $line['sales'];
+
+            if (!isset($salesCountry['old'][$line['countryChar']])) {
+                $salesCountry['old'][$line['countryChar']] = 0.0;
+            }
+
+            $salesCountry['old'][$line['countryChar']] += $line['sales'];
         }
 
         foreach ($countryGDFLast as $line) {
@@ -558,6 +525,13 @@ class DashboardController
             }
 
             $salesDevUndev['old'][$devundev] += $line['sales'];
+
+            $iso3166Char3 = ISO3166TwoEnum::getName(strtoupper($line['countryChar']));
+            if (!isset($salesCountry['old'][$iso3166Char3])) {
+                $salesCountry['old'][$iso3166Char3] = 0.0;
+            }
+
+            $salesCountry['old'][$iso3166Char3] += $line['sales'];
         }
 
         // Cleanup
@@ -566,10 +540,15 @@ class DashboardController
         $domesticSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS_DOMESTIC);
         $domesticGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS_DOMESTIC);
 
+        $allSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+        $allGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+        $allSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS);
+        $allGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS);
+
         $salesExportDomestic['now']['Domestic'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesExportDomestic['old']['Domestic'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
-        $salesExportDomestic['now']['Export'] = $accTotalSales[count($accTotalSales)] - $salesExportDomestic['now']['Domestic'];
-        $salesExportDomestic['old']['Export'] = $accTotalSalesLast[count($accTotalSalesLast)] - $salesExportDomestic['old']['Domestic'];
+        $salesExportDomestic['now']['Export'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $salesExportDomestic['now']['Domestic'];
+        $salesExportDomestic['old']['Export'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $salesExportDomestic['old']['Domestic'];
 
         $salesDevUndev['now']['Developed'] += array_sum($salesExportDomestic['now']) - array_sum($salesDevUndev['now']);
         $salesDevUndev['old']['Developed'] += array_sum($salesExportDomestic['old']) - array_sum($salesDevUndev['old']);
@@ -577,6 +556,7 @@ class DashboardController
         $salesRegion['now']['Europe'] += array_sum($salesExportDomestic['now']) - array_sum($salesRegion['now']);
         $salesRegion['old']['Europe'] += array_sum($salesExportDomestic['old']) - array_sum($salesRegion['old']);
 
+        $view->setData('salesCountry', $salesCountry);
         $view->setData('salesRegion', $salesRegion);
         $view->setData('salesDevUndev', $salesDevUndev);
         $view->setData('salesExportDomestic', $salesExportDomestic);

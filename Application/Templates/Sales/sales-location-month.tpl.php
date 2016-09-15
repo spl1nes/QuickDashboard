@@ -1,14 +1,8 @@
 <?php
-$sales = $this->getData('sales');
-$salesAcc = $this->getData('salesAcc');
-$salesLast = $this->getData('salesLast');
-$salesAccLast = $this->getData('salesAccLast');
-$days = $this->getData('maxDays');
-$today = $this->getData('today');
-
 $salesExportDomestic = $this->getData('salesExportDomestic');
 $salesDevUndev = $this->getData('salesDevUndev');
 $salesRegion = $this->getData('salesRegion');
+$salesCountry = $this->getData('salesCountry');
 ?>
 
 <p>The following tables contain the sales of the current month compared to the same month of the last year. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
@@ -139,49 +133,15 @@ $salesRegion = $this->getData('salesRegion');
         <th><?= number_format(!isset($salesRegion['old']) ? 0 : (array_sum($salesRegion['now'])/array_sum($salesRegion['old'])-1)*100, 0, ',', '.') ?> %
 </table>
 
+<div class="clear"></div>
+
 <div class="box" style="width: 50%; float: left">
     <canvas id="region-chart" height="250"></canvas>
 </div>
 
-<div class="clear"></div>
+<div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
+<div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
-<table>
-    <caption>Sales By Day</caption>
-    <thead>
-    <tr>
-        <th>Day
-        <th>Last
-        <th>Current
-        <th>Diff
-        <th>Diff %
-        <th>Last Acc.
-        <th>Current Acc.
-        <th>Acc. Diff
-        <th>Acc. Diff %
-    <tbody>
-    <?php for($i = 1; $i <= $days; $i++) : ?>
-    <tr<?= $i === $today ? ' class="bold"' : '';?>>
-        <td><?= $i; ?>
-        <td><?= !isset($salesLast[$i]) ? '' : number_format($salesLast[$i], 0, ',', '.'); ?>
-        <td><?= !isset($sales[$i]) ? '' : number_format($sales[$i], 0, ',', '.'); ?>
-        <td><?= number_format(($sales[$i] ?? 0) - ($salesLast[$i] ?? 0), 0, ',', '.'); ?>
-        <td><?= number_format(($salesLast[$i] ?? 0) == 0 ? 0 : (($sales[$i] ?? 0)/($salesLast[$i] ?? 0) - 1) * 100, 2, ',', '.'); ?> %
-        <td><?= !isset($salesAccLast[$i]) ? '' : number_format($salesAccLast[$i] ?? 0, 0, ',', '.'); ?>
-        <td><?= !isset($salesAcc[$i]) ? '' : number_format($salesAcc[$i] ?? 0, 0, ',', '.'); ?>
-        <td><?= number_format(($salesAcc[$i] ?? 0) - ($salesAccLast[$i] ?? 0), 0, ',', '.'); ?>
-        <td><?= number_format(($salesAccLast[$i] ?? 0) == 0 ? 0 : (($salesAcc[$i] ?? 0)/($salesAccLast[$i] ?? 0) - 1) * 100, 2, ',', '.'); ?> %
-    <?php endfor; ?>
-    <tr>
-        <th>Current
-        <th><?= number_format($salesAccLast[$today], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days] - $salesAccLast[$today], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days] == 0 ? 0 : ($salesAcc[$days]/$salesAccLast[$today] - 1) * 100, 2, ',', '.'); ?> %
-        <th><?= number_format($salesAccLast[count($salesAccLast)], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days] - $salesAccLast[$today], 0, ',', '.'); ?>
-        <th><?= number_format(($salesAcc[$days]/$salesAccLast[count($salesAccLast)] - 1) * 100, 2, ',', '.'); ?> %
-</table>
 <div class="clear"></div>
 <script>
     let configExportDomestic = {
@@ -213,11 +173,11 @@ $salesRegion = $this->getData('salesRegion');
                 mode: 'label',
                 callbacks: {
                     label: function(tooltipItem, data) {
-                            let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
-                          }
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
                 }
             },
             scales: {
@@ -234,8 +194,9 @@ $salesRegion = $this->getData('salesRegion');
         }
     };
 
-    let configDevelopedUndeveloped = configExportDomestic;
-    configDevelopedUndeveloped.data = {
+    let configDevelopedUndeveloped = {
+        type: 'bar',
+        data: {
             labels: ["Undeveloped", "Developed"],
             datasets: [{
                 label: 'Last Year',
@@ -248,10 +209,44 @@ $salesRegion = $this->getData('salesRegion');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesDevUndev['now']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['now']['Developed'] ?? 0; ?>]
             }]
-        };
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:false,
+                text:"Export/Domestic Sales"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
 
-    let configRegion = configExportDomestic;
-    configRegion.data = {
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
+            }
+        }
+    };
+
+    let configRegion = {
+        type: 'bar',
+        data: {
             labels: ["Other", "Oceania", "Africa", "Asia", "America", "Europe"],
             datasets: [{
                 label: 'Last Year',
@@ -264,7 +259,82 @@ $salesRegion = $this->getData('salesRegion');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesRegion['now']['Other'] ?? 0; ?>, <?= $salesRegion['now']['Oceania'] ?? 0; ?>, <?= $salesRegion['now']['Africa'] ?? 0; ?>, <?= $salesRegion['now']['Asia'] ?? 0; ?>, <?= $salesRegion['now']['America'] ?? 0; ?>, <?= $salesRegion['now']['Europe'] ?? 0; ?>]
             }]
-        };
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:false,
+                text:"Export/Domestic Sales"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
+            }
+        }
+    };
+
+    let worldMapCountry = new Datamap({
+        scope: 'world',
+        element: document.getElementById('world-map-country'),
+        projection: 'mercator',
+        height: 300,
+        fills: {
+            defaultFill: '#f0af0a',
+            lt50: 'rgba(0,244,244,0.9)',
+            gt50: 'red'
+        },
+        data: {
+            <?php foreach($salesCountry as $key => $value) : ?>
+                <?= $key; ?>: {fillKey: 'lt50'},
+            <?php endforeach; ?>
+        }
+    });
+
+    let worldMapRegion = new Datamap({
+        scope: 'world',
+        element: document.getElementById('world-map-region'),
+        projection: 'mercator',
+        height: 300,
+        fills: {
+            defaultFill: '#f0af0a',
+            lt50: 'rgba(0,244,244,0.9)',
+            gt50: 'red'
+        },
+        data: {}
+    });
+
+    worldMapRegion.bubbles([
+        {name: 'Europe', latitude: 51.1657, longitude: 10.4515, radius: <?= log($salesRegion['now']['Europe']); ?>, fillKey: 'gt50'},
+        {name: 'Asia', latitude: 53.4815, longitude: 88.7695, radius: <?= log($salesRegion['now']['Asia']); ?>, fillKey: 'lt50'},
+        {name: 'America', latitude: 12.8010, longitude: -87.3632, radius: <?= log($salesRegion['now']['America']); ?>, fillKey: 'gt50'},
+        {name: 'Africa', latitude: 13.8274, longitude: 15.6445, radius: <?= log($salesRegion['now']['Africa']); ?>, fillKey: 'gt50'},
+        {name: 'Oceania', latitude: -25.2744, longitude: 133.7751, radius: <?= log($salesRegion['now']['Oceania']); ?>, fillKey: 'gt50'},
+    ], {
+        popupTemplate: function(geo, data) {
+            return "<div class='hoverinfo'>Sales " + data.name + "</div>";
+        }
+    });
 
     window.onload = function() {
         let ctxExportDomestic = document.getElementById("domestic-export-chart");
