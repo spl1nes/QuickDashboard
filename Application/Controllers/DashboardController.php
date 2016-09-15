@@ -266,6 +266,142 @@ class DashboardController
         return $view;
     }
 
+    public function showListMonth(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-list-month');
+
+        $current = new SmartDateTime('now');
+        if ($current->format('d') < 5) {
+            $current->modify('-5 day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $current->getStartOfMonth();
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $startLast->getEndOfMonth();
+
+        $totalSales        = [];
+        $totalSalesLast    = [];
+        $accTotalSales     = [];
+        $accTotalSalesLast = [];
+
+        $salesSDLast  = $this->selectSalesDaily($startLast, $endLast, 'sd', self::ACCOUNTS);
+        $salesGDFLast = $this->selectSalesDaily($startLast, $endLast, 'gdf', self::ACCOUNTS);
+        $salesSD      = $this->selectSalesDaily($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+        $salesGDF     = $this->selectSalesDaily($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+
+        foreach ($salesSD as $line) {
+            $totalSales[$line['days']] = $line['sales'];
+        }
+
+        foreach ($salesGDF as $line) {
+            if (!isset($totalSales[$line['days']])) {
+                $totalSales[$line['days']] = 0.0;
+            }
+
+            $totalSales[$line['days']] += $line['sales'];
+        }
+
+        foreach ($salesSDLast as $line) {
+            $totalSalesLast[$line['days']] = $line['sales'];
+        }
+
+        foreach ($salesGDFLast as $line) {
+            if (!isset($totalSalesLast[$line['days']])) {
+                $totalSalesLast[$line['days']] = 0.0;
+            }
+
+            $totalSalesLast[$line['days']] += $line['sales'];
+        }
+
+        ksort($totalSales);
+        ksort($totalSalesLast);
+
+        $days = $endCurrent->format('d');
+        for ($i = 1; $i <= $days; $i++) {
+            $prev              = $accTotalSales[$i - 1] ?? 0;
+            $accTotalSales[$i] = $prev + ($totalSales[$i] ?? 0);
+        }
+
+        $days = $endLast->format('d');
+        for ($i = 1; $i <= $days; $i++) {
+            $prev                  = $accTotalSalesLast[$i - 1] ?? 0;
+            $accTotalSalesLast[$i] = $prev + ($totalSalesLast[$i] ?? 0);
+        }
+
+        $view->setData('sales', $totalSales);
+        $view->setData('salesAcc', $accTotalSales);
+        $view->setData('salesLast', $totalSalesLast);
+        $view->setData('salesAccLast', $accTotalSalesLast);
+        $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
+        $view->setData('today', $current->format('d') - 1);
+
+        return $view;
+    }
+
+    public function showListYear(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-list-year');
+
+        $current = new SmartDateTime('now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-1 year');
+
+        $totalSales    = [];
+        $accTotalSales = [];
+        $salesSD       = $this->selectSalesYearMonth($start, $current, 'sd', self::ACCOUNTS);
+        $salesGDF      = $this->selectSalesYearMonth($start, $current, 'gdf', self::ACCOUNTS);
+
+        foreach ($salesSD as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = $line['months'] - $this->app->config['fiscal_year'];
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
+        }
+
+        foreach ($salesGDF as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
+
+        foreach ($totalSales as $year => $months) {
+            ksort($totalSales[$year]);
+
+            foreach ($totalSales[$year] as $month => $value) {
+                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                $accTotalSales[$year][$month] = $prev + $value;
+            }
+        }
+
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        unset($totalSales[$currentYear][$currentMonth]);
+        unset($accTotalSales[$currentYear][$currentMonth]);
+
+        $view->setData('sales', $totalSales);
+        $view->setData('salesAcc', $accTotalSales);
+        $view->setData('salesLast', $totalSalesLast);
+        $view->setData('salesAccLast', $accTotalSalesLast);
+        $view->setData('currentFiscalYear', $currentYear);
+        $view->setData('currentMonth', $currentMonth);
+
+        return $view;
+    }
+
     public function showMonth(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);

@@ -15,9 +15,15 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/month.*$' => [
+    '^sales/list.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showMonth',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showListMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/list.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showListYear',
             'verb' => RouteVerb::GET,
         ],
     ],
