@@ -65,14 +65,6 @@ class DashboardController
         'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU', 'QU'
     ];
 
-    const SELECT_SALES_BY = [
-        'country'       => 'KUNDENADRESSE.LAENDERKUERZEL',
-        'rep'           => 'KUNDENADRESSE.VERKAEUFER',
-        'area'          => 'KUNDENADRESSE.GEBIET',
-        'customergroup' => 'KUNDENADRESSE._KUNDENGRUPPE',
-        'costcenter'    => 'FiBuchungen.KST',
-    ];
-
     const GROUPING = [
         1 => [10 => [101, 102, 103, 104, 105, 106]],
         2 => [
