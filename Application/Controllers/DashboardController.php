@@ -14,6 +14,8 @@ class DashboardController
 {
     private $app = null;
 
+    const MAX_PAST = 10;
+
     const ACCOUNTS = [
         8050, 8052, 8055, 8090, 8095, 8100, 8105, 8106, 8110, 8113, 8115, 8120, 8121, 8122, 8125, 8130, 8140, 8160, 8592,
         8161, 8162, 8300, 8305, 8306, 8310, 8315, 8320, 8330, 8340, 8360, 8361, 8362, 8367, 8368, 8380, 8740, 8746, 8749,
@@ -277,8 +279,8 @@ class DashboardController
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-list-month');
 
         $current = new SmartDateTime('now');
-        if ($current->format('d') < 5) {
-            $current->modify('-5 day');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
             $current = $current->getEndOfMonth();
         }
 
@@ -403,26 +405,21 @@ class DashboardController
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-        unset($totalSales[$currentYear][$currentMonth]);
-
         $view->setData('sales', $totalSales[$currentYear]);
         $view->setData('salesAcc', $accTotalSales[$currentYear]);
         $view->setData('salesLast', $totalSales[$currentYear-1]);
         $view->setData('salesAccLast', $accTotalSales[$currentYear-1]);
         $view->setData('currentFiscalYear', $currentYear);
-        $view->setData('currentMonth', $currentMonth-1);
+        $view->setData('currentMonth', $currentMonth);
 
         return $view;
     }
 
     public function showLocationMonth(RequestAbstract $request, ResponseAbstract $response)
     {
-        $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location-month');
-
         $current = new SmartDateTime('now');
-        if ($current->format('d') < 5) {
-            $current->modify('-5 day');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-'.self::MAX_PAST .' day');
             $current = $current->getEndOfMonth();
         }
 
@@ -432,123 +429,158 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
-        $view->setData('today', $current->format('d') - 1);
+        return $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+    }
 
-        $countrySD      = $this->selectSalesByCountry($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
-        $countryGDF     = $this->selectSalesByCountry($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
-        $countrySDLast  = $this->selectSalesByCountry($startLast, $endLast, 'sd', self::ACCOUNTS);
-        $countryGDFLast = $this->selectSalesByCountry($startLast, $endLast, 'gdf', self::ACCOUNTS);
+    public function showLocationYear(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $current = new SmartDateTime('now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-'.self::MAX_PAST .' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        return $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+    }
+
+    public function showLocation(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location');
 
         $salesRegion         = [];
         $salesDevUndev       = [];
         $salesExportDomestic = [];
         $salesCountry = [];
 
-        foreach ($countrySD as $line) {
-            $region = $this->getRegion($line['countryChar']);
-            if (!isset($salesRegion['now'][$region])) {
-                $salesRegion['now'][$region] = 0.0;
+        if($request->getData('u') !== 'gdf') {
+            $countrySD      = $this->selectSalesByCountry($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+            $countrySDLast  = $this->selectSalesByCountry($startLast, $endLast, 'sd', self::ACCOUNTS);
+
+            foreach ($countrySD as $line) {
+                $region = $this->getRegion($line['countryChar']);
+                if (!isset($salesRegion['now'][$region])) {
+                    $salesRegion['now'][$region] = 0.0;
+                }
+
+                $salesRegion['now'][$region] += $line['sales'];
+
+                $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
+                if (!isset($salesDevUndev['now'][$devundev])) {
+                    $salesDevUndev['now'][$devundev] = 0.0;
+                }
+
+                $salesDevUndev['now'][$devundev] += $line['sales'];
+
+                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+                if (!isset($salesCountry['now'][$iso3166Char3])) {
+                    $salesCountry['now'][$iso3166Char3] = 0.0;
+                }
+
+                $salesCountry['now'][$iso3166Char3] += $line['sales'];
             }
 
-            $salesRegion['now'][$region] += $line['sales'];
+            foreach ($countrySDLast as $line) {
+                $region = $this->getRegion($line['countryChar']);
+                if (!isset($salesRegion['old'][$region])) {
+                    $salesRegion['old'][$region] = 0.0;
+                }
 
-            $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
-            if (!isset($salesDevUndev['now'][$devundev])) {
-                $salesDevUndev['now'][$devundev] = 0.0;
+                $salesRegion['old'][$region] += $line['sales'];
+
+                $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
+                if (!isset($salesDevUndev['old'][$devundev])) {
+                    $salesDevUndev['old'][$devundev] = 0.0;
+                }
+
+                $salesDevUndev['old'][$devundev] += $line['sales'];
+
+                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+                if (!isset($salesCountry['old'][$iso3166Char3])) {
+                    $salesCountry['old'][$iso3166Char3] = 0.0;
+                }
+
+                $salesCountry['old'][$iso3166Char3] += $line['sales'];
             }
 
-            $salesDevUndev['now'][$devundev] += $line['sales'];
+            $domesticSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS_DOMESTIC);
+            $domesticSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS_DOMESTIC);
 
-            if (!isset($salesCountry['now'][$line['countryChar']])) {
-                $salesCountry['now'][$line['countryChar']] = 0.0;
-            }
-
-            $salesCountry['now'][$line['countryChar']] += $line['sales'];
+            $allSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
+            $allSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS);
         }
 
-        foreach ($countryGDF as $line) {
-            $region = $this->getRegion($line['countryChar']);
-            if (!isset($salesRegion['now'][$region])) {
-                $salesRegion['now'][$region] = 0.0;
+        if($request->getData('u') !== 'sd') {
+            $countryGDF     = $this->selectSalesByCountry($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+            $countryGDFLast = $this->selectSalesByCountry($startLast, $endLast, 'gdf', self::ACCOUNTS);
+
+            foreach ($countryGDF as $line) {
+                $region = $this->getRegion($line['countryChar']);
+                if (!isset($salesRegion['now'][$region])) {
+                    $salesRegion['now'][$region] = 0.0;
+                }
+
+                $salesRegion['now'][$region] += $line['sales'];
+
+                $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
+                if (!isset($salesDevUndev['now'][$devundev])) {
+                    $salesDevUndev['now'][$devundev] = 0.0;
+                }
+
+                $salesDevUndev['now'][$devundev] += $line['sales'];
+
+                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+                if (!isset($salesCountry['now'][$iso3166Char3])) {
+                    $salesCountry['now'][$iso3166Char3] = 0.0;
+                }
+
+                $salesCountry['now'][$iso3166Char3] += $line['sales'];
             }
 
-            $salesRegion['now'][$region] += $line['sales'];
+            foreach ($countryGDFLast as $line) {
+                $region = $this->getRegion($line['countryChar']);
+                if (!isset($salesRegion['old'][$region])) {
+                    $salesRegion['old'][$region] = 0.0;
+                }
 
-            $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
-            if (!isset($salesDevUndev['now'][$devundev])) {
-                $salesDevUndev['now'][$devundev] = 0.0;
+                $salesRegion['old'][$region] += $line['sales'];
+
+                $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
+                if (!isset($salesDevUndev['old'][$devundev])) {
+                    $salesDevUndev['old'][$devundev] = 0.0;
+                }
+
+                $salesDevUndev['old'][$devundev] += $line['sales'];
+
+                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+                if (!isset($salesCountry['old'][$iso3166Char3])) {
+                    $salesCountry['old'][$iso3166Char3] = 0.0;
+                }
+
+                $salesCountry['old'][$iso3166Char3] += $line['sales'];
             }
 
-            $salesDevUndev['now'][$devundev] += $line['sales'];
+            $domesticGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS_DOMESTIC);
+            $domesticGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS_DOMESTIC);
 
-            if (!isset($salesCountry['now'][$line['countryChar']])) {
-                $salesCountry['now'][$line['countryChar']] = 0.0;
-            }
-
-            $salesCountry['now'][$line['countryChar']] += $line['sales'];
+            $allGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
+            $allGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS);
         }
-
-        foreach ($countrySDLast as $line) {
-            $region = $this->getRegion($line['countryChar']);
-            if (!isset($salesRegion['old'][$region])) {
-                $salesRegion['old'][$region] = 0.0;
-            }
-
-            $salesRegion['old'][$region] += $line['sales'];
-
-            $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
-            if (!isset($salesDevUndev['old'][$devundev])) {
-                $salesDevUndev['old'][$devundev] = 0.0;
-            }
-
-            $salesDevUndev['old'][$devundev] += $line['sales'];
-
-            if (!isset($salesCountry['old'][$line['countryChar']])) {
-                $salesCountry['old'][$line['countryChar']] = 0.0;
-            }
-
-            $salesCountry['old'][$line['countryChar']] += $line['sales'];
-        }
-
-        foreach ($countryGDFLast as $line) {
-            $region = $this->getRegion($line['countryChar']);
-            if (!isset($salesRegion['old'][$region])) {
-                $salesRegion['old'][$region] = 0.0;
-            }
-
-            $salesRegion['old'][$region] += $line['sales'];
-
-            $devundev = $this->getDevelopedUndeveloped($line['countryChar']);
-            if (!isset($salesDevUndev['old'][$devundev])) {
-                $salesDevUndev['old'][$devundev] = 0.0;
-            }
-
-            $salesDevUndev['old'][$devundev] += $line['sales'];
-
-            $iso3166Char3 = ISO3166TwoEnum::getName(strtoupper($line['countryChar']));
-            if (!isset($salesCountry['old'][$iso3166Char3])) {
-                $salesCountry['old'][$iso3166Char3] = 0.0;
-            }
-
-            $salesCountry['old'][$iso3166Char3] += $line['sales'];
-        }
-
-        // Cleanup
-        $domesticSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS_DOMESTIC);
-        $domesticGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS_DOMESTIC);
-        $domesticSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS_DOMESTIC);
-        $domesticGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS_DOMESTIC);
-
-        $allSD = $this->selectSales($startCurrent, $endCurrent, 'sd', self::ACCOUNTS);
-        $allGDF = $this->selectSales($startCurrent, $endCurrent, 'gdf', self::ACCOUNTS);
-        $allSDLast = $this->selectSales($startLast, $endLast, 'sd', self::ACCOUNTS);
-        $allGDFLast = $this->selectSales($startLast, $endLast, 'gdf', self::ACCOUNTS);
 
         $salesExportDomestic['now']['Domestic'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesExportDomestic['old']['Domestic'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
         $salesExportDomestic['now']['Export'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $salesExportDomestic['now']['Domestic'];
         $salesExportDomestic['old']['Export'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $salesExportDomestic['old']['Domestic'];
+        $salesCountry['now']['DEU'] = $salesExportDomestic['now']['Domestic'];
+        $salesCountry['old']['DEU'] = $salesExportDomestic['old']['Domestic'];
+
+        arsort($salesCountry['now']);
 
         $salesDevUndev['now']['Developed'] += array_sum($salesExportDomestic['now']) - array_sum($salesDevUndev['now']);
         $salesDevUndev['old']['Developed'] += array_sum($salesExportDomestic['old']) - array_sum($salesDevUndev['old']);
@@ -560,14 +592,6 @@ class DashboardController
         $view->setData('salesRegion', $salesRegion);
         $view->setData('salesDevUndev', $salesDevUndev);
         $view->setData('salesExportDomestic', $salesExportDomestic);
-
-        return $view;
-    }
-
-    public function showLocation(RequestAbstract $request, ResponseAbstract $response)
-    {
-        $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-location');
 
         return $view;
     }

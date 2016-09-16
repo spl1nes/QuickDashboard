@@ -1,166 +1,303 @@
+<?php
+$salesExportDomestic = $this->getData('salesExportDomestic');
+$salesDevUndev = $this->getData('salesDevUndev');
+$salesRegion = $this->getData('salesRegion');
+$salesCountry = $this->getData('salesCountry');
+?>
+
+<p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
+
+<table style="width: 50%; float: left;">
+    <caption>Sales By Domestic/Export</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Export
+        <td><?= number_format($salesExportDomestic['old']['Export'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Export'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Export']-$salesExportDomestic['old']['Export'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesExportDomestic['old']['Export']) || $salesExportDomestic['old']['Export'] == 0 ? 0 : ($salesExportDomestic['now']['Export']/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Domestic
+        <td><?= number_format($salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Domestic']-$salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) || $salesExportDomestic['old']['Domestic'] == 0 ? 0 : ($salesExportDomestic['now']['Domestic']/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <th>Total
+        <th><?= number_format(array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesExportDomestic['now']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesExportDomestic['now'])-array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
+        <th><?= number_format(!isset($salesExportDomestic['old']) ? 0 : (array_sum($salesExportDomestic['now'])/array_sum($salesExportDomestic['old'])-1)*100, 0, ',', '.') ?> %
+</table>
+
+<div class="box" style="width: 50%; float: left">
+    <canvas id="domestic-export-chart" height="130"></canvas>
+</div>
+
+<div class="clear"></div>
+
+<table style="width: 50%; float: left;">
+    <caption>Sales By Developed/Undeveloped</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Developed
+        <td><?= number_format($salesDevUndev['old']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Developed']-$salesDevUndev['old']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesDevUndev['old']['Developed']) || $salesDevUndev['old']['Developed'] == 0 ? 0 : ($salesDevUndev['now']['Developed']/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Undeveloped
+        <td><?= number_format($salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Undeveloped']-$salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) || $salesDevUndev['old']['Undeveloped'] == 0 ? 0 : ($salesDevUndev['now']['Undeveloped']/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <th>Total
+        <th><?= number_format(array_sum($salesDevUndev['old']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesDevUndev['now']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesDevUndev['now'])-array_sum($salesDevUndev['old']), 0, ',', '.') ?>
+        <th><?= number_format(!isset($salesDevUndev['old']) || array_sum($salesDevUndev['old']) == 0 ? 0 : (array_sum($salesDevUndev['now'])/array_sum($salesDevUndev['old'])-1)*100, 0, ',', '.') ?> %
+</table>
+
+<div class="box" style="width: 50%; float: left">
+    <canvas id="developed-undeveloped-chart" height="130"></canvas>
+</div>
+
+<div class="clear"></div>
+
+<table style="width: 50%; float: left;">
+    <caption>Sales By Region</caption>
+    <thead>
+    <tr>
+        <th>Type
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <tr>
+        <td>Europe
+        <td><?= number_format($salesRegion['old']['Europe'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['Europe'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['Europe'] ?? 0) - ($salesRegion['old']['Europe'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Europe']) ? 0 : (($salesRegion['now']['Europe'] ?? 0)/$salesRegion['old']['Europe']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>America
+        <td><?= number_format($salesRegion['old']['America'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['America'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['America'] ?? 0) - ($salesRegion['old']['America'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['America']) ? 0 : (($salesRegion['now']['America'] ?? 0)/$salesRegion['old']['America']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Asia
+        <td><?= number_format($salesRegion['old']['Asia'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['Asia'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['Asia'] ?? 0) - ($salesRegion['old']['Asia'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Asia']) ? 0 : (($salesRegion['now']['Asia'] ?? 0)/$salesRegion['old']['Asia']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Africa
+        <td><?= number_format($salesRegion['old']['Africa'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['Africa'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['Africa'] ?? 0) - ($salesRegion['old']['Africa'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Africa']) ? 0 : (($salesRegion['now']['Africa'] ?? 0)/$salesRegion['old']['Africa']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Oceania
+        <td><?= number_format($salesRegion['old']['Oceania'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['Oceania'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['Oceania'] ?? 0) - ($salesRegion['old']['Oceania'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Oceania']) ? 0 : ($salesRegion['now']['Oceania']/$salesRegion['old']['Oceania']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <td>Other
+        <td><?= number_format($salesRegion['old']['Other'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesRegion['now']['Other'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesRegion['now']['Other'] ?? 0) - ($salesRegion['old']['Other'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesRegion['old']['Other']) ? 0 : (($salesRegion['now']['Other'] ?? 0)/$salesRegion['old']['Other']-1)*100, 0, ',', '.') ?> %
+    <tr>
+        <th>Total
+        <th><?= number_format(array_sum($salesRegion['old']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesRegion['now']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesRegion['now']) - array_sum($salesRegion['old']), 0, ',', '.') ?>
+        <th><?= number_format(!isset($salesRegion['old']) ? 0 : (array_sum($salesRegion['now'])/array_sum($salesRegion['old'])-1)*100, 0, ',', '.') ?> %
+</table>
+
+<div class="box" style="width: 50%; float: left">
+    <canvas id="region-chart" height="250"></canvas>
+</div>
+
+<div class="clear"></div>
+
+<p>The following world map shows the sales by country as well as the sales by region. A total of <?= count($salesCountry['now']); ?> countries are beeing delivered.</p>
+
 <div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 <div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
-<div class="box" id="canvas-holder-1" style="width: 50%; float: left">
-    <canvas id="export-domestic-sales" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-2" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-sales" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-3" style="width: 100%; float: left">
-    <canvas id="top-countries" height="100"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-domestic" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-5" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-export" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-6" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-developed" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-7" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-undeveloped" height="200"></canvas>
-</div>
 <div class="clear"></div>
+
+<p>The following chart shows the current top countries as well as the sales of these countries in the same month of the last year.</p>
+
+<div class="box" style="width: 100%">
+    <canvas id="top-countries-chart" height="100"></canvas>
+</div>
 <script>
-    let randomScalingFactor = function() {
-        return Math.round(Math.random() * 100);
-    };
-
-    let configSalesGroupDist = {
-        type: 'doughnut',
+    let configExportDomestic = {
+        type: 'bar',
         data: {
+            labels: ["Export", "Domestic"],
             datasets: [{
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Current year'
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesExportDomestic['old']['Export'] ?? 0; ?>, <?= $salesExportDomestic['old']['Domestic'] ?? 0; ?>]
             }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year total'
-            }],
-            labels: [
-                "Alloys",
-                "Consumables",
-                "Digitigal",
-                "Impla",
-                "Misc.",
-                "MANI",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Sales By Groups'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
-            },
-        }
-    };
-
-    let configSalesHistory = {
-        type: 'line',
-        data: {
-            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
-            datasets: [{
-                label: "Current Month",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                fill: false,
-                borderColor: 'rgba(255,99,132,1)',
-                backgroundColor: 'rgba(255,99,132,1)',
-                pointBorderColor: 'rgba(255,99,132,1)',
-                pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
-            }, {
-                label: "Last Month",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                fill: false,
-                borderColor: 'rgba(54, 162, 235, 1)',
-                backgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderColor: 'rgba(54, 162, 235, 1)',
-                pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
-            }, {
-                label: "Last Year",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()],
-                fill: false,
-                borderColor: 'rgba(255, 206, 86, 1)',
-                backgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderColor: 'rgba(255, 206, 86, 1)',
-                pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                label: 'Current Month',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesExportDomestic['now']['Export'] ?? 0; ?>, <?= $salesExportDomestic['now']['Domestic'] ?? 0; ?>]
             }]
         },
         options: {
             responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
             title:{
-                display:true,
-                text:'Consolidated Sales'
+                display:false,
+                text:"Export/Domestic Sales"
             },
             tooltips: {
                 mode: 'label',
                 callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
                 }
             },
-            hover: {
-                mode: 'dataset'
-            },
             scales: {
-                xAxes: [{
+                yAxes: [{
+                    type: "linear",
                     display: true,
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'Month'
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
                     }
                 }],
-                yAxes: [{
-                    display: true,
-                    scaleLabel: {
-                        show: true,
-                        labelString: 'Sales'
+            }
+        }
+    };
+
+    let configDevelopedUndeveloped = {
+        type: 'bar',
+        data: {
+            labels: ["Undeveloped", "Developed"],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesDevUndev['old']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['old']['Developed'] ?? 0; ?>]
+            }, {
+                label: 'Current Month',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesDevUndev['now']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['now']['Developed'] ?? 0; ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:false,
+                text:"Export/Domestic Sales"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                     }
-                }]
+                }
+            },
+            scales: {
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
+            }
+        }
+    };
+
+    let configRegion = {
+        type: 'bar',
+        data: {
+            labels: ["Other", "Oceania", "Africa", "Asia", "America", "Europe"],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesRegion['old']['Other'] ?? 0; ?>, <?= $salesRegion['old']['Oceania'] ?? 0; ?>, <?= $salesRegion['old']['Africa'] ?? 0; ?>, <?= $salesRegion['old']['Asia'] ?? 0; ?>, <?= $salesRegion['old']['America'] ?? 0; ?>, <?= $salesRegion['old']['Europe'] ?? 0; ?>]
+            }, {
+                label: 'Current Month',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?= $salesRegion['now']['Other'] ?? 0; ?>, <?= $salesRegion['now']['Oceania'] ?? 0; ?>, <?= $salesRegion['now']['Africa'] ?? 0; ?>, <?= $salesRegion['now']['Asia'] ?? 0; ?>, <?= $salesRegion['now']['America'] ?? 0; ?>, <?= $salesRegion['now']['Europe'] ?? 0; ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:false,
+                text:"Export/Domestic Sales"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
             }
         }
     };
@@ -171,153 +308,59 @@
         projection: 'mercator',
         height: 300,
         fills: {
-            defaultFill: '#f0af0a',
-            lt50: 'rgba(0,244,244,0.9)',
+            defaultFill: '#cccccc',
             gt50: 'red'
         },
-
         data: {
-            USA: {fillKey: 'lt50' },
-            RUS: {fillKey: 'lt50' },
-            CAN: {fillKey: 'lt50' },
-            BRA: {fillKey: 'gt50' },
-            ARG: {fillKey: 'gt50'},
-            COL: {fillKey: 'gt50' },
-            AUS: {fillKey: 'gt50' },
-            ZAF: {fillKey: 'gt50' },
-            MAD: {fillKey: 'gt50' }
+            <?php foreach($salesCountry['now'] as $key => $value) : if(is_string($key) && !empty($key)) : ?>
+                <?= $key; ?>: {fillKey: 'gt50', value: <?= $value; ?>, country: '<?= $key; ?>'},
+            <?php endif; endforeach; ?>
+        },
+        geographyConfig: {
+            popupTemplate: function(geo, data) {
+                return "<div class='hoverinfo'>Sales " + data.country + ": € " + Math.round(data.value).toString().split(/(?=(?:...)*$)/).join('.'); + "</div>";
+            }
         }
     });
 
-    //bubbles, custom popup on hover template
-    worldMapCountry.bubbles([
-        {name: 'Hot', latitude: 21.32, longitude: 5.32, radius: 10, fillKey: 'gt50'},
-        {name: 'Chilly', latitude: -25.32, longitude: 120.32, radius: 18, fillKey: 'lt50'},
-        {name: 'Hot again', latitude: 21.32, longitude: -84.32, radius: 8, fillKey: 'gt50'},
-
-    ], {
-        popupTemplate: function(geo, data) {
-            return "<div class='hoverinfo'>It is " + data.name + "</div>";
-        }
-    });
-
-    let worldMapRegion= new Datamap({
+    let worldMapRegion = new Datamap({
         scope: 'world',
         element: document.getElementById('world-map-region'),
         projection: 'mercator',
         height: 300,
         fills: {
-            defaultFill: '#f0af0a',
-            lt50: 'rgba(0,244,244,0.9)',
+            defaultFill: '#cccccc',
             gt50: 'red'
         },
-
-        data: {
-            USA: {fillKey: 'lt50' },
-            RUS: {fillKey: 'lt50' },
-            CAN: {fillKey: 'lt50' },
-            BRA: {fillKey: 'gt50' },
-            ARG: {fillKey: 'gt50'},
-            COL: {fillKey: 'gt50' },
-            AUS: {fillKey: 'gt50' },
-            ZAF: {fillKey: 'gt50' },
-            MAD: {fillKey: 'gt50' }
-        }
+        data: {}
     });
 
-    //bubbles, custom popup on hover template
     worldMapRegion.bubbles([
-        {name: 'Hot', latitude: 21.32, longitude: 5.32, radius: 10, fillKey: 'gt50'},
-        {name: 'Chilly', latitude: -25.32, longitude: 120.32, radius: 18, fillKey: 'lt50'},
-        {name: 'Hot again', latitude: 21.32, longitude: -84.32, radius: 8, fillKey: 'gt50'},
-
+        {name: 'Europe', latitude: 51.1657, longitude: 10.4515, radius: <?= log($salesRegion['now']['Europe'] ?? 1); ?>, fillKey: 'gt50'},
+        {name: 'Asia', latitude: 53.4815, longitude: 88.7695, radius: <?= log($salesRegion['now']['Asia'] ?? 1); ?>, fillKey: 'gt50'},
+        {name: 'America', latitude: 12.8010, longitude: -87.3632, radius: <?= log($salesRegion['now']['America'] ?? 1); ?>, fillKey: 'gt50'},
+        {name: 'Africa', latitude: 13.8274, longitude: 15.6445, radius: <?= log($salesRegion['now']['Africa'] ?? 1); ?>, fillKey: 'gt50'},
+        {name: 'Oceania', latitude: -25.2744, longitude: 133.7751, radius: <?= log($salesRegion['now']['Oceania'] ?? 1); ?>, fillKey: 'gt50'},
     ], {
         popupTemplate: function(geo, data) {
-            return "<div class='hoverinfo'>It is " + data.name + "</div>";
+            return "<div class='hoverinfo'>Sales " + data.name + ": € " + Math.round(Math.exp(data.radius)).toString().split(/(?=(?:...)*$)/).join('.'); + "</div>";
         }
     });
-
-    let configDomesticExport = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-            }],
-            labels: [
-                "Red",
-                "Green",
-                "Yellow",
-                "Grey",
-                "Dark Grey"
-            ]
-        },
-        options: {
-            responsive: true,
-            title:{
-                display:true,
-                text:'Domestic/Export Sales'
-            }
-        }
-    };
-
-    let configDevelopedUndeveloped = {
-        type: 'pie',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                    randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-            }],
-            labels: [
-                "Red",
-                "Green",
-                "Yellow",
-                "Grey",
-                "Dark Grey"
-            ]
-        },
-        options: {
-            responsive: true,
-            title:{
-                display:true,
-                text:'Developed/Undeveloped Sales'
-            }
-        }
-    };
 
     let configTopCountries = {
         type: 'bar',
         data: {
-            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
+            labels: [<?= '"' . implode('","', array_keys($top = array_slice($salesCountry['now'], 0, 15, true))) . '"'; ?>],
             datasets: [{
-                label: 'Dataset 3',
-                backgroundColor: "rgba(0,244,244,0.9)",
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = $salesCountry['old'][$key] ?? 0 . ','; } echo implode(',', $data); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?= implode(',', $top); ?>]
             }]
         },
         options: {
@@ -327,299 +370,44 @@
             stacked: false,
             title:{
                 display:true,
-                text:"Top Countries"
+                text:"Top Sales By Countries"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+                        let label = data.labels[tooltipItem.index];
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
             },
             scales: {
                 yAxes: [{
-                    type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
+                    type: "linear",
                     display: true,
                     position: "left",
                     id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
                 }],
             }
         }
     };
 
-    let configSalesGroupDistDomestic = {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Current year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year total'
-            }],
-            labels: [
-                "Alloys",
-                "Consumables",
-                "Digitigal",
-                "Impla",
-                "Misc.",
-                "MANI",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Domestic Sales By Groups'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
-            },
-        }
-    };
-
-    let configSalesGroupDistExport = {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Current year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year total'
-            }],
-            labels: [
-                "Alloys",
-                "Consumables",
-                "Digitigal",
-                "Impla",
-                "Misc.",
-                "MANI",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Export Sales By Groups'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
-            },
-        }
-    };
-
-    let configSalesGroupDistDeveloped = {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Current year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year total'
-            }],
-            labels: [
-                "Alloys",
-                "Consumables",
-                "Digitigal",
-                "Impla",
-                "Misc.",
-                "MANI",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Developed Sales By Groups'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
-            },
-        }
-    };
-
-    let configSalesGroupDistUndeveloped = {
-        type: 'doughnut',
-        data: {
-            datasets: [{
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Current year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year'
-            }, {
-                data: [
-                    randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),randomScalingFactor(),
-                ],
-                backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                ],
-                label: 'Previous year total'
-            }],
-            labels: [
-                "Alloys",
-                "Consumables",
-                "Digitigal",
-                "Impla",
-                "Misc.",
-                "MANI",
-            ]
-        },
-        options: {
-            responsive: true,
-            legend: {
-                position: 'top',
-            },
-            title: {
-                display: true,
-                text: 'Undeveloped Sales By Groups'
-            },
-            animation: {
-                animateScale: true,
-                animateRotate: true
-            },
-        }
-    };
-
     window.onload = function() {
-        let ctxDomesticExport = document.getElementById("export-domestic-sales").getContext("2d");
-        window.domesticSales = new Chart(ctxDomesticExport, configDomesticExport);
+        let ctxExportDomestic = document.getElementById("domestic-export-chart");
+        window.ExportDomestic = new Chart(ctxExportDomestic, configExportDomestic);
 
-        let ctxDevelopedUndeveloped = document.getElementById("developed-undeveloped-sales").getContext("2d");
-        window.developedUndeveloped = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
+        let ctxDevelopedUndeveloped = document.getElementById("developed-undeveloped-chart");
+        window.DevelopedUndeveloped = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
 
-        let ctxTopCountries = document.getElementById("top-countries").getContext("2d");
-        window.topCountries = new Chart(ctxTopCountries, configTopCountries);
+        let ctxRegion = document.getElementById("region-chart");
+        window.salesRegion = new Chart(ctxRegion, configRegion);
 
-        let ctxSalesGroupDistDomestic = document.getElementById("sales-group-dist-domestic").getContext("2d");
-        window.salesGroupDistDomestic = new Chart(ctxSalesGroupDistDomestic, configSalesGroupDistDomestic);
-
-        let ctxSalesGroupDistExport = document.getElementById("sales-group-dist-export").getContext("2d");
-        window.salesGroupDistExport = new Chart(ctxSalesGroupDistExport, configSalesGroupDistExport);
-
-        let ctxSalesGroupDistDeveloped = document.getElementById("sales-group-dist-developed").getContext("2d");
-        window.salesGroupDistDeveloped = new Chart(ctxSalesGroupDistDeveloped, configSalesGroupDistDeveloped);
-
-        let ctxSalesGroupDistUndeveloped = document.getElementById("sales-group-dist-undeveloped").getContext("2d");
-        window.salesGroupDistUndeveloped = new Chart(ctxSalesGroupDistUndeveloped, configSalesGroupDistUndeveloped);
+        let ctxTopCountries = document.getElementById("top-countries-chart");
+        window.salesTopCountries = new Chart(ctxTopCountries, configTopCountries);
     };
 </script>
