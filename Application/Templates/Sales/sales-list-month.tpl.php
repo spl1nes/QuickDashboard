@@ -6,6 +6,7 @@ $salesAccLast = $this->getData('salesAccLast');
 $days = $this->getData('maxDays');
 $today = $this->getData('today');
 ?>
+<h1>Sales List</h1>
 <table>
     <caption>Sales By Day</caption>
     <thead>

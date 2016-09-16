@@ -4,7 +4,7 @@ $salesDevUndev = $this->getData('salesDevUndev');
 $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
-
+<h1>Sales Location</h1>
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
 
 <table style="width: 50%; float: left;">
@@ -38,7 +38,7 @@ $salesCountry = $this->getData('salesCountry');
 </table>
 
 <div class="box" style="width: 50%; float: left">
-    <canvas id="domestic-export-chart" height="130"></canvas>
+    <canvas id="domestic-export-chart" height="110"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -74,7 +74,7 @@ $salesCountry = $this->getData('salesCountry');
 </table>
 
 <div class="box" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-chart" height="130"></canvas>
+    <canvas id="developed-undeveloped-chart" height="110"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -134,7 +134,7 @@ $salesCountry = $this->getData('salesCountry');
 </table>
 
 <div class="box" style="width: 50%; float: left">
-    <canvas id="region-chart" height="250"></canvas>
+    <canvas id="region-chart" height="200"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -162,7 +162,7 @@ $salesCountry = $this->getData('salesCountry');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesExportDomestic['old']['Export'] ?? 0; ?>, <?= $salesExportDomestic['old']['Domestic'] ?? 0; ?>]
             }, {
-                label: 'Current Month',
+                label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
                 data: [<?= $salesExportDomestic['now']['Export'] ?? 0; ?>, <?= $salesExportDomestic['now']['Domestic'] ?? 0; ?>]
@@ -212,7 +212,7 @@ $salesCountry = $this->getData('salesCountry');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesDevUndev['old']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['old']['Developed'] ?? 0; ?>]
             }, {
-                label: 'Current Month',
+                label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
                 data: [<?= $salesDevUndev['now']['Undeveloped'] ?? 0; ?>, <?= $salesDevUndev['now']['Developed'] ?? 0; ?>]
@@ -262,7 +262,7 @@ $salesCountry = $this->getData('salesCountry');
                 yAxisID: "y-axis-1",
                 data: [<?= $salesRegion['old']['Other'] ?? 0; ?>, <?= $salesRegion['old']['Oceania'] ?? 0; ?>, <?= $salesRegion['old']['Africa'] ?? 0; ?>, <?= $salesRegion['old']['Asia'] ?? 0; ?>, <?= $salesRegion['old']['America'] ?? 0; ?>, <?= $salesRegion['old']['Europe'] ?? 0; ?>]
             }, {
-                label: 'Current Month',
+                label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
                 data: [<?= $salesRegion['now']['Other'] ?? 0; ?>, <?= $salesRegion['now']['Oceania'] ?? 0; ?>, <?= $salesRegion['now']['Africa'] ?? 0; ?>, <?= $salesRegion['now']['Asia'] ?? 0; ?>, <?= $salesRegion['now']['America'] ?? 0; ?>, <?= $salesRegion['now']['Europe'] ?? 0; ?>]
