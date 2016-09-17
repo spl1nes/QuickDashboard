@@ -1,32 +1,28 @@
 <div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 <div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
-<div class="box" id="canvas-holder-1" style="width: 50%; float: left">
-    <canvas id="export-domestic-sales" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-2" style="width: 50%; float: left">
-    <canvas id="developed-undeveloped-sales" height="200"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-3" style="width: 100%; float: left">
-    <canvas id="top-countries" height="100"></canvas>
+<div id="canvas-holder-3" style="width: 50%; float: left">
+    <canvas id="export-domestic-sales" height="250px"></canvas>
 </div>
 
 <div class="box" id="canvas-holder-4" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-domestic" height="200"></canvas>
+    <canvas id="developed-undeveloped-sales" height="250px"></canvas>
 </div>
 
 <div class="box" id="canvas-holder-5" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-export" height="200"></canvas>
+    <canvas id="sales-group-dist-domestic" height="250px"></canvas>
 </div>
 
 <div class="box" id="canvas-holder-6" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-developed" height="200"></canvas>
+    <canvas id="sales-group-dist-export" height="250px"></canvas>
 </div>
 
 <div class="box" id="canvas-holder-7" style="width: 50%; float: left">
-    <canvas id="sales-group-dist-undeveloped" height="200"></canvas>
+    <canvas id="sales-group-dist-developed" height="250px"></canvas>
+</div>
+
+<div class="box" id="canvas-holder-7" style="width: 50%; float: left">
+    <canvas id="sales-group-dist-undeveloped" height="250px"></canvas>
 </div>
 <div class="clear"></div>
 <script>
@@ -309,37 +305,6 @@
         }
     };
 
-    let configTopCountries = {
-        type: 'bar',
-        data: {
-            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
-            datasets: [{
-                label: 'Dataset 3',
-                backgroundColor: "rgba(0,244,244,0.9)",
-                yAxisID: "y-axis-1",
-                data: [randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor(), randomScalingFactor()]
-            }]
-        },
-        options: {
-            responsive: true,
-            hoverMode: 'label',
-            hoverAnimationDuration: 400,
-            stacked: false,
-            title:{
-                display:true,
-                text:"Top Countries"
-            },
-            scales: {
-                yAxes: [{
-                    type: "linear", // only linear but allow scale type registration. This allows extensions to exist solely for log scale for instance
-                    display: true,
-                    position: "left",
-                    id: "y-axis-1",
-                }],
-            }
-        }
-    };
-
     let configSalesGroupDistDomestic = {
         type: 'doughnut',
         data: {
@@ -602,24 +567,21 @@
 
     window.onload = function() {
         let ctxDomesticExport = document.getElementById("export-domestic-sales").getContext("2d");
-        window.domesticSales = new Chart(ctxDomesticExport, configDomesticExport);
+        window.myPie = new Chart(ctxDomesticExport, configDomesticExport);
 
         let ctxDevelopedUndeveloped = document.getElementById("developed-undeveloped-sales").getContext("2d");
-        window.developedUndeveloped = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
-
-        let ctxTopCountries = document.getElementById("top-countries").getContext("2d");
-        window.topCountries = new Chart(ctxTopCountries, configTopCountries);
+        window.myPie = new Chart(ctxDevelopedUndeveloped, configDevelopedUndeveloped);
 
         let ctxSalesGroupDistDomestic = document.getElementById("sales-group-dist-domestic").getContext("2d");
-        window.salesGroupDistDomestic = new Chart(ctxSalesGroupDistDomestic, configSalesGroupDistDomestic);
+        window.myPie = new Chart(ctxSalesGroupDistDomestic, configSalesGroupDistDomestic);
 
         let ctxSalesGroupDistExport = document.getElementById("sales-group-dist-export").getContext("2d");
-        window.salesGroupDistExport = new Chart(ctxSalesGroupDistExport, configSalesGroupDistExport);
+        window.myPie = new Chart(ctxSalesGroupDistExport, configSalesGroupDistExport);
 
         let ctxSalesGroupDistDeveloped = document.getElementById("sales-group-dist-developed").getContext("2d");
-        window.salesGroupDistDeveloped = new Chart(ctxSalesGroupDistDeveloped, configSalesGroupDistDeveloped);
+        window.myPie = new Chart(ctxSalesGroupDistDeveloped, configSalesGroupDistDeveloped);
 
         let ctxSalesGroupDistUndeveloped = document.getElementById("sales-group-dist-undeveloped").getContext("2d");
-        window.salesGroupDistUndeveloped = new Chart(ctxSalesGroupDistUndeveloped, configSalesGroupDistUndeveloped);
+        window.myPie = new Chart(ctxSalesGroupDistUndeveloped, configSalesGroupDistUndeveloped);
     };
 </script>

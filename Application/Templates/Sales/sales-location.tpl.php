@@ -182,7 +182,6 @@ $salesCountry = $this->getData('salesCountry');
                 callbacks: {
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                        let label = data.labels[tooltipItem.index];
 
                         return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                     }
@@ -232,7 +231,6 @@ $salesCountry = $this->getData('salesCountry');
                 callbacks: {
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                        let label = data.labels[tooltipItem.index];
 
                         return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                     }
@@ -282,7 +280,6 @@ $salesCountry = $this->getData('salesCountry');
                 callbacks: {
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                        let label = data.labels[tooltipItem.index];
 
                         return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                     }
@@ -377,7 +374,6 @@ $salesCountry = $this->getData('salesCountry');
                 callbacks: {
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                        let label = data.labels[tooltipItem.index];
 
                         return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                     }

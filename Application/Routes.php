@@ -35,13 +35,19 @@ return [
     ],
     '^sales/location.*?i=year.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showLocationYear',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticle',
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/articles.*$' => [
+    '^sales/articles.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticles',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticle',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/articles.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleYear',
             'verb' => RouteVerb::GET,
         ],
     ],

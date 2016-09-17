@@ -21,8 +21,8 @@
                         </ul>
                     <li>Articles
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}'); ?>">Month</a>
-                            <li><a href="">Year</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}&i=year'); ?>">Year</a>
                         </ul>
                     <li>Customers
                         <ul>
