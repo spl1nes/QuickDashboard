@@ -2,6 +2,8 @@
 
 The QuickDashboard is a custom company dashboard for internal purposes only. The dashboard visualizes key sales, cost and balance figures in simple tables and charts. The purpose is to give an overview of the most important figures for the management.
 
+This implementation will not work in any other environment as the intended company.
+
 # Server Requirements
 
 The server requirements are as follows:
