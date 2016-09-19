@@ -35,13 +35,13 @@ return [
     ],
     '^sales/location.*?i=year.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticle',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleYear',
             'verb' => RouteVerb::GET,
         ],
     ],
     '^sales/articles.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticle',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleMonth',
             'verb' => RouteVerb::GET,
         ],
     ],
@@ -51,9 +51,15 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/customers.*$' => [
+    '^sales/customers.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCustomers',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCustomersMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/customers.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCustomersYear',
             'verb' => RouteVerb::GET,
         ],
     ],
@@ -64,16 +70,22 @@ return [
         ],
     ],
 
-    '^costs.*$' => [
+    '^analysis/reps.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showCosts',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showAnalysisReps',
             'verb' => RouteVerb::GET,
         ],
     ],
 
-    '^analysis/reps.*$' => [
+    '^reporting/pl.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showAnalysisReps',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showPLMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^reporting/pl.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showPLYear',
             'verb' => RouteVerb::GET,
         ],
     ],

@@ -1,7 +1,7 @@
 <?php
 $salesGroups = $this->getData('salesGroups');
-$salesGroupsExport = $this->getData('salesGroups');
-$salesGroupsDomestic = $this->getData('salesGroups');
+$segmentGroups = $this->getData('segmentGroups');
+$totalGroups = $this->getData('totalGroups');
 ?>
 <h1>Sales Article</h1>
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
@@ -21,25 +21,25 @@ $salesGroupsDomestic = $this->getData('salesGroups');
     <tr>
         <td><?= $segment; ?>
         <td><?= $group; ?>
-        <td><?= number_format($salesGroups['old'][$segment][$group] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesGroups['now'][$segment][$group] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesGroups['now'][$segment][$group] ?? 0)-($salesGroups['old'][$segment][$group] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesGroups['old'][$segment][$group]) || $salesGroups['old'][$segment][$group] == 0 ? 0 : (($salesGroups['now'][$segment][$group] ?? 0)/$salesGroups['old'][$segment][$group]-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format($salesGroups[$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesGroups[$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesGroups[$segment][$group]['now'] ?? 0)-($salesGroups[$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesGroups[$segment][$group]['old']) || $salesGroups[$segment][$group]['old'] == 0 ? 0 : (($salesGroups[$segment][$group]['now'] ?? 0)/$salesGroups[$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <tr>
         <th><?= $segment; ?>
         <th>Total
-        <th><?= number_format(array_sum($salesGroups['old'][$segment]), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesGroups['now'][$segment]), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesGroups['now'][$segment])-array_sum($salesGroups['old'][$segment] ?? 0), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesGroups['old'][$segment]) || array_sum($salesGroups['old'][$segment]) == 0 ? 0 : (array_sum($salesGroups['now'][$segment] ?? 0)/array_sum($salesGroups['old'][$segment]-1))*100, 0, ',', '.') ?> %
+        <th><?= number_format(array_sum($segmentGroups[$segment]['old']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($segmentGroups[$segment]['now']), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($segmentGroups[$segment]['now'])-array_sum($segmentGroups[$segment]['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($segmentGroups[$segment]['old']) || array_sum($segmentGroups[$segment]['old']) == 0 ? 0 : (array_sum($segmentGroups[$segment]['now'] ?? 0)/array_sum($segmentGroups[$segment]['old']-1))*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <tr>
         <th colspan="2">Total
-        <th><?= number_format(\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['old']), 0, ',', '.') ?>
-        <th><?= number_format(\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['now']), 0, ',', '.') ?>
-        <th><?= number_format((\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['now']))-(\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['old'])), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesGroups['old']) ? 0 : (\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['now'])/\phpOMS\Utils\ArrayUtils::arraySumRecursive($salesGroups['old'])-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($totalGroups['old'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['now'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['now']-$totalGroups['old'], 0, ',', '.') ?>
+        <th><?= number_format(!isset($totalGroups['old']) ? 0 : ($totalGroups['now']/$totalGroups['old']-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 50%; float: left">
@@ -58,7 +58,7 @@ $salesGroupsDomestic = $this->getData('salesGroups');
         data: {
             datasets: [{
                 data: [
-                    <?= array_sum($salesGroups['old']['Alloys']); ?>,<?= array_sum($salesGroups['old']['Consumables']); ?>,<?= array_sum($salesGroups['old']['Digitial']); ?>,<?= array_sum($salesGroups['old']['Impla']); ?>,<?= array_sum($salesGroups['old']['Misc']); ?>,<?= array_sum($salesGroups['old']['MANI']); ?>
+                    <?= array_sum($segmentGroups['Alloys']['old']); ?>,<?= array_sum($segmentGroups['Consumables']['old']); ?>,<?= array_sum($segmentGroups['Digitial']['old']); ?>,<?= array_sum($segmentGroups['Impla']['old']); ?>,<?= array_sum($segmentGroups['Misc']['old']); ?>,<?= array_sum($segmentGroups['MANI']['old']); ?>
                 ],
                 backgroundColor: [
                     "#F7464A",
@@ -71,7 +71,7 @@ $salesGroupsDomestic = $this->getData('salesGroups');
                 label: 'Current'
             }, {
                 data: [
-                    <?= array_sum($salesGroups['now']['Alloys']); ?>,<?= array_sum($salesGroups['now']['Consumables']); ?>,<?= array_sum($salesGroups['now']['Digitial']); ?>,<?= array_sum($salesGroups['now']['Impla']); ?>,<?= array_sum($salesGroups['now']['Misc']); ?>,<?= array_sum($salesGroups['now']['MANI']); ?>
+                    <?= array_sum($segmentGroups['Alloys']['now']); ?>,<?= array_sum($segmentGroups['Consumables']['now']); ?>,<?= array_sum($segmentGroups['Digitial']['now']); ?>,<?= array_sum($segmentGroups['Impla']['now']); ?>,<?= array_sum($segmentGroups['Misc']['now']); ?>,<?= array_sum($segmentGroups['MANI']['now']); ?>
                 ],
                 backgroundColor: [
                     "#F7464A",
@@ -111,17 +111,17 @@ $salesGroupsDomestic = $this->getData('salesGroups');
     let configSalesGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = []; foreach($salesGroups['now'] as $key => $groups) { $groupNames[] = $groups; }; echo '"' . implode('","', array_keys($groupNames)) . '"'; ?>],
+            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { $groupNames[] = $groups; }; echo '"' . implode('","', array_keys($groupNames)) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups['old'] as $key => $groups) { foreach($groups as $group) { $data .= $group . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { foreach($groups as $group) { $data .= $group['now'] . ','; } } echo rtrim($data, ','); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups['now'] as $key => $groups) { foreach($groups as $group) { $data .= $group . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { foreach($groups as $group) { $data .= $group['now'] . ','; } } echo rtrim($data, ','); ?>]
             }]
         },
         options: {

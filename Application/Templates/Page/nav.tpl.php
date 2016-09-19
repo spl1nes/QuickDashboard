@@ -37,7 +37,16 @@
                 </ul>
             <li>Reporting
                 <ul>
-                    <li><a href="">P&L</a>
+                    <li><a>P&L</a>
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=year'); ?>">Year</a>
+                        </ul>
+                    <li><a>Balance</a>
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/balance?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/balance?{?}&i=year'); ?>">Year</a>
+                        </ul>
                     <li><a href="">KPI</a>
                     <li><a href="">Sales & EBIT</a>
                 </ul>
