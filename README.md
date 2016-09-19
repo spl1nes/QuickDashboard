@@ -20,7 +20,7 @@ The server requirements are as follows:
 ## Installation
 
 1. Download the QuickDashboard content to your web directory (e.g. /var/www/html/QuickDashboard). 
-2. Download the [Models](https://github.com/Orange-Management/Models) from Orange-Management into the same directory as the content of the QuckDashboard (e.g. /var/www/html/QuickDashboard).
+2. Download the [Models](https://github.com/Orange-Management/Model) from Orange-Management into the same directory as the content of the QuckDashboard (e.g. /var/www/html/QuickDashboard).
 3. Download the [jsOMS](https://github.com/Orange-Management/jsOMS) framework from Orange-Management into the same directory as the content of the QuckDashboard (e.g. /var/www/html/QuickDashboard).
 4. Enable and allow mod_rewrite.
 
