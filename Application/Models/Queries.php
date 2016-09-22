@@ -132,7 +132,7 @@ class Queries
                         FiBuchungsArchiv.Konto, SUM(-FiBuchungsArchiv.Betrag) AS entries
                     FROM FiBuchungsArchiv
                     WHERE 
-                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
                         FiBuchungsArchiv.Konto
@@ -141,7 +141,7 @@ class Queries
                         FiBuchungen.Konto, SUM(-FiBuchungen.Betrag) AS entries
                     FROM FiBuchungen
                     WHERE 
-                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
                         FiBuchungen.Konto
@@ -159,7 +159,7 @@ class Queries
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
                     FROM FiBuchungsArchiv
                     WHERE 
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -170,7 +170,7 @@ class Queries
                         SUM(-FiBuchungen.Betrag) AS sales
                     FROM FiBuchungen
                     WHERE 
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY

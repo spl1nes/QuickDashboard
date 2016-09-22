@@ -39,13 +39,13 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/articles.*?i=month.*$' => [
+    '^sales/segmentation.*?i=month.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleMonth',
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/articles.*?i=year.*$' => [
+    '^sales/segmentation.*?i=year.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleYear',
             'verb' => RouteVerb::GET,

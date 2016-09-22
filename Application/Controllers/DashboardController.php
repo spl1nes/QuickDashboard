@@ -305,7 +305,7 @@ class DashboardController
         $allSDLast       = [];
 
         $accounts          = StructureDefinitions::ACCOUNTS;
-        $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS;
+        $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[]          = 8591;
             $accounts_DOMESTIC[] = 8591;
@@ -501,13 +501,17 @@ class DashboardController
             $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
 
             foreach ($groupsSD as $line) {
-                $group = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
 
                 if ($group === 0) {
                     continue;
                 }
 
-                $segment = StructureDefinitions::getSegmentOfGroup($group);
+                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                    continue;
+                }
 
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
@@ -523,13 +527,17 @@ class DashboardController
             }
 
             foreach ($groupsSDLast as $line) {
-                $group = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
 
                 if ($group === 0) {
                     continue;
                 }
 
-                $segment = StructureDefinitions::getSegmentOfGroup($group);
+                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                    continue;
+                }
 
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;
@@ -550,13 +558,17 @@ class DashboardController
             $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
 
             foreach ($groupsGDF as $line) {
-                $group = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
 
                 if ($group === 0) {
                     continue;
                 }
 
-                $segment = StructureDefinitions::getSegmentOfGroup($group);
+                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                    continue;
+                }
 
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
@@ -572,13 +584,17 @@ class DashboardController
             }
 
             foreach ($groupsGDFLast as $line) {
-                $group = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
 
                 if ($group === 0) {
                     continue;
                 }
 
-                $segment = StructureDefinitions::getSegmentOfGroup($group);
+                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                    continue;
+                }
 
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;

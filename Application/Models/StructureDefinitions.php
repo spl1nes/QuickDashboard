@@ -191,6 +191,9 @@ class StructureDefinitions
         44 => 'GDF Misc.',
         50 => 'GDF Investment',
         51 => 'GDF ADC Misc.',
+        61 => 'Surgical Needles',
+        62 => 'Burs & Instruments',
+        63 => 'Endodontics',
     ];
 
     const CUSTOMER_GROUP = [];
@@ -198,7 +201,7 @@ class StructureDefinitions
     public static function getSegmentOfGroup(int $id) : int
     {
         foreach (self::GROUPING as $sKey => $segment) {
-            if (in_array($id, $segment)) {
+            if (isset($segment[$id])) {
                 return $sKey;
             }
         }
@@ -237,7 +240,15 @@ class StructureDefinitions
 
     public static function getSegmentOfArticle(int $id) : int
     {
-        return self::getSegmentOfGroup(self::getGroupOfArticle($id));
+        foreach (self::GROUPING as $sKey => $segment) {
+            foreach ($segment as $gKey => $group) {
+                if (in_array($id, $group)) {
+                    return $sKey;
+                }
+            }
+        }
+
+        return 0;
     }
 
     public static function getAccountPLPosition(int $id) : string

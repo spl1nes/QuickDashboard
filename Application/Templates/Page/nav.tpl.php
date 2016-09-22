@@ -19,10 +19,10 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location?{?}&i=year'); ?>">Year</a>
                         </ul>
-                    <li>Articles
+                    <li>Segmentation
                         <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}&i=month'); ?>">Month</a>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/articles?{?}&i=year'); ?>">Year</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/segmentation?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/segmentation?{?}&i=year'); ?>">Year</a>
                         </ul>
                     <li>Customers
                         <ul>
