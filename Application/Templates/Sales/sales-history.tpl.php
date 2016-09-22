@@ -78,7 +78,7 @@
             },
             title: {
                 display: true,
-                text: 'Sales By Groups'
+                text: 'Sales by Groups'
             },
             animation: {
                 animateScale: true,

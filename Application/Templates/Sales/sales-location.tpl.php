@@ -8,7 +8,7 @@ $salesCountry = $this->getData('salesCountry');
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales By Domestic/Export</caption>
+    <caption>Sales by Domestic/Export</caption>
     <thead>
     <tr>
         <th>Type
@@ -44,7 +44,7 @@ $salesCountry = $this->getData('salesCountry');
 <div class="clear"></div>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales By Developed/Undeveloped</caption>
+    <caption>Sales by Developed/Undeveloped</caption>
     <thead>
     <tr>
         <th>Type
@@ -80,7 +80,7 @@ $salesCountry = $this->getData('salesCountry');
 <div class="clear"></div>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales By Region</caption>
+    <caption>Sales by Region</caption>
     <thead>
     <tr>
         <th>Type
@@ -367,7 +367,7 @@ $salesCountry = $this->getData('salesCountry');
             stacked: false,
             title:{
                 display:true,
-                text:"Top Sales By Countries"
+                text:"Top Sales by Countries"
             },
             tooltips: {
                 mode: 'label',

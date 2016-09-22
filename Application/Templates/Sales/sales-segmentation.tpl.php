@@ -7,7 +7,7 @@ $totalGroups = $this->getData('totalGroups');
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 100%; float: left;">
-    <caption>Sales By Segmentation</caption>
+    <caption>Sales by Segmentation</caption>
     <thead>
     <tr>
         <th>Segment
@@ -52,7 +52,7 @@ $totalGroups = $this->getData('totalGroups');
     let configSalesGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { $groupNames[] = $key; }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",

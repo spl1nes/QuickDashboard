@@ -485,7 +485,7 @@ class DashboardController
     public function showArticle(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
     {
         $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-article');
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-segmentation');
 
         $salesGroups   = [];
         $segmentGroups = [];
@@ -509,7 +509,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -535,7 +535,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -566,7 +566,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -592,7 +592,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 

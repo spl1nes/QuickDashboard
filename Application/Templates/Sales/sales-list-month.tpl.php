@@ -8,7 +8,7 @@ $today = $this->getData('today');
 ?>
 <h1>Sales List</h1>
 <table>
-    <caption>Sales By Day</caption>
+    <caption>Sales by Day</caption>
     <thead>
     <tr>
         <th>Day

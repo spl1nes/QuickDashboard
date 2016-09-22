@@ -6,7 +6,7 @@ $totalGroups = $this->getData('totalGroups');
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales By Domestic/Export</caption>
+    <caption>Sales by Domestic/Export</caption>
     <thead>
     <tr>
         <th>Group
@@ -88,7 +88,7 @@ $totalGroups = $this->getData('totalGroups');
             },
             title: {
                 display: true,
-                text: 'Sales By Segments'
+                text: 'Sales by Segments'
             },
             animation: {
                 animateScale: true,

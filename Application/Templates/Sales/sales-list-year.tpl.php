@@ -7,7 +7,7 @@ $today = $this->getData('currentMonth');
 ?>
 <h1>Sales List</h1>
 <table>
-    <caption>Sales By Month</caption>
+    <caption>Sales by Month</caption>
     <thead>
     <tr>
         <th>Month

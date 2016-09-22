@@ -4,7 +4,7 @@ $pl = $this->getData('pl');
 <h1>P&L</h1>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales By Domestic/Export</caption>
+    <caption>Sales by Domestic/Export</caption>
     <thead>
     <tr>
         <th>Name
