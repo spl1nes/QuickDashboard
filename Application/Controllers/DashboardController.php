@@ -509,7 +509,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -535,7 +535,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -566,7 +566,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -592,7 +592,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!defined(StructureDefinitions::NAMING[$segment]) || !defined(StructureDefinitions::NAMING[$group])) {
+                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
