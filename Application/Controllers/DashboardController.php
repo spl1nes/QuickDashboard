@@ -487,9 +487,17 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-segmentation');
 
+        $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
+
         $salesGroups   = [];
         $segmentGroups = [];
-        $totalGroups   = ['now' => 0.0, 'old' => 0.0];
+
+        foreach ($temp as $segment) {
+            $salesGroups[$segment]   = null;
+            $segmentGroups[$segment] = null;
+        }
+
+        $totalGroups = ['now' => 0.0, 'old' => 0.0];
 
         $accounts = StructureDefinitions::ACCOUNTS;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -509,7 +517,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -535,7 +543,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -566,7 +574,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -592,7 +600,7 @@ class DashboardController
 
                 $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
 
-                if(!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
                     continue;
                 }
 
@@ -613,6 +621,69 @@ class DashboardController
         $view->setData('salesGroups', $salesGroups);
         $view->setData('segmentGroups', $segmentGroups);
         $view->setData('totalGroups', $totalGroups);
+
+        return $view;
+    }
+
+    public function showRepsMonth(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $current = new SmartDateTime('now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $current->getStartOfMonth();
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $startLast->getEndOfMonth();
+
+        return $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+    }
+
+    public function showRepsYear(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $current = new SmartDateTime('now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        return $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+    }
+
+    public function showReps(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-reps');
+
+        $accounts = StructureDefinitions::ACCOUNTS;
+        if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+            $accounts[] = 8591;
+        }
+
+        $repsSales = [
+            'domestic' => [],
+            'export' => [],
+            'dentist' => [],
+        ];
+
+        if ($request->getData('u') !== 'gdf') {
+            $repsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
+            $repsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
+
+            foreach ($repsSD as $line) {
+            }
+        }
+
+        $view->setData('repsSales', $repsSales);
 
         return $view;
     }

@@ -18,11 +18,11 @@ $pl = $this->getData('pl');
         <td><?= number_format($pl['Sales']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Sales']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($pl['Sales']['now'] ?? 0) - ($pl['Sales']['old'] ?? 0), 0, ',', '.') ?>
-        <td><?= !isset($pl['Sales']['old']) ? 0 : number_format((($pl['Sales']['now'] ?? 0) /($pl['Sales']['old'] ?? 0) - 1)*100, 2, ',', '.')?> %
+        <td><?= !isset($pl['Sales']['old']) ? 0 : number_format((($pl['Sales']['now'] ?? 0)/$pl['Sales']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
         <th>COGS Material
         <th><?= number_format($pl['COGS Material']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['COGS Material']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($pl['COGS Material']['now'] ?? 0) - ($pl['COGS Material']['old'] ?? 0), 0, ',', '.') ?>
-        <td><?= !isset($pl['COGS Material']['old']) ? 0 : number_format((($pl['COGS Material']['now'] ?? 0) /($pl['COGS Material']['old'] ?? 0) - 1)*100, 2, ',', '.')?> %
+        <td><?= !isset($pl['COGS Material']['old']) ? 0 : number_format((($pl['COGS Material']['now'] ?? 0)/$pl['COGS Material']['old'] - 1)*100, 2, ',', '.')?> %
 </table>

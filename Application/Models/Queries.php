@@ -210,4 +210,36 @@ class Queries
                 ) t
             GROUP BY t.cgroup;';
     }
+
+    public static function selectSalesRep(\DateTime $start, \DateTime $end, array $accounts) : string
+    {
+        return 'SELECT DISTINCT
+                t.rep, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        KUNDENADRESSE.VERKAEUFER AS rep,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        KUNDENADRESSE.VERKAEUFER
+                UNION ALL
+                    SELECT 
+                        KUNDENADRESSE.VERKAEUFER AS rep,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        KUNDENADRESSE.VERKAEUFER
+                ) t
+            GROUP BY t.rep;';
+    }
 }

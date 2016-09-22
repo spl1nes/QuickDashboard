@@ -63,9 +63,15 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/reps.*$' => [
+    '^sales/reps.*?i=month.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showReps',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showRepsMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/reps.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showRepsYear',
             'verb' => RouteVerb::GET,
         ],
     ],

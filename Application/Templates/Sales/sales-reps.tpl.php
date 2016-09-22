@@ -6,7 +6,8 @@
     <canvas id="top-reps-export" height="100"></canvas>
 </div>
 
-<table class="box">
+<table>
+    <caption>Sales by Sales Rep. Domestic</caption>
     <thead>
         <tr>
             <th>Pos.
@@ -23,14 +24,48 @@
             <td>231554321
             <td>231554321
             <td>20%
-        <tr>
-            <td>2
-            <td>Test Name
-            <td>231554321
-            <td>231554321
-            <td>231554321
-            <td>20%
 </table>
+
+<table>
+    <caption>Sales by Sales Rep. Dentist</caption>
+    <thead>
+    <tr>
+        <th>Pos.
+        <th>Name
+        <th>Prev. Year
+        <th>Prev. Year Acc.
+        <th>Current Year
+        <th>Diff. Acc.
+    <tbody>
+    <tr>
+        <td>1
+        <td>Test Name
+        <td>231554321
+        <td>231554321
+        <td>231554321
+        <td>20%
+</table>
+
+<table>
+    <caption>Sales by Sales Rep. Export</caption>
+    <thead>
+    <tr>
+        <th>Pos.
+        <th>Name
+        <th>Prev. Year
+        <th>Prev. Year Acc.
+        <th>Current Year
+        <th>Diff. Acc.
+    <tbody>
+    <tr>
+        <td>1
+        <td>Test Name
+        <td>231554321
+        <td>231554321
+        <td>231554321
+        <td>20%
+</table>
+
 <div class="clear"></div>
 <script>
     let randomScalingFactor = function() {
