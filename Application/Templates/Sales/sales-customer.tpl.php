@@ -1,6 +1,7 @@
 <?php
 $salesGroups = $this->getData('salesGroups');
 $totalGroups = $this->getData('totalGroups');
+$topCustomers = $this->getData('customer');
 ?>
 <h1>Sales Customers</h1>
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
@@ -38,7 +39,7 @@ $totalGroups = $this->getData('totalGroups');
 <div class="clear"></div>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="top-customers-sales" height="100"></canvas>
+    <canvas id="top-customers-sales" height="200"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -103,8 +104,60 @@ $totalGroups = $this->getData('totalGroups');
         }
     };
 
+    let configTopCustomers = {
+        type: 'bar',
+        data: {
+            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['now'], 0, 15, true))) . '"'; ?>],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = $topCustomers['old'][$key] ?? 0 . ','; } echo implode(',', $data); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?= implode(',', $top); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Top Sales by Countries"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxSalesGroups = document.getElementById("group-sales");
         window.salesGroups = new Chart(ctxSalesGroups, configSalesGroups);
+
+        let ctxSalesCustomers = document.getElementById("top-customers-sales");
+        window.salesCustomers = new Chart(ctxSalesCustomers, configTopCustomers);
     };
 </script>

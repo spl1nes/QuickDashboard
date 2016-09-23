@@ -730,6 +730,7 @@ class DashboardController
 
         $salesGroups = [];
         $totalGroups = ['now' => 0.0, 'old' => 0.0];
+        $salesCustomers = [];
 
         $accounts = StructureDefinitions::ACCOUNTS;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -739,6 +740,8 @@ class DashboardController
         if ($request->getData('u') !== 'gdf') {
             $groupsSD     = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'sd', $accounts);
             $groupsSDLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
+            $customersSD = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
+            $customersSDLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
 
             foreach ($groupsSD as $line) {
                 if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
@@ -754,6 +757,14 @@ class DashboardController
                 $totalGroups['now'] += $line['sales'];
             }
 
+            foreach ($customersSD as $line) {
+                if (!isset($salesCustomers['now'][$line['customer']])) {
+                    $salesCustomers['now'][$line['customer']] = 0.0;
+                }
+
+                $salesCustomers['now'][$line['customer']] += $line['sales'];
+            }
+
             foreach ($groupsSDLast as $line) {
                 if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
                     continue;
@@ -767,11 +778,22 @@ class DashboardController
                 $salesGroups[$customerGroup]['old'] += $line['sales'];
                 $totalGroups['old'] += $line['sales'];
             }
+
+            foreach ($customersSDLast as $line) {
+                if (!isset($salesCustomers['old'][$line['customer']])) {
+                    $salesCustomers['old'][$line['customer']] = 0.0;
+                }
+
+                $salesCustomers['old'][$line['customer']] += $line['sales'];
+            }
         }
 
         if ($request->getData('u') !== 'sd') {
             $groupsGDF     = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'gdf', $accounts);
             $groupsGDFLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
+            $customersGDF = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $customersGDFLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+
 
             foreach ($groupsGDF as $line) {
                 if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
@@ -787,6 +809,14 @@ class DashboardController
                 $totalGroups['now'] += $line['sales'];
             }
 
+            foreach ($customersGDF as $line) {
+                if (!isset($salesCustomers['now'][$line['customer']])) {
+                    $salesCustomers['now'][$line['customer']] = 0.0;
+                }
+
+                $salesCustomers['now'][$line['customer']] += $line['sales'];
+            }
+
             foreach ($groupsGDFLast as $line) {
                 if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
                     continue;
@@ -800,10 +830,21 @@ class DashboardController
                 $salesGroups[$customerGroup]['old'] += $line['sales'];
                 $totalGroups['old'] += $line['sales'];
             }
+
+            foreach ($customersGDFLast as $line) {
+                if (!isset($salesCustomers['old'][$line['customer']])) {
+                    $salesCustomers['old'][$line['customer']] = 0.0;
+                }
+
+                $salesCustomers['old'][$line['customer']] += $line['sales'];
+            }
         }
+
+        arsort($salesCustomers['now']);
 
         $view->setData('salesGroups', $salesGroups);
         $view->setData('totalGroups', $totalGroups);
+        $view->setData('customer', $salesCustomers);
 
         return $view;
     }
