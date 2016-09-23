@@ -669,19 +669,20 @@ class DashboardController
             $accounts[] = 8591;
         }
 
-        $repsSales = [
-            'domestic' => [],
-            'export' => [],
-            'dentist' => [],
-        ];
-
         if ($request->getData('u') !== 'gdf') {
-            $repsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
-            $repsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
+            $repsSD     = $this->select('selectSalesRep', $startCurrent, $endCurrent, 'sd', $accounts);
+            $repsSDLast = $this->select('selectSalesRep', $startLast, $endLast, 'sd', $accounts);
 
             foreach ($repsSD as $line) {
+                $repsSales[$line['rep']]['now'] = $line['sales'];
+            }
+
+            foreach ($repsSDLast as $line) {
+                $repsSales[$line['rep']]['old'] = $line['sales'];
             }
         }
+
+        arsort($repsSales);
 
         $view->setData('repsSales', $repsSales);
 

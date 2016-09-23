@@ -1,69 +1,24 @@
-<div class="box" id="canvas-holder-1" style="width: 100%; float: left">
-    <canvas id="top-reps-domestic" height="100"></canvas>
-</div>
-
-<div class="box" id="canvas-holder-2" style="width: 100%; float: left">
-    <canvas id="top-reps-export" height="100"></canvas>
-</div>
-
+<?php
+$reps = $this->getData('repsSales');
+?>
 <table>
-    <caption>Sales by Sales Rep. Domestic</caption>
+    <caption>Sales by Sales Rep</caption>
     <thead>
         <tr>
-            <th>Pos.
             <th>Name
             <th>Prev. Year
-            <th>Prev. Year Acc.
-            <th>Current Year
-            <th>Diff. Acc.
+            <th>Current
+            <th>Diff.
+            <th>Diff. %
     <tbody>
+        <?php foreach($reps as $name => $value) : ?>
         <tr>
-            <td>1
-            <td>Test Name
-            <td>231554321
-            <td>231554321
-            <td>231554321
-            <td>20%
-</table>
-
-<table>
-    <caption>Sales by Sales Rep. Dentist</caption>
-    <thead>
-    <tr>
-        <th>Pos.
-        <th>Name
-        <th>Prev. Year
-        <th>Prev. Year Acc.
-        <th>Current Year
-        <th>Diff. Acc.
-    <tbody>
-    <tr>
-        <td>1
-        <td>Test Name
-        <td>231554321
-        <td>231554321
-        <td>231554321
-        <td>20%
-</table>
-
-<table>
-    <caption>Sales by Sales Rep. Export</caption>
-    <thead>
-    <tr>
-        <th>Pos.
-        <th>Name
-        <th>Prev. Year
-        <th>Prev. Year Acc.
-        <th>Current Year
-        <th>Diff. Acc.
-    <tbody>
-    <tr>
-        <td>1
-        <td>Test Name
-        <td>231554321
-        <td>231554321
-        <td>231554321
-        <td>20%
+            <td><?= $name; ?>
+            <td><?= number_format($reps[$name]['old'] ?? 0, 0, ',', '.') ?>
+            <td><?= number_format($reps[$name]['now'] ?? 0, 0, ',', '.') ?>
+            <td><?= number_format(($reps[$name]['now'] ?? 0)-($reps['old'] ?? 0), 0, ',', '.') ?>
+            <td><?= number_format(!isset($reps[$name]) || $reps[$name]['old'] == 0 ? 0 : (($reps[$name]['now'] ?? 0)/$reps[$name]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
 </table>
 
 <div class="clear"></div>

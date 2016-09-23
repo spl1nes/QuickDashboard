@@ -217,28 +217,30 @@ class Queries
                 t.rep, SUM(t.sales) AS sales
             FROM (
                     SELECT 
-                        KUNDENADRESSE.VERKAEUFER AS rep,
+                        Personalstamm.Name AS rep,
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
                         AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        KUNDENADRESSE.VERKAEUFER
+                        Personalstamm.Name
                 UNION ALL
                     SELECT 
-                        KUNDENADRESSE.VERKAEUFER AS rep,
+                        Personalstamm.Name AS rep,
                         SUM(-FiBuchungen.Betrag) AS sales
-                    FROM FiBuchungen, KUNDENADRESSE
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
                         AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        KUNDENADRESSE.VERKAEUFER
+                        Personalstamm.Name
                 ) t
             GROUP BY t.rep;';
     }
