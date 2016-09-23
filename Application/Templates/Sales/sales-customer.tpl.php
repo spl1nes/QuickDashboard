@@ -6,7 +6,7 @@ $totalGroups = $this->getData('totalGroups');
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 50%; float: left;">
-    <caption>Sales by Domestic/Export</caption>
+    <caption>Sales by Customer Groups</caption>
     <thead>
     <tr>
         <th>Group
@@ -25,29 +25,31 @@ $totalGroups = $this->getData('totalGroups');
     <?php endforeach; ?>
     <tr>
         <th>Total
-        <th><?= number_format(array_sum($totalGroups['old']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($totalGroups['now']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($totalGroups['now'])-array_sum($totalGroups['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($totalGroups['old']) ? 0 : (array_sum($totalGroups['now'])/array_sum($totalGroups['old'])-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($totalGroups['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($totalGroups['now'] ?? 0)-($totalGroups['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($totalGroups['old']) ? 0 : (($totalGroups['now'] ?? 0)/$totalGroups['old']-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 50%; float: left">
-    <canvas id="group-sales" height="100"></canvas>
+    <canvas id="group-sales" height="<?= (int) (23.3 * count($salesGroups) + 50); ?>"></canvas>
 </div>
 
 <div class="clear"></div>
 
-<div class="box" style="width: 50%; float: left">
+<div class="box" style="width: 100%; float: left">
     <canvas id="top-customers-sales" height="100"></canvas>
 </div>
 
+<div class="clear"></div>
+
 <script>
-    let configSalesSegments = {
+    let configSalesGroups = {
         type: 'doughnut',
         data: {
             datasets: [{
                 data: [
-                    <?= $salesGroups['Dentist']['old'] ?>
+                    <?php $data = ''; foreach($salesGroups as $group) { $data .= number_format(($group['now'] ?? 0) / $totalGroups['now'] * 100, 0, ',', '.') . ','; } echo rtrim($data, ','); ?>
                 ],
                 backgroundColor: [
                     "#F7464A",
@@ -60,7 +62,7 @@ $totalGroups = $this->getData('totalGroups');
                 label: 'Current'
             }, {
                 data: [
-                    <?= $salesGroups['Dentist']['now'] ?>
+                    <?php $data = ''; foreach($salesGroups as $group) { $data .= number_format(($group['old'] ?? 0) / $totalGroups['old'] * 100, 0, ',', '.') . ','; } echo rtrim($data, ','); ?>
                 ],
                 backgroundColor: [
                     "#F7464A",
@@ -73,12 +75,7 @@ $totalGroups = $this->getData('totalGroups');
                 label: 'Last Year'
             }],
             labels: [
-                "Dentist",
-                "Consumables",
-                "Digitial",
-                "Impla",
-                "Misc.",
-                "MANI",
+                <?= '"' . implode('","', array_keys($salesGroups)) . '"'; ?>
             ]
         },
         options: {
@@ -88,17 +85,26 @@ $totalGroups = $this->getData('totalGroups');
             },
             title: {
                 display: true,
-                text: 'Sales by Segments'
+                text: 'Sales Ratio by Groups'
             },
             animation: {
                 animateScale: true,
                 animateRotate: true
             },
+            tooltips: {
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                            let datasetLabel = data.labels[tooltipItem.index] || 'Other';
+
+                            return data.datasets[tooltipItem.datasetIndex].label + ' - ' + datasetLabel + ': ' + Math.round(data.datasets[tooltipItem.datasetIndex].data[tooltipItem.index]).toString().split(/(?=(?:...)*$)/).join('.') + '%';
+                          }
+                }
+            },
         }
     };
 
     window.onload = function() {
-        let ctxSalesSegments = document.getElementById("segment-sales");
-        window.salesSegments = new Chart(ctxSalesSegments, configSalesSegments);
+        let ctxSalesGroups = document.getElementById("group-sales");
+        window.salesGroups = new Chart(ctxSalesGroups, configSalesGroups);
     };
 </script>

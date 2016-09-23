@@ -196,7 +196,27 @@ class StructureDefinitions
         63 => 'Endodontics',
     ];
 
-    const CUSTOMER_GROUP = [];
+    const CUSTOMER_GROUP = [
+        'sd' => [
+            0 => 'Other Customer',
+            1000 => 'Dental Lab',
+            1300 => 'Export',
+            2000 => 'Dentist Lab',
+            3000 => 'Dentist',
+            4000 => 'Dental Depot',
+            4300 => 'Export',
+            5000 => 'Educational Facility',
+            6000 => 'Dental Trading',
+        ],
+        'gdf' => [
+            0 => 'Other Customer',
+            4000 => 'Dental Trading',
+            4300 => 'Micerium',
+            6000 => 'Anax Dent',
+            6010 => 'Resound China',
+            6020 => 'Dental Trading',
+        ]
+    ];
 
     public static function getSegmentOfGroup(int $id) : int
     {

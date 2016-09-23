@@ -740,7 +740,11 @@ class DashboardController
             $groupsSDLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
 
             foreach ($groupsSD as $line) {
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP[$line['cgroup']];
+                if(!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
+                    continue;
+                }
+
+                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']];
                 if (!isset($salesGroups[$customerGroup]['now'])) {
                     $salesGroups[$customerGroup]['now'] = 0.0;
                 }
@@ -750,7 +754,11 @@ class DashboardController
             }
 
             foreach ($groupsSDLast as $line) {
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP[$line['cgroup']];
+                if(!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
+                    continue;
+                }
+
+                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']];
                 if (!isset($salesGroups[$customerGroup]['old'])) {
                     $salesGroups[$customerGroup]['old'] = 0.0;
                 }
@@ -760,12 +768,16 @@ class DashboardController
             }
         }
 
-        if ($request->getData('u') !== 'gdf') {
+        if ($request->getData('u') !== 'sd') {
             $groupsGDF     = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'gdf', $accounts);
             $groupsGDFLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
 
             foreach ($groupsGDF as $line) {
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP[$line['cgroup']];
+                if(!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
+                    continue;
+                }
+
+                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']];
                 if (!isset($salesGroups[$customerGroup]['now'])) {
                     $salesGroups[$customerGroup]['now'] = 0.0;
                 }
@@ -775,7 +787,11 @@ class DashboardController
             }
 
             foreach ($groupsGDFLast as $line) {
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP[$line['cgroup']];
+                if(!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
+                    continue;
+                }
+
+                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']];
                 if (!isset($salesGroups[$customerGroup]['old'])) {
                     $salesGroups[$customerGroup]['old'] = 0.0;
                 }
