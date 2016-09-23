@@ -7,7 +7,7 @@ $totalGroups = $this->getData('totalGroups');
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 100%; float: left;">
-    <caption>Sales by Segmentation</caption>
+    <caption>Sales Segmentation</caption>
     <thead>
     <tr>
         <th>Segment
@@ -17,7 +17,7 @@ $totalGroups = $this->getData('totalGroups');
         <th>Diff
         <th>Diff %
     <tbody>
-    <?php foreach($salesGroups as $segment => $groups) : foreach($groups as $group => $sales) : ?>
+    <?php foreach($salesGroups as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $sales) : ?>
     <tr>
         <td><?= $segment; ?>
         <td><?= $group; ?>
@@ -43,7 +43,7 @@ $totalGroups = $this->getData('totalGroups');
 </table>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="group-sales" height="100"></canvas>
+    <canvas id="group-sales" height="200"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -52,17 +52,17 @@ $totalGroups = $this->getData('totalGroups');
     let configSalesGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
             }]
         },
         options: {
@@ -72,7 +72,7 @@ $totalGroups = $this->getData('totalGroups');
             stacked: false,
             title:{
                 display:true,
-                text:"Sales by Segments"
+                text:"Sales by Groups"
             },
             tooltips: {
                 mode: 'label',
@@ -85,13 +85,20 @@ $totalGroups = $this->getData('totalGroups');
                 }
             },
             scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
                 yAxes: [{
                     type: "linear",
                     display: true,
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true,
+                        min: 0
                     }
                 }],
             }

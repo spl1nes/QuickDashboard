@@ -561,7 +561,7 @@ class DashboardController
             }
         }
 
-        if ($request->getData('u') !== 'gdf') {
+        if ($request->getData('u') !== 'sd') {
             $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
             $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
 
@@ -787,14 +787,6 @@ class DashboardController
 
         $view->setData('salesGroups', $salesGroups);
         $view->setData('totalGroups', $totalGroups);
-
-        return $view;
-    }
-
-    public function showReps(RequestAbstract $request, ResponseAbstract $response)
-    {
-        $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-reps');
 
         return $view;
     }
