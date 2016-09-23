@@ -853,7 +853,7 @@ class DashboardController
     public function showPL(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
     {
         $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Reporting/pl.tpl.php');
+        $view->setTemplate('/QuickDashboard/Application/Templates/Reporting/pl');
 
         $accountPositions = [];
         $accounts         = ArrayUtils::arrayFlatten(StructureDefinitions::PL_ACCOUNTS);

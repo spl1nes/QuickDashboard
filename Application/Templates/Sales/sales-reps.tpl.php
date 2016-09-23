@@ -16,7 +16,7 @@ $reps = $this->getData('repsSales');
             <td><?= $name; ?>
             <td><?= number_format($reps[$name]['old'] ?? 0, 0, ',', '.') ?>
             <td><?= number_format($reps[$name]['now'] ?? 0, 0, ',', '.') ?>
-            <td><?= number_format(($reps[$name]['now'] ?? 0)-($reps['old'] ?? 0), 0, ',', '.') ?>
+            <td><?= number_format(($reps[$name]['now'] ?? 0)-($reps[$name]['old'] ?? 0), 0, ',', '.') ?>
             <td><?= number_format(!isset($reps[$name]) || $reps[$name]['old'] == 0 ? 0 : (($reps[$name]['now'] ?? 0)/$reps[$name]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
 </table>
