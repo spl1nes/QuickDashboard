@@ -741,7 +741,7 @@ class DashboardController
             $groupsSDLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
 
             foreach ($groupsSD as $line) {
-                if(!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
+                if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
                     continue;
                 }
 
@@ -755,7 +755,7 @@ class DashboardController
             }
 
             foreach ($groupsSDLast as $line) {
-                if(!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
+                if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
                     continue;
                 }
 
@@ -774,7 +774,7 @@ class DashboardController
             $groupsGDFLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
 
             foreach ($groupsGDF as $line) {
-                if(!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
+                if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
                     continue;
                 }
 
@@ -788,7 +788,7 @@ class DashboardController
             }
 
             foreach ($groupsGDFLast as $line) {
-                if(!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
+                if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
                     continue;
                 }
 
@@ -882,8 +882,8 @@ class DashboardController
         }
 
         if ($request->getData('u') !== 'sd') {
-            $accountsGDF     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);
-            $accountsGDFLast = $this->select('selectEntries', $startLast, $endLast, 'sd', $accounts);
+            $accountsGDF     = $this->select('selectEntries', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $accountsGDFLast = $this->select('selectEntries', $startLast, $endLast, 'gdf', $accounts);
 
             foreach ($accountsGDF as $line) {
                 $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
