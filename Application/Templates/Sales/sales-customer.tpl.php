@@ -53,12 +53,18 @@ $topCustomers = $this->getData('customer');
                     <?php $data = ''; foreach($salesGroups as $group) { $data .= number_format(($group['now'] ?? 0) / $totalGroups['now'] * 100, 0, ',', '.') . ','; } echo rtrim($data, ','); ?>
                 ],
                 backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                    "#E2CF56"
+                    "#56E2CF",
+                    "#5668E2",
+                    "#CF56E2",
+                    "#E25668",
+                    "#E2CF56",
+                    "#68E256",
+                    "#56AEE2",
+                    "#8A56E2",
+                    "#E256AE",
+                    "#E28956",
+                    "#AEE256",
+                    "#56E289"
                 ],
                 label: 'Current'
             }, {
@@ -66,12 +72,18 @@ $topCustomers = $this->getData('customer');
                     <?php $data = ''; foreach($salesGroups as $group) { $data .= number_format(($group['old'] ?? 0) / $totalGroups['old'] * 100, 0, ',', '.') . ','; } echo rtrim($data, ','); ?>
                 ],
                 backgroundColor: [
-                    "#F7464A",
-                    "#46BFBD",
-                    "#FDB45C",
-                    "#949FB1",
-                    "#4D5360",
-                    "#E2CF56"
+                    "#56E2CF",
+                    "#5668E2",
+                    "#CF56E2",
+                    "#E25668",
+                    "#E2CF56",
+                    "#68E256",
+                    "#56AEE2",
+                    "#8A56E2",
+                    "#E256AE",
+                    "#E28956",
+                    "#AEE256",
+                    "#56E289"
                 ],
                 label: 'Last Year'
             }],
