@@ -521,6 +521,7 @@ class DashboardController
                     continue;
                 }
 
+                /** @noinspection PhpUnreachableStatementInspection */
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
                 }
@@ -547,6 +548,7 @@ class DashboardController
                     continue;
                 }
 
+                /** @noinspection PhpUnreachableStatementInspection */
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;
                 }
@@ -578,6 +580,7 @@ class DashboardController
                     continue;
                 }
 
+                /** @noinspection PhpUnreachableStatementInspection */
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
                 }
@@ -604,6 +607,7 @@ class DashboardController
                     continue;
                 }
 
+                /** @noinspection PhpUnreachableStatementInspection */
                 if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
                     $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;
                 }
