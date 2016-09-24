@@ -43,28 +43,12 @@ class DashboardController
 
         if ($request->getData('u') !== 'gdf') {
             $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
-            foreach ($salesSD as $line) {
-                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-                $mod         = $line['months'] - $this->app->config['fiscal_year'];
-                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
-
-                $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
-            }
+            $this->loopOverview($salesSD, $totalSales);
         }
 
         if ($request->getData('u') !== 'sd') {
             $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
-            foreach ($salesGDF as $line) {
-                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-                $mod         = ($line['months'] - $this->app->config['fiscal_year']);
-                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
-
-                if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
-                    $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
-                }
-
-                $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
-            }
+            $this->loopOverview($salesGDF, $totalSales);
         }
 
         foreach ($totalSales as $year => $months) {
@@ -89,6 +73,21 @@ class DashboardController
         $view->setData('salesAcc', $accTotalSales);
 
         return $view;
+    }
+
+    private function loopOverview(array $resultset, array &$totalSales)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
     }
 
     public function showSalesOverview(RequestAbstract $request, ResponseAbstract $response)
@@ -130,34 +129,16 @@ class DashboardController
             $salesSD     = $this->select('selectSalesDaily', $startCurrent, $endCurrent, 'sd', $accounts);
             $salesSDLast = $this->select('selectSalesDaily', $startLast, $endLast, 'sd', $accounts);
 
-            foreach ($salesSD as $line) {
-                $totalSales[$line['days']] = $line['sales'];
-            }
-
-            foreach ($salesSDLast as $line) {
-                $totalSalesLast[$line['days']] = $line['sales'];
-            }
+            $this->loopListMonth($salesSD, $totalSales);
+            $this->loopListMonth($salesSDLast, $totalSalesLast);
         }
 
         if ($request->getData('u') !== 'sd') {
             $salesGDFLast = $this->select('selectSalesDaily', $startLast, $endLast, 'gdf', $accounts);
             $salesGDF     = $this->select('selectSalesDaily', $startCurrent, $endCurrent, 'gdf', $accounts);
 
-            foreach ($salesGDF as $line) {
-                if (!isset($totalSales[$line['days']])) {
-                    $totalSales[$line['days']] = 0.0;
-                }
-
-                $totalSales[$line['days']] += $line['sales'];
-            }
-
-            foreach ($salesGDFLast as $line) {
-                if (!isset($totalSalesLast[$line['days']])) {
-                    $totalSalesLast[$line['days']] = 0.0;
-                }
-
-                $totalSalesLast[$line['days']] += $line['sales'];
-            }
+            $this->loopListMonth($salesGDF, $totalSales);
+            $this->loopListMonth($salesGDFLast, $totalSalesLast);
         }
 
         ksort($totalSales);
@@ -185,6 +166,17 @@ class DashboardController
         return $view;
     }
 
+    private function loopListMonth(array $resultset, array &$totalSales)
+    {
+        foreach ($resultset as $line) {
+            if (!isset($totalSales[$line['days']])) {
+                $totalSales[$line['days']] = 0.0;
+            }
+
+            $totalSales[$line['days']] += $line['sales'];
+        }
+    }
+
     public function showListYear(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);
@@ -204,28 +196,12 @@ class DashboardController
 
         if ($request->getData('u') !== 'gdf') {
             $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
-            foreach ($salesSD as $line) {
-                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-                $mod         = $line['months'] - $this->app->config['fiscal_year'];
-                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
-
-                $totalSales[$fiscalYear][$fiscalMonth] = $line['sales'];
-            }
+            $this->loopListYear($salesSD, $totalSales);
         }
 
         if ($request->getData('u') !== 'sd') {
             $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
-            foreach ($salesGDF as $line) {
-                $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
-                $mod         = ($line['months'] - $this->app->config['fiscal_year']);
-                $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
-
-                if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
-                    $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
-                }
-
-                $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
-            }
+            $this->loopListYear($salesGDF, $totalSales);
         }
 
         foreach ($totalSales as $year => $months) {
@@ -249,6 +225,21 @@ class DashboardController
         $view->setData('currentMonth', $currentMonth);
 
         return $view;
+    }
+
+    private function loopListYear(array $resultset, array &$totalSales)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
     }
 
     public function showLocationMonth(RequestAbstract $request, ResponseAbstract $response)
@@ -315,51 +306,8 @@ class DashboardController
             $countrySD     = $this->select('selectSalesByCountry', $startCurrent, $endCurrent, 'sd', $accounts);
             $countrySDLast = $this->select('selectSalesByCountry', $startLast, $endLast, 'sd', $accounts);
 
-            foreach ($countrySD as $line) {
-                $region = StructureDefinitions::getRegion($line['countryChar']);
-                if (!isset($salesRegion['now'][$region])) {
-                    $salesRegion['now'][$region] = 0.0;
-                }
-
-                $salesRegion['now'][$region] += $line['sales'];
-
-                $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
-                if (!isset($salesDevUndev['now'][$devundev])) {
-                    $salesDevUndev['now'][$devundev] = 0.0;
-                }
-
-                $salesDevUndev['now'][$devundev] += $line['sales'];
-
-                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
-                if (!isset($salesCountry['now'][$iso3166Char3])) {
-                    $salesCountry['now'][$iso3166Char3] = 0.0;
-                }
-
-                $salesCountry['now'][$iso3166Char3] += $line['sales'];
-            }
-
-            foreach ($countrySDLast as $line) {
-                $region = StructureDefinitions::getRegion($line['countryChar']);
-                if (!isset($salesRegion['old'][$region])) {
-                    $salesRegion['old'][$region] = 0.0;
-                }
-
-                $salesRegion['old'][$region] += $line['sales'];
-
-                $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
-                if (!isset($salesDevUndev['old'][$devundev])) {
-                    $salesDevUndev['old'][$devundev] = 0.0;
-                }
-
-                $salesDevUndev['old'][$devundev] += $line['sales'];
-
-                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
-                if (!isset($salesCountry['old'][$iso3166Char3])) {
-                    $salesCountry['old'][$iso3166Char3] = 0.0;
-                }
-
-                $salesCountry['old'][$iso3166Char3] += $line['sales'];
-            }
+            $this->loopLocation('now', $countrySD, $salesRegion, $salesDevUndev, $salesCountry);
+            $this->loopLocation('old', $countrySDLast, $salesRegion, $salesDevUndev, $salesCountry);
 
             $domesticSDLast = $this->select('selectAccounts', $startLast, $endLast, 'sd', $accounts_DOMESTIC);
             $domesticSD     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'sd', $accounts_DOMESTIC);
@@ -372,51 +320,8 @@ class DashboardController
             $countryGDF     = $this->select('selectSalesByCountry', $startCurrent, $endCurrent, 'gdf', $accounts);
             $countryGDFLast = $this->select('selectSalesByCountry', $startLast, $endLast, 'gdf', $accounts);
 
-            foreach ($countryGDF as $line) {
-                $region = StructureDefinitions::getRegion($line['countryChar']);
-                if (!isset($salesRegion['now'][$region])) {
-                    $salesRegion['now'][$region] = 0.0;
-                }
-
-                $salesRegion['now'][$region] += $line['sales'];
-
-                $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
-                if (!isset($salesDevUndev['now'][$devundev])) {
-                    $salesDevUndev['now'][$devundev] = 0.0;
-                }
-
-                $salesDevUndev['now'][$devundev] += $line['sales'];
-
-                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
-                if (!isset($salesCountry['now'][$iso3166Char3])) {
-                    $salesCountry['now'][$iso3166Char3] = 0.0;
-                }
-
-                $salesCountry['now'][$iso3166Char3] += $line['sales'];
-            }
-
-            foreach ($countryGDFLast as $line) {
-                $region = StructureDefinitions::getRegion($line['countryChar']);
-                if (!isset($salesRegion['old'][$region])) {
-                    $salesRegion['old'][$region] = 0.0;
-                }
-
-                $salesRegion['old'][$region] += $line['sales'];
-
-                $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
-                if (!isset($salesDevUndev['old'][$devundev])) {
-                    $salesDevUndev['old'][$devundev] = 0.0;
-                }
-
-                $salesDevUndev['old'][$devundev] += $line['sales'];
-
-                $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
-                if (!isset($salesCountry['old'][$iso3166Char3])) {
-                    $salesCountry['old'][$iso3166Char3] = 0.0;
-                }
-
-                $salesCountry['old'][$iso3166Char3] += $line['sales'];
-            }
+            $this->loopLocation('now', $countryGDF, $salesRegion, $salesDevUndev, $salesCountry);
+            $this->loopLocation('old', $countryGDFLast, $salesRegion, $salesDevUndev, $salesCountry);
 
             $domesticGDFLast = $this->select('selectAccounts', $startLast, $endLast, 'gdf', $accounts_DOMESTIC);
             $domesticGDF     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'gdf', $accounts_DOMESTIC);
@@ -446,6 +351,32 @@ class DashboardController
         $view->setData('salesExportDomestic', $salesExportDomestic);
 
         return $view;
+    }
+
+    private function loopLocation(string $period, array $resultset, array &$salesRegion, array &$salesDevUndev, array &$salesCountry)
+    {
+        foreach ($resultset as $line) {
+            $region = StructureDefinitions::getRegion($line['countryChar']);
+            if (!isset($salesRegion[$period][$region])) {
+                $salesRegion[$period][$region] = 0.0;
+            }
+
+            $salesRegion[$period][$region] += $line['sales'];
+
+            $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
+            if (!isset($salesDevUndev[$period][$devundev])) {
+                $salesDevUndev[$period][$devundev] = 0.0;
+            }
+
+            $salesDevUndev[$period][$devundev] += $line['sales'];
+
+            $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+            if (!isset($salesCountry[$period][$iso3166Char3])) {
+                $salesCountry[$period][$iso3166Char3] = 0.0;
+            }
+
+            $salesCountry[$period][$iso3166Char3] += $line['sales'];
+        }
     }
 
     public function showArticleMonth(RequestAbstract $request, ResponseAbstract $response)
@@ -493,11 +424,21 @@ class DashboardController
         $segmentGroups = [];
 
         foreach ($temp as $segment) {
-            $salesGroups[$segment]   = null;
-            $segmentGroups[$segment] = null;
+            $salesGroups['All'][$segment]   = null;
+            $segmentGroups['All'][$segment] = null;
+
+            $salesGroups['Domestic'][$segment]   = null;
+            $segmentGroups['Domestic'][$segment] = null;
+
+            $salesGroups['Export'][$segment]   = null;
+            $segmentGroups['Export'][$segment] = null;
         }
 
-        $totalGroups = ['now' => 0.0, 'old' => 0.0];
+        $totalGroups = [
+            'All'      => ['now' => 0.0, 'old' => 0.0],
+            'Domestic' => ['now' => 0.0, 'old' => 0.0],
+            'Export'   => ['now' => 0.0, 'old' => 0.0],
+        ];
 
         $accounts = StructureDefinitions::ACCOUNTS;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -508,118 +449,16 @@ class DashboardController
             $groupsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
             $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
 
-            foreach ($groupsSD as $line) {
-                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
-
-                if ($group === 0) {
-                    continue;
-                }
-
-                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
-
-                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
-                    continue;
-                }
-
-                /** @noinspection PhpUnreachableStatementInspection */
-                if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
-                    $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
-                }
-
-                if (!isset($segmentGroups[StructureDefinitions::NAMING[$segment]]['now'])) {
-                    $segmentGroups[StructureDefinitions::NAMING[$segment]]['now'] = 0.0;
-                }
-
-                $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] += $line['sales'];
-                $segmentGroups[StructureDefinitions::NAMING[$segment]]['now'] += $line['sales'];
-                $totalGroups['now'] += $line['sales'];
-            }
-
-            foreach ($groupsSDLast as $line) {
-                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
-
-                if ($group === 0) {
-                    continue;
-                }
-
-                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
-
-                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
-                    continue;
-                }
-
-                /** @noinspection PhpUnreachableStatementInspection */
-                if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
-                    $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;
-                }
-
-                if (!isset($segmentGroups[StructureDefinitions::NAMING[$segment]]['old'])) {
-                    $segmentGroups[StructureDefinitions::NAMING[$segment]]['old'] = 0.0;
-                }
-
-                $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] += $line['sales'];
-                $segmentGroups[StructureDefinitions::NAMING[$segment]]['old'] += $line['sales'];
-                $totalGroups['old'] += $line['sales'];
-            }
+            $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+            $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
         }
 
         if ($request->getData('u') !== 'sd') {
             $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
             $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
 
-            foreach ($groupsGDF as $line) {
-                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
-
-                if ($group === 0) {
-                    continue;
-                }
-
-                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
-
-                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
-                    continue;
-                }
-
-                /** @noinspection PhpUnreachableStatementInspection */
-                if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'])) {
-                    $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] = 0.0;
-                }
-
-                if (!isset($segmentGroups[StructureDefinitions::NAMING[$segment]]['now'])) {
-                    $segmentGroups[StructureDefinitions::NAMING[$segment]]['now'] = 0.0;
-                }
-
-                $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['now'] += $line['sales'];
-                $segmentGroups[StructureDefinitions::NAMING[$segment]]['now'] += $line['sales'];
-                $totalGroups['now'] += $line['sales'];
-            }
-
-            foreach ($groupsGDFLast as $line) {
-                $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
-
-                if ($group === 0) {
-                    continue;
-                }
-
-                $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
-
-                if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
-                    continue;
-                }
-
-                /** @noinspection PhpUnreachableStatementInspection */
-                if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'])) {
-                    $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] = 0.0;
-                }
-
-                if (!isset($segmentGroups[StructureDefinitions::NAMING[$segment]]['old'])) {
-                    $segmentGroups[StructureDefinitions::NAMING[$segment]]['old'] = 0.0;
-                }
-
-                $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]]['old'] += $line['sales'];
-                $segmentGroups[StructureDefinitions::NAMING[$segment]]['old'] += $line['sales'];
-                $totalGroups['old'] += $line['sales'];
-            }
+            $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+            $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
         }
 
         $view->setData('salesGroups', $salesGroups);
@@ -627,6 +466,45 @@ class DashboardController
         $view->setData('totalGroups', $totalGroups);
 
         return $view;
+    }
+
+    private function loopArticleGroups(string $period, array $resultset, array &$salesGroups, array &$segmentGroups, array &$totalGroups)
+    {
+        foreach ($resultset as $line) {
+            $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
+
+            if ($group === 0) {
+                continue;
+            }
+
+            $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+            if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                continue;
+            }
+
+            /** @noinspection PhpUnreachableStatementInspection */
+            if (!isset($salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period])) {
+                $salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period]      = 0.0;
+                $salesGroups['Domestic'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] = 0.0;
+                $salesGroups['Export'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period]   = 0.0;
+            }
+
+            if (!isset($segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period])) {
+                $segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period]      = 0.0;
+                $segmentGroups['Domestic'][StructureDefinitions::NAMING[$segment]][$period] = 0.0;
+                $segmentGroups['Export'][StructureDefinitions::NAMING[$segment]][$period]   = 0.0;
+            }
+
+            $salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] += $line['sales'];
+            $segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period] += $line['sales'];
+            $totalGroups['All'][$period] += $line['sales'];
+
+            $region = StructureDefinitions::getDomesticExportAccount($line['account']);
+            $salesGroups[$region][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] += $line['sales'];
+            $segmentGroups[$region][StructureDefinitions::NAMING[$segment]][$period] += $line['sales'];
+            $totalGroups[$region][$period] += $line['sales'];
+        }
     }
 
     public function showRepsMonth(RequestAbstract $request, ResponseAbstract $response)
@@ -732,8 +610,8 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-customer');
 
-        $salesGroups = [];
-        $totalGroups = ['now' => 0.0, 'old' => 0.0];
+        $salesGroups    = [];
+        $totalGroups    = ['now' => 0.0, 'old' => 0.0];
         $salesCustomers = [];
 
         $accounts = StructureDefinitions::ACCOUNTS;
@@ -742,106 +620,27 @@ class DashboardController
         }
 
         if ($request->getData('u') !== 'gdf') {
-            $groupsSD     = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'sd', $accounts);
-            $groupsSDLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
-            $customersSD = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
+            $groupsSD        = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'sd', $accounts);
+            $groupsSDLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
+            $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
             $customersSDLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
 
-            foreach ($groupsSD as $line) {
-                if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
-                    continue;
-                }
-
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']];
-                if (!isset($salesGroups[$customerGroup]['now'])) {
-                    $salesGroups[$customerGroup]['now'] = 0.0;
-                }
-
-                $salesGroups[$customerGroup]['now'] += $line['sales'];
-                $totalGroups['now'] += $line['sales'];
-            }
-
-            foreach ($customersSD as $line) {
-                if (!isset($salesCustomers['now'][$line['customer']])) {
-                    $salesCustomers['now'][$line['customer']] = 0.0;
-                }
-
-                $salesCustomers['now'][$line['customer']] += $line['sales'];
-            }
-
-            foreach ($groupsSDLast as $line) {
-                if (!isset(StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']])) {
-                    continue;
-                }
-
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['sd'][$line['cgroup']];
-                if (!isset($salesGroups[$customerGroup]['old'])) {
-                    $salesGroups[$customerGroup]['old'] = 0.0;
-                }
-
-                $salesGroups[$customerGroup]['old'] += $line['sales'];
-                $totalGroups['old'] += $line['sales'];
-            }
-
-            foreach ($customersSDLast as $line) {
-                if (!isset($salesCustomers['old'][$line['customer']])) {
-                    $salesCustomers['old'][$line['customer']] = 0.0;
-                }
-
-                $salesCustomers['old'][$line['customer']] += $line['sales'];
-            }
+            $this->loopCustomerGroups('now', $groupsSD, 'sd', $salesGroups, $totalGroups);
+            $this->loopCustomer('now', $customersSD, $salesCustomers);
+            $this->loopCustomerGroups('old', $groupsSDLast, 'sd', $salesGroups, $totalGroups);
+            $this->loopCustomer('old', $customersSDLast, $salesCustomers);
         }
 
         if ($request->getData('u') !== 'sd') {
-            $groupsGDF     = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'gdf', $accounts);
-            $groupsGDFLast = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
-            $customersGDF = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $groupsGDF        = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $groupsGDFLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
+            $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
             $customersGDFLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
 
-
-            foreach ($groupsGDF as $line) {
-                if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
-                    continue;
-                }
-
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']];
-                if (!isset($salesGroups[$customerGroup]['now'])) {
-                    $salesGroups[$customerGroup]['now'] = 0.0;
-                }
-
-                $salesGroups[$customerGroup]['now'] += $line['sales'];
-                $totalGroups['now'] += $line['sales'];
-            }
-
-            foreach ($customersGDF as $line) {
-                if (!isset($salesCustomers['now'][$line['customer']])) {
-                    $salesCustomers['now'][$line['customer']] = 0.0;
-                }
-
-                $salesCustomers['now'][$line['customer']] += $line['sales'];
-            }
-
-            foreach ($groupsGDFLast as $line) {
-                if (!isset(StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']])) {
-                    continue;
-                }
-
-                $customerGroup = StructureDefinitions::CUSTOMER_GROUP['gdf'][$line['cgroup']];
-                if (!isset($salesGroups[$customerGroup]['old'])) {
-                    $salesGroups[$customerGroup]['old'] = 0.0;
-                }
-
-                $salesGroups[$customerGroup]['old'] += $line['sales'];
-                $totalGroups['old'] += $line['sales'];
-            }
-
-            foreach ($customersGDFLast as $line) {
-                if (!isset($salesCustomers['old'][$line['customer']])) {
-                    $salesCustomers['old'][$line['customer']] = 0.0;
-                }
-
-                $salesCustomers['old'][$line['customer']] += $line['sales'];
-            }
+            $this->loopCustomerGroups('now', $groupsGDF, 'gdf', $salesGroups, $totalGroups);
+            $this->loopCustomer('now', $customersGDF, $salesCustomers);
+            $this->loopCustomerGroups('old', $groupsGDFLast, 'gdf', $salesGroups, $totalGroups);
+            $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
         }
 
         arsort($salesCustomers['now']);
@@ -851,6 +650,34 @@ class DashboardController
         $view->setData('customer', $salesCustomers);
 
         return $view;
+    }
+
+    private function loopCustomerGroups(string $period, array $resultset, string $company, array &$salesGroups, array &$totalGroups)
+    {
+        foreach ($resultset as $line) {
+            if (!isset(StructureDefinitions::CUSTOMER_GROUP[$company][$line['cgroup']])) {
+                continue;
+            }
+
+            $customerGroup = StructureDefinitions::CUSTOMER_GROUP[$company][$line['cgroup']];
+            if (!isset($salesGroups[$customerGroup][$period])) {
+                $salesGroups[$customerGroup][$period] = 0.0;
+            }
+
+            $salesGroups[$customerGroup][$period] += $line['sales'];
+            $totalGroups[$period] += $line['sales'];
+        }
+    }
+
+    private function loopCustomer(string $period, array $resultset, array &$salesCustomers)
+    {
+        foreach ($resultset as $line) {
+            if (!isset($salesCustomers[$period][$line['customer']])) {
+                $salesCustomers[$period][$line['customer']] = 0.0;
+            }
+
+            $salesCustomers[$period][$line['customer']] += $line['sales'];
+        }
     }
 
     public function showAnalysisReps(RequestAbstract $request, ResponseAbstract $response)
@@ -907,51 +734,33 @@ class DashboardController
             $accountsSD     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);
             $accountsSDLast = $this->select('selectEntries', $startLast, $endLast, 'sd', $accounts);
 
-            foreach ($accountsSD as $line) {
-                $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
-                if (!isset($accountPositions[$position]['now'])) {
-                    $accountPositions[$position]['now'] = 0.0;
-                }
-
-                $accountPositions[$position]['now'] += $line['entries'];
-            }
-
-            foreach ($accountsSDLast as $line) {
-                $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
-                if (!isset($accountPositions[$position]['old'])) {
-                    $accountPositions[$position]['old'] = 0.0;
-                }
-
-                $accountPositions[$position]['old'] += $line['entries'];
-            }
+            $this->loopPL('now', $accountsSD, $accountPositions);
+            $this->loopPL('old', $accountsSDLast, $accountPositions);
         }
 
         if ($request->getData('u') !== 'sd') {
             $accountsGDF     = $this->select('selectEntries', $startCurrent, $endCurrent, 'gdf', $accounts);
             $accountsGDFLast = $this->select('selectEntries', $startLast, $endLast, 'gdf', $accounts);
 
-            foreach ($accountsGDF as $line) {
-                $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
-                if (!isset($accountPositions[$position]['now'])) {
-                    $accountPositions[$position]['now'] = 0.0;
-                }
-
-                $accountPositions[$position]['now'] += $line['entries'];
-            }
-
-            foreach ($accountsGDFLast as $line) {
-                $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
-                if (!isset($accountPositions[$position]['old'])) {
-                    $accountPositions[$position]['old'] = 0.0;
-                }
-
-                $accountPositions[$position]['old'] += $line['entries'];
-            }
+            $this->loopPL('now', $accountsGDF, $accountPositions);
+            $this->loopPL('old', $accountsGDFLast, $accountPositions);
         }
 
         $view->setData('accountPositions', $accountPositions);
 
         return $view;
+    }
+
+    private function loopPL(string $period, array $resultset, array &$accountPositions)
+    {
+        foreach ($resultset as $line) {
+            $position = StructureDefinitions::getAccountPLPosition($line['Konto']);
+            if (!isset($accountPositions[$position][$period])) {
+                $accountPositions[$position][$period] = 0.0;
+            }
+
+            $accountPositions[$position][$period] += $line['entries'];
+        }
     }
 
     private function calcCurrentMonth(\DateTime $date) : int

@@ -17,29 +17,29 @@ $totalGroups = $this->getData('totalGroups');
         <th>Diff
         <th>Diff %
     <tbody>
-    <?php foreach($salesGroups as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $sales) : ?>
+    <?php foreach($salesGroups['All'] as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $sales) : ?>
     <tr>
         <td><?= $segment; ?>
         <td><?= $group; ?>
-        <td><?= number_format($salesGroups[$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesGroups[$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesGroups[$segment][$group]['now'] ?? 0)-($salesGroups[$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesGroups[$segment][$group]['old']) || !is_numeric($salesGroups[$segment][$group]['old']) ? 0 : (($salesGroups[$segment][$group]['now'] ?? 0)/$salesGroups[$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format($salesGroups['All'][$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesGroups['All'][$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesGroups['All'][$segment][$group]['now'] ?? 0)-($salesGroups['All'][$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesGroups['All'][$segment][$group]['old']) || !is_numeric($salesGroups['All'][$segment][$group]['old']) ? 0 : (($salesGroups['All'][$segment][$group]['now'] ?? 0)/$salesGroups['All'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <tr>
         <th><?= $segment; ?>
         <th>Total
-        <th><?= number_format($segmentGroups[$segment]['old'] ?? 0, 0, ',', '.') ?>
-        <th><?= number_format($segmentGroups[$segment]['now'] ?? 0, 0, ',', '.') ?>
-        <th><?= number_format(($segmentGroups[$segment]['now'] ?? 0)-($segmentGroups[$segment]['old'] ?? 0), 0, ',', '.') ?>
-        <th><?= number_format(!isset($segmentGroups[$segment]['old']) || $segmentGroups[$segment]['old'] == 0 ? 0 : (($segmentGroups[$segment]['now'] ?? 0)/$segmentGroups[$segment]['old']-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($segmentGroups['All'][$segment]['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($segmentGroups['All'][$segment]['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($segmentGroups['All'][$segment]['now'] ?? 0)-($segmentGroups['All'][$segment]['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($segmentGroups['All'][$segment]['old']) || $segmentGroups['All'][$segment]['old'] == 0 ? 0 : (($segmentGroups['All'][$segment]['now'] ?? 0)/$segmentGroups['All'][$segment]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <tr>
         <th colspan="2">Total
-        <th><?= number_format($totalGroups['old'], 0, ',', '.') ?>
-        <th><?= number_format($totalGroups['now'], 0, ',', '.') ?>
-        <th><?= number_format($totalGroups['now']-$totalGroups['old'], 0, ',', '.') ?>
-        <th><?= number_format(!is_numeric($totalGroups['old']) || $totalGroups['old'] == 0 ? 0 : (($totalGroups['now'] ?? 0)/$totalGroups['old']-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($totalGroups['All']['old'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['All']['now'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['All']['now']-$totalGroups['All']['old'], 0, ',', '.') ?>
+        <th><?= number_format(!is_numeric($totalGroups['All']['old']) || $totalGroups['All']['old'] == 0 ? 0 : (($totalGroups['All']['now'] ?? 0)/$totalGroups['All']['old']-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 100%; float: left">
@@ -52,17 +52,17 @@ $totalGroups = $this->getData('totalGroups');
     let configSalesGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = []; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            labels: [<?php $groupNames = []; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = ''; foreach($salesGroups as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+                data: [<?php $data = ''; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
             }]
         },
         options: {
