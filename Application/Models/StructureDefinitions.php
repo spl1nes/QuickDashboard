@@ -225,6 +225,11 @@ class StructureDefinitions
         ],
     ];
 
+    public static function getDomesticExportAccount(int $account)
+    {
+        return $account = 8591 || in_array($account, self::ACCOUNTS_DOMESTIC) ? 'Domestic' : 'Export';
+    }
+
     public static function getSegmentOfGroup(int $id) : int
     {
         foreach (self::GROUPING as $sKey => $segment) {
