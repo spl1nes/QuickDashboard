@@ -154,9 +154,10 @@ class Queries
     public static function selectSalesArticleGroups(\DateTime $start, \DateTime $end, array $accounts) : string
     {
         return 'SELECT DISTINCT
-                t.costcenter, SUM(t.sales) AS sales
+                t.account, t.costcenter, SUM(t.sales) AS sales
             FROM (
                     SELECT 
+                        FiBuchungsArchiv.Konto as account,
                         FiBuchungsArchiv.KST AS costcenter,
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
                     FROM FiBuchungsArchiv
@@ -168,6 +169,7 @@ class Queries
                         FiBuchungsArchiv.KST
                 UNION ALL
                     SELECT 
+                        FiBuchungen.Konto as account,
                         FiBuchungen.KST AS costcenter,
                         SUM(-FiBuchungen.Betrag) AS sales
                     FROM FiBuchungen
@@ -178,7 +180,7 @@ class Queries
                     GROUP BY
                         FiBuchungen.KST
                 ) t
-            GROUP BY t.costcenter;';
+            GROUP BY t.account, t.costcenter;';
     }
 
     public static function selectCustomerGroup(\DateTime $start, \DateTime $end, array $accounts) : string
