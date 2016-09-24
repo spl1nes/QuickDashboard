@@ -48,6 +48,18 @@ $totalGroups = $this->getData('totalGroups');
 
 <div class="clear"></div>
 
+<div class="box" style="width: 100%; float: left">
+    <canvas id="group-sales-domestic" height="200"></canvas>
+</div>
+
+<div class="clear"></div>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="group-sales-export" height="200"></canvas>
+</div>
+
+<div class="clear"></div>
+
 <script>
     let configSalesGroups = {
         type: 'bar',
@@ -105,8 +117,126 @@ $totalGroups = $this->getData('totalGroups');
         }
     };
 
+    let configSalesGroupsDomestic = {
+        type: 'bar',
+        data: {
+            labels: [<?php $groupNames = []; foreach($salesGroups['Domestic'] as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['Domestic'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['Domestic'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Sales by Groups"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
+    let configSalesGroupsExport = {
+        type: 'bar',
+        data: {
+            labels: [<?php $groupNames = []; foreach($salesGroups['Export'] as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['Export'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['Export'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Sales by Groups"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxSalesGroups = document.getElementById("group-sales");
         window.salesGroups = new Chart(ctxSalesGroups, configSalesGroups);
+
+        let ctxSalesGroupsDomestic = document.getElementById("group-sales-domestic");
+        window.salesGroupsDomestic = new Chart(ctxSalesGroupsDomestic, configSalesGroupsDomestic);
+
+        let ctxSalesGroupsExport = document.getElementById("group-sales-export");
+        window.salesGroupsExport = new Chart(ctxSalesGroupsExport, configSalesGroupsExport);
     };
 </script>
