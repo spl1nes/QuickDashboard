@@ -352,7 +352,7 @@ $salesCountry = $this->getData('salesCountry');
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = $salesCountry['old'][$key] ?? 0 . ','; } echo implode(',', $data); ?>]
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = ($salesCountry['old'][$key] ?? 0); } echo implode(',', $data); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
