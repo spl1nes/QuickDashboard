@@ -602,9 +602,17 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-customer');
 
+        $current = new SmartDateTime('now');
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
         $salesGroups    = [];
         $totalGroups    = ['now' => 0.0, 'old' => 0.0];
         $salesCustomers = [];
+        $customerCount  = [];
 
         $accounts = StructureDefinitions::ACCOUNTS;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -621,6 +629,9 @@ class DashboardController
             $this->loopCustomer('now', $customersSD, $salesCustomers);
             $this->loopCustomerGroups('old', $groupsSDLast, 'sd', $salesGroups, $totalGroups);
             $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+
+            $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts);
+            $this->loopCustomerCount($customerSD, $customerCount);
         }
 
         if ($request->getData('u') !== 'sd') {
@@ -633,15 +644,40 @@ class DashboardController
             $this->loopCustomer('now', $customersGDF, $salesCustomers);
             $this->loopCustomerGroups('old', $groupsGDFLast, 'gdf', $salesGroups, $totalGroups);
             $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+
+            $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts);
+            $this->loopCustomerCount($customerGDF, $customerCount);
         }
 
         arsort($salesCustomers['now']);
+        arsort($salesCustomers['old']);
+
+        foreach ($customerCount as $year => $months) {
+            ksort($customerCount[$year]);
+        }
 
         $view->setData('salesGroups', $salesGroups);
         $view->setData('totalGroups', $totalGroups);
         $view->setData('customer', $salesCustomers);
+        $view->setData('currentFiscalYear', $currentYear);
+        $view->setData('customerCount', $customerCount);
 
         return $view;
+    }
+
+    private function loopCustomerCount(array $resultset, array &$customerCount)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($customerCount[$fiscalYear][$fiscalMonth])) {
+                $customerCount[$fiscalYear][$fiscalMonth] = 0;
+            }
+
+            $customerCount[$fiscalYear][$fiscalMonth] += $line['customers'];
+        }
     }
 
     private function loopCustomerGroups(string $period, array $resultset, string $company, array &$salesGroups, array &$totalGroups)

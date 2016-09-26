@@ -2,6 +2,10 @@
 $salesGroups = $this->getData('salesGroups');
 $totalGroups = $this->getData('totalGroups');
 $topCustomers = $this->getData('customer');
+$customerCount = $this->getData('customerCount');
+$current = $this->getData('currentFiscalYear');
+$current_1 = $this->getData('currentFiscalYear')-1;
+$current_2 = $this->getData('currentFiscalYear')-2;
 ?>
 <h1>Sales Customers</h1>
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
@@ -38,8 +42,18 @@ $topCustomers = $this->getData('customer');
 
 <div class="clear"></div>
 
+<div class="box" style="width: 50%; float: left">
+    <canvas id="top-customers-sales" height="270"></canvas>
+</div>
+
+<div class="box" style="width: 50%; float: left">
+    <canvas id="top-customers-sales-old" height="270"></canvas>
+</div>
+
+<div class="clear"></div>
+
 <div class="box" style="width: 100%; float: left">
-    <canvas id="top-customers-sales" height="200"></canvas>
+    <canvas id="customers-count" height="150"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -139,7 +153,7 @@ $topCustomers = $this->getData('customer');
             stacked: false,
             title:{
                 display:true,
-                text:"Top Sales by Customers"
+                text:"Top Sales by Customers - Current Year"
             },
             tooltips: {
                 mode: 'label',
@@ -170,11 +184,133 @@ $topCustomers = $this->getData('customer');
         }
     };
 
+    let configTopCustomersOld = {
+        type: 'bar',
+        data: {
+            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['old'], 0, 15, true))) . '"'; ?>],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = (!isset($topCustomers['old'][$key]) || !is_numeric($topCustomers['old'][$key]) ? 0 : $topCustomers['old'][$key]); } echo implode(',', $data); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = (!isset($topCustomers['now'][$key]) || !is_numeric($topCustomers['now'][$key]) ? 0 : $topCustomers['now'][$key]); } echo implode(',', $data); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Top Sales by Customers - Last Year"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                    }
+                }],
+            }
+        }
+    };
+
+
+    let configCustomerCount = {
+        type: 'bar',
+        data: {
+            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
+            datasets: [{
+                label: 'Two Years Ago',
+                backgroundColor: "rgba(104, 226, 86, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php echo implode(',', $customerCount[$current_2]); ?>]
+            }, {
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php echo implode(',', $customerCount[$current_1]); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php echo implode(',', $customerCount[$current]); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Customers per Month"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + Math.round(tooltipItem.yLabel).toString();
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return value.toString(); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxSalesGroups = document.getElementById("group-sales");
         window.salesGroups = new Chart(ctxSalesGroups, configSalesGroups);
 
         let ctxSalesCustomers = document.getElementById("top-customers-sales");
         window.salesCustomers = new Chart(ctxSalesCustomers, configTopCustomers);
+
+        let ctxSalesCustomersOld = document.getElementById("top-customers-sales-old");
+        window.salesCustomersOld = new Chart(ctxSalesCustomersOld, configTopCustomersOld);
+
+        let ctxSalesCustomersCount = document.getElementById("customers-count");
+        window.salesCustomersCount = new Chart(ctxSalesCustomersCount, configCustomerCount);
     };
 </script>
