@@ -5,6 +5,7 @@ namespace QuickDashboard\Application\Controllers;
 use phpOMS\DataStorage\Database\Query\Builder;
 use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Localization\ISO3166TwoEnum;
+use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Utils\ArrayUtils;
@@ -552,14 +553,14 @@ class DashboardController
         }
 
         $totalGroups = [
-            'Sales'      => ['now' => 0.0, 'old' => 0.0],
-            'Costs'      => ['now' => 0.0, 'old' => 0.0],
+            'Sales' => ['now' => 0.0, 'old' => 0.0],
+            'Costs' => ['now' => 0.0, 'old' => 0.0],
         ];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts      = StructureDefinitions::ACCOUNTS;
         $accountsCosts = StructureDefinitions::ACCOUNTS_COGS;
 
-        $accounts[] = 8591;
+        $accounts[]      = 8591;
         $accountsCosts[] = 3491;
 
         if ($request->getData('u') !== 'gdf') {
@@ -612,11 +613,11 @@ class DashboardController
 
             /** @noinspection PhpUnreachableStatementInspection */
             if (!isset($salesGroups[$type][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period])) {
-                $salesGroups[$type][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period]      = 0.0;
+                $salesGroups[$type][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] = 0.0;
             }
 
             if (!isset($segmentGroups[$type][StructureDefinitions::NAMING[$segment]][$period])) {
-                $segmentGroups[$type][StructureDefinitions::NAMING[$segment]][$period]      = 0.0;
+                $segmentGroups[$type][StructureDefinitions::NAMING[$segment]][$period] = 0.0;
             }
 
             $salesGroups[$type][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] += $line['sales'];
@@ -729,11 +730,11 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-customer');
 
-        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $current      = new SmartDateTime($request->getData('t') ?? 'now');
         $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
-        $start   = $this->getFiscalYearStart($current);
+        $start        = $this->getFiscalYearStart($current);
         $start->modify('-2 year');
 
         $salesGroups    = [];
@@ -779,6 +780,11 @@ class DashboardController
         arsort($salesCustomers['now']);
         arsort($salesCustomers['old']);
 
+        $gini = [
+            'now' => Lorenzkurve::getGiniCoefficient($salesCustomers['now']),
+            'old' => Lorenzkurve::getGiniCoefficient($salesCustomers['old']),
+        ];
+
         foreach ($customerCount as $year => $months) {
             ksort($customerCount[$year]);
         }
@@ -788,6 +794,7 @@ class DashboardController
         $view->setData('customer', $salesCustomers);
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('customerCount', $customerCount);
+        $view->setData('gini', $gini);
 
         return $view;
     }
@@ -906,18 +913,18 @@ class DashboardController
             $this->loopPL('old', $accountsGDFLast, $accountPositions);
         }
 
-        $accountPositions['Gross Profit']['now'] = ($accountPositions['Sales']['now'] ?? 0) + ($accountPositions['COGS Material']['now'] ?? 0) + ($accountPositions['COGS Services']['now'] ?? 0);
-        $accountPositions['Gross Profit']['old'] = ($accountPositions['Sales']['old'] ?? 0) + ($accountPositions['COGS Material']['old'] ?? 0) + ($accountPositions['COGS Services']['old'] ?? 0);
+        $accountPositions['Gross Profit']['now']        = ($accountPositions['Sales']['now'] ?? 0) + ($accountPositions['COGS Material']['now'] ?? 0) + ($accountPositions['COGS Services']['now'] ?? 0);
+        $accountPositions['Gross Profit']['old']        = ($accountPositions['Sales']['old'] ?? 0) + ($accountPositions['COGS Material']['old'] ?? 0) + ($accountPositions['COGS Services']['old'] ?? 0);
         $accountPositions['Gross Profit Margin']['now'] = ($accountPositions['Gross Profit']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Gross Profit Margin']['old'] = ($accountPositions['Gross Profit']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Other Selling Expenses']['now'] = ($accountPositions['Freight']['now'] ?? 0) + ($accountPositions['Provisions']['now'] ?? 0) + ($accountPositions['External Seminars']['now'] ?? 0);
-        $accountPositions['Other Selling Expenses']['old'] = ($accountPositions['Freight']['old'] ?? 0) + ($accountPositions['Provisions']['old'] ?? 0) + ($accountPositions['External Seminars']['old'] ?? 0);
+        $accountPositions['Other Selling Expenses']['now']        = ($accountPositions['Freight']['now'] ?? 0) + ($accountPositions['Provisions']['now'] ?? 0) + ($accountPositions['External Seminars']['now'] ?? 0);
+        $accountPositions['Other Selling Expenses']['old']        = ($accountPositions['Freight']['old'] ?? 0) + ($accountPositions['Provisions']['old'] ?? 0) + ($accountPositions['External Seminars']['old'] ?? 0);
         $accountPositions['Other Selling Expenses Margin']['now'] = ($accountPositions['Other Selling Expenses']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Other Selling Expenses Margin']['old'] = ($accountPositions['Other Selling Expenses']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Personnel']['now'] = ($accountPositions['Wages & Salaries']['now'] ?? 0) + ($accountPositions['Welfare Expenses']['now'] ?? 0);
-        $accountPositions['Personnel']['old'] = ($accountPositions['Wages & Salaries']['old'] ?? 0) + ($accountPositions['Welfare Expenses']['old'] ?? 0);
+        $accountPositions['Personnel']['now']        = ($accountPositions['Wages & Salaries']['now'] ?? 0) + ($accountPositions['Welfare Expenses']['now'] ?? 0);
+        $accountPositions['Personnel']['old']        = ($accountPositions['Wages & Salaries']['old'] ?? 0) + ($accountPositions['Welfare Expenses']['old'] ?? 0);
         $accountPositions['Personnel Margin']['now'] = ($accountPositions['Personnel']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Personnel Margin']['old'] = ($accountPositions['Personnel']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
@@ -927,23 +934,23 @@ class DashboardController
         $accountPositions['Total Other OPEX Margin']['now'] = ($accountPositions['Total Other OPEX']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Total Other OPEX Margin']['old'] = ($accountPositions['Total Other OPEX']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['EBITDA']['now'] = ($accountPositions['Total Other OPEX']['now'] ?? 0) + ($accountPositions['Other Revenue']['now'] ?? 0) + ($accountPositions['Gross Profit']['now'] ?? 0) + ($accountPositions['Other Selling Expenses']['now'] ?? 0) + ($accountPositions['Personnel']['now'] ?? 0);
-        $accountPositions['EBITDA']['old'] = ($accountPositions['Total Other OPEX']['old'] ?? 0) + ($accountPositions['Other Revenue']['old'] ?? 0) + ($accountPositions['Gross Profit']['old'] ?? 0) + ($accountPositions['Other Selling Expenses']['old'] ?? 0) + ($accountPositions['Personnel']['old'] ?? 0);
+        $accountPositions['EBITDA']['now']        = ($accountPositions['Total Other OPEX']['now'] ?? 0) + ($accountPositions['Other Revenue']['now'] ?? 0) + ($accountPositions['Gross Profit']['now'] ?? 0) + ($accountPositions['Other Selling Expenses']['now'] ?? 0) + ($accountPositions['Personnel']['now'] ?? 0);
+        $accountPositions['EBITDA']['old']        = ($accountPositions['Total Other OPEX']['old'] ?? 0) + ($accountPositions['Other Revenue']['old'] ?? 0) + ($accountPositions['Gross Profit']['old'] ?? 0) + ($accountPositions['Other Selling Expenses']['old'] ?? 0) + ($accountPositions['Personnel']['old'] ?? 0);
         $accountPositions['EBITDA Margin']['now'] = ($accountPositions['EBITDA']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBITDA Margin']['old'] = ($accountPositions['EBITDA']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['EBIT']['now'] = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
-        $accountPositions['EBIT']['old'] = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
+        $accountPositions['EBIT']['now']        = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
+        $accountPositions['EBIT']['old']        = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
         $accountPositions['EBIT Margin']['now'] = ($accountPositions['EBIT']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBIT Margin']['old'] = ($accountPositions['EBIT']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['EBT']['now'] = ($accountPositions['EBIT']['now'] ?? 0) + ($accountPositions['Interest Revenue']['now'] ?? 0) + ($accountPositions['Interest Expenses']['now'] ?? 0);
-        $accountPositions['EBT']['old'] = ($accountPositions['EBIT']['old'] ?? 0) + ($accountPositions['Interest Revenue']['old'] ?? 0) + ($accountPositions['Interest Expenses']['old'] ?? 0);
+        $accountPositions['EBT']['now']        = ($accountPositions['EBIT']['now'] ?? 0) + ($accountPositions['Interest Revenue']['now'] ?? 0) + ($accountPositions['Interest Expenses']['now'] ?? 0);
+        $accountPositions['EBT']['old']        = ($accountPositions['EBIT']['old'] ?? 0) + ($accountPositions['Interest Revenue']['old'] ?? 0) + ($accountPositions['Interest Expenses']['old'] ?? 0);
         $accountPositions['EBT Margin']['now'] = ($accountPositions['EBT']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBT Margin']['old'] = ($accountPositions['EBT']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Net Income']['now'] = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
-        $accountPositions['Net Income']['old'] = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
+        $accountPositions['Net Income']['now']        = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
+        $accountPositions['Net Income']['old']        = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
         $accountPositions['Net Income Margin']['now'] = ($accountPositions['Net Income']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Net Income Margin']['old'] = ($accountPositions['Net Income']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 

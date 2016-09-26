@@ -3,6 +3,7 @@ $salesGroups = $this->getData('salesGroups');
 $totalGroups = $this->getData('totalGroups');
 $topCustomers = $this->getData('customer');
 $customerCount = $this->getData('customerCount');
+$gini = $this->getData('gini');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -41,6 +42,8 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 </div>
 
 <div class="clear"></div>
+
+<p>The customer distribution last year had a Gini-Coefficient of <?= number_format($gini['old'], 4, ',', '.'); ?> and this year of <?= number_format($gini['now'], 4, ',', '.'); ?>.</p>
 
 <div class="box" style="width: 50%; float: left">
     <canvas id="top-customers-sales" height="270"></canvas>
