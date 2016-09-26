@@ -225,6 +225,12 @@ select.plain {
     font-weight: bold;
 }
 
+#error-img {
+    margin: 0 auto;
+    font-size: 40em;
+    color: #fff9d4;
+}
+
 @media print {
     nav {
         display: none;

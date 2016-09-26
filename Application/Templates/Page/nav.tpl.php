@@ -1,8 +1,8 @@
 <div class="floater">
     <nav>
         <ul>
-            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}?u={?u}'); ?>">Overview</a>
-            <li>Sales
+            <li><i class="fa fa-home"></i> <a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}?u={?u}'); ?>">Overview</a>
+            <li><i class="fa fa-line-chart"></i> Sales
                 <ul>
                     <li>List
                         <ul>
@@ -30,14 +30,14 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}&i=year'); ?>">Year</a>
                         </ul>
                 </ul>
-            <li>Reporting
+            <li><i class="fa fa-bar-chart"></i> Reporting
                 <ul>
-                    <li><a>P&L</a>
+                    <li>P&L
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=year'); ?>">Year</a>
                         </ul>
-                    <li><a>Gross Profit</a>
+                    <li>Gross Profit
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=year'); ?>">Year</a>
