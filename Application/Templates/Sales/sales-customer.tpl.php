@@ -24,16 +24,16 @@ $topCustomers = $this->getData('customer');
         <td><?= number_format(($salesGroups[$group]['now'] ?? 0)-($salesGroups['old'] ?? 0), 0, ',', '.') ?>
         <td><?= number_format(!isset($salesGroups[$group]) || $salesGroups[$group]['old'] == 0 ? 0 : (($salesGroups[$group]['now'] ?? 0)/$salesGroups[$group]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
-    <tr>
+    <!--<tr>
         <th>Total
         <th><?= number_format($totalGroups['old'] ?? 0, 0, ',', '.') ?>
         <th><?= number_format($totalGroups['now'] ?? 0, 0, ',', '.') ?>
         <th><?= number_format(($totalGroups['now'] ?? 0)-($totalGroups['old'] ?? 0), 0, ',', '.') ?>
-        <th><?= number_format(!isset($totalGroups['old']) ? 0 : (($totalGroups['now'] ?? 0)/$totalGroups['old']-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format(!isset($totalGroups['old']) ? 0 : (($totalGroups['now'] ?? 0)/$totalGroups['old']-1)*100, 0, ',', '.') ?> %-->
 </table>
 
 <div class="box" style="width: 50%; float: left">
-    <canvas id="group-sales" height="<?= (int) (23.3 * count($salesGroups) + 50); ?>"></canvas>
+    <canvas id="group-sales" height="<?= (int) (23.3 * count($salesGroups) + 30); ?>"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -124,12 +124,12 @@ $topCustomers = $this->getData('customer');
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = $topCustomers['old'][$key] ?? 0 . ','; } echo implode(',', $data); ?>]
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = (!isset($topCustomers['old'][$key]) || !is_numeric($topCustomers['old'][$key]) ? 0 : $topCustomers['old'][$key]); } echo implode(',', $data); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?= implode(',', $top); ?>]
+                data: [<?php $data = []; foreach($top as $key => $value) { $data[] = (!isset($topCustomers['now'][$key]) || !is_numeric($topCustomers['now'][$key]) ? 0 : $topCustomers['now'][$key]); } echo implode(',', $data); ?>]
             }]
         },
         options: {
@@ -139,7 +139,7 @@ $topCustomers = $this->getData('customer');
             stacked: false,
             title:{
                 display:true,
-                text:"Top Sales by Countries"
+                text:"Top Sales by Customers"
             },
             tooltips: {
                 mode: 'label',
@@ -152,6 +152,11 @@ $topCustomers = $this->getData('customer');
                 }
             },
             scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
                 yAxes: [{
                     type: "linear",
                     display: true,

@@ -4,11 +4,6 @@
             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}?u={?u}'); ?>">Overview</a>
             <li>Sales
                 <ul>
-                    <li>Overview
-                        <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/history?{?}'); ?>">Month</a>
-                            <li><a href="">Year</a>
-                        </ul>
                     <li>List
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/list?{?}&i=month'); ?>">Month</a>

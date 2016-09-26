@@ -9,12 +9,6 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^sales/history.*$' => [
-        [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showSalesOverview',
-            'verb' => RouteVerb::GET,
-        ],
-    ],
     '^sales/list.*?i=month.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showListMonth',
@@ -35,7 +29,7 @@ return [
     ],
     '^sales/location.*?i=year.*$' => [
         [
-            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleYear',
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showLocationYear',
             'verb' => RouteVerb::GET,
         ],
     ],

@@ -90,14 +90,6 @@ class DashboardController
         }
     }
 
-    public function showSalesOverview(RequestAbstract $request, ResponseAbstract $response)
-    {
-        $view = new View($this->app, $request, $response);
-        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-history');
-
-        return $view;
-    }
-
     public function showListMonth(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);
@@ -623,7 +615,7 @@ class DashboardController
             $groupsSD        = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'sd', $accounts);
             $groupsSDLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
             $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
-            $customersSDLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
+            $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
 
             $this->loopCustomerGroups('now', $groupsSD, 'sd', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersSD, $salesCustomers);
@@ -635,7 +627,7 @@ class DashboardController
             $groupsGDF        = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'gdf', $accounts);
             $groupsGDFLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
             $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
-            $customersGDFLast = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
 
             $this->loopCustomerGroups('now', $groupsGDF, 'gdf', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersGDF, $salesCustomers);
@@ -672,11 +664,12 @@ class DashboardController
     private function loopCustomer(string $period, array $resultset, array &$salesCustomers)
     {
         foreach ($resultset as $line) {
-            if (!isset($salesCustomers[$period][$line['customer']])) {
-                $salesCustomers[$period][$line['customer']] = 0.0;
+            $customer = trim($line['customer']);
+            if (!isset($salesCustomers[$period][$customer])) {
+                $salesCustomers[$period][$customer] = 0.0;
             }
 
-            $salesCustomers[$period][$line['customer']] += $line['sales'];
+            $salesCustomers[$period][$customer] += $line['sales'];
         }
     }
 
@@ -729,6 +722,11 @@ class DashboardController
 
         $accountPositions = [];
         $accounts         = ArrayUtils::arrayFlatten(StructureDefinitions::PL_ACCOUNTS);
+        if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+            $accounts[] = 8591;
+            $accounts[] = 3491;
+            $accounts[] = 3964;
+        }
 
         if ($request->getData('u') !== 'gdf') {
             $accountsSD     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);

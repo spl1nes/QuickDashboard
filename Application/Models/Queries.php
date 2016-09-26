@@ -166,7 +166,7 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        FiBuchungsArchiv.KST
+                        FiBuchungsArchiv.Konto, FiBuchungsArchiv.KST
                 UNION ALL
                     SELECT 
                         FiBuchungen.Konto as account,
@@ -178,7 +178,7 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        FiBuchungen.KST
+                        FiBuchungen.Konto, FiBuchungen.KST
                 ) t
             GROUP BY t.account, t.costcenter;';
     }

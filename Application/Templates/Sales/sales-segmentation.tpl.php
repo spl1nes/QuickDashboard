@@ -24,7 +24,7 @@ $totalGroups = $this->getData('totalGroups');
         <td><?= number_format($salesGroups['All'][$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesGroups['All'][$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($salesGroups['All'][$segment][$group]['now'] ?? 0)-($salesGroups['All'][$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesGroups['All'][$segment][$group]['old']) || !is_numeric($salesGroups['All'][$segment][$group]['old']) ? 0 : (($salesGroups['All'][$segment][$group]['now'] ?? 0)/$salesGroups['All'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesGroups['All'][$segment][$group]['old']) || $salesGroups['All'][$segment][$group]['old'] == 0 ? 0 : (($salesGroups['All'][$segment][$group]['now'] ?? 0)/$salesGroups['All'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <tr>
         <th><?= $segment; ?>
@@ -43,19 +43,95 @@ $totalGroups = $this->getData('totalGroups');
 </table>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="group-sales" height="200"></canvas>
+    <canvas id="group-sales" height="150"></canvas>
 </div>
 
 <div class="clear"></div>
 
-<div class="box" style="width: 100%; float: left">
-    <canvas id="group-sales-domestic" height="200"></canvas>
-</div>
+<table style="width: 100%; float: left;">
+    <caption>Sales Segmentation Domestic</caption>
+    <thead>
+    <tr>
+        <th>Segment
+        <th>Group
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <?php foreach($salesGroups['Domestic'] as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $sales) : ?>
+    <tr>
+        <td><?= $segment; ?>
+        <td><?= $group; ?>
+        <td><?= number_format($salesGroups['Domestic'][$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesGroups['Domestic'][$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesGroups['Domestic'][$segment][$group]['now'] ?? 0)-($salesGroups['Domestic'][$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesGroups['Domestic'][$segment][$group]['old']) || $salesGroups['Domestic'][$segment][$group]['old'] == 0 ? 0 : (($salesGroups['Domestic'][$segment][$group]['now'] ?? 0)/$salesGroups['Domestic'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th><?= $segment; ?>
+        <th>Total
+        <th><?= number_format($segmentGroups['Domestic'][$segment]['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($segmentGroups['Domestic'][$segment]['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($segmentGroups['Domestic'][$segment]['now'] ?? 0)-($segmentGroups['Domestic'][$segment]['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($segmentGroups['Domestic'][$segment]['old']) || $segmentGroups['Domestic'][$segment]['old'] == 0 ? 0 : (($segmentGroups['Domestic'][$segment]['now'] ?? 0)/$segmentGroups['Domestic'][$segment]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th colspan="2">Total
+        <th><?= number_format($totalGroups['Domestic']['old'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['Domestic']['now'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['Domestic']['now']-$totalGroups['Domestic']['old'], 0, ',', '.') ?>
+        <th><?= number_format(!is_numeric($totalGroups['Domestic']['old']) || $totalGroups['Domestic']['old'] == 0 ? 0 : (($totalGroups['Domestic']['now'] ?? 0)/$totalGroups['Domestic']['old']-1)*100, 0, ',', '.') ?> %
+</table>
 
 <div class="clear"></div>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="group-sales-export" height="200"></canvas>
+    <canvas id="group-sales-domestic" height="150"></canvas>
+</div>
+
+<div class="clear"></div>
+
+<table style="width: 100%; float: left;">
+    <caption>Sales Segmentation Export</caption>
+    <thead>
+    <tr>
+        <th>Segment
+        <th>Group
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <?php foreach($salesGroups['Export'] as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $sales) : ?>
+    <tr>
+        <td><?= $segment; ?>
+        <td><?= $group; ?>
+        <td><?= number_format($salesGroups['Export'][$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesGroups['Export'][$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesGroups['Export'][$segment][$group]['now'] ?? 0)-($salesGroups['Export'][$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($salesGroups['Export'][$segment][$group]['old']) || $salesGroups['Export'][$segment][$group]['old'] == 0 ? 0 : (($salesGroups['Export'][$segment][$group]['now'] ?? 0)/$salesGroups['Export'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th><?= $segment; ?>
+        <th>Total
+        <th><?= number_format($segmentGroups['Export'][$segment]['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($segmentGroups['Export'][$segment]['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($segmentGroups['Export'][$segment]['now'] ?? 0)-($segmentGroups['Export'][$segment]['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($segmentGroups['Export'][$segment]['old']) || $segmentGroups['Export'][$segment]['old'] == 0 ? 0 : (($segmentGroups['Export'][$segment]['now'] ?? 0)/$segmentGroups['Export'][$segment]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th colspan="2">Total
+        <th><?= number_format($totalGroups['Export']['old'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['Export']['now'], 0, ',', '.') ?>
+        <th><?= number_format($totalGroups['Export']['now']-$totalGroups['Export']['old'], 0, ',', '.') ?>
+        <th><?= number_format(!is_numeric($totalGroups['Export']['old']) || $totalGroups['Export']['old'] == 0 ? 0 : (($totalGroups['Export']['now'] ?? 0)/$totalGroups['Export']['old']-1)*100, 0, ',', '.') ?> %
+</table>
+
+<div class="clear"></div>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="group-sales-export" height="150"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -140,7 +216,7 @@ $totalGroups = $this->getData('totalGroups');
             stacked: false,
             title:{
                 display:true,
-                text:"Sales by Groups"
+                text:"Sales by Groups Domestic"
             },
             tooltips: {
                 mode: 'label',
@@ -196,7 +272,7 @@ $totalGroups = $this->getData('totalGroups');
             stacked: false,
             title:{
                 display:true,
-                text:"Sales by Groups"
+                text:"Sales by Groups Export"
             },
             tooltips: {
                 mode: 'label',
