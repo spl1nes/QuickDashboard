@@ -52,6 +52,5 @@
                     <li><a href="">Cost Center</a>
                     <li><a href="">Cost Object</a>
                 </ul>
-            <li><a href="">Risk Management</a>
     </nav>
 </div>
