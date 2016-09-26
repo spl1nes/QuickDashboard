@@ -32,6 +32,18 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format(($pl['COGS Services']['now'] ?? 0) - ($pl['COGS Services']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['COGS Services']['old']) ? 0 : number_format((($pl['COGS Services']['now'] ?? 0)/$pl['COGS Services']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
+        <th>Gross Profit
+        <th><?= number_format($pl['Gross Profit']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['Gross Profit']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['Gross Profit']['now'] ?? 0) - ($pl['Gross Profit']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['Gross Profit']['old']) ? 0 : number_format((($pl['Gross Profit']['now'] ?? 0)/$pl['Gross Profit']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Gross Profit Margin
+        <th><?= number_format(($pl['Gross Profit Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['Gross Profit Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['Gross Profit Margin']['now'] ?? 0) - ($pl['Gross Profit Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['Gross Profit Margin']['old']) ? 0 : number_format((($pl['Gross Profit Margin']['now'] ?? 0)/$pl['Gross Profit Margin']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
         <td>Freight
         <td><?= number_format($pl['Freight']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Freight']['now'] ?? 0, 0, ',', '.') ?>
@@ -50,6 +62,18 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format(($pl['External Seminars']['now'] ?? 0) - ($pl['External Seminars']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['External Seminars']['old']) ? 0 : number_format((($pl['External Seminars']['now'] ?? 0)/$pl['External Seminars']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
+        <th>Other Selling Expenses
+        <th><?= number_format($pl['Other Selling Expenses']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['Other Selling Expenses']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['Other Selling Expenses']['now'] ?? 0) - ($pl['Other Selling Expenses']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['Other Selling Expenses']['old']) ? 0 : number_format((($pl['Other Selling Expenses']['now'] ?? 0)/$pl['Other Selling Expenses']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Other Selling Expenses Margin
+        <th><?= number_format(($pl['Other Selling Expenses Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['Other Selling Expenses Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['Other Selling Expenses Margin']['now'] ?? 0) - ($pl['Other Selling Expenses Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['Other Selling Expenses Margin']['old']) ? 0 : number_format((($pl['Other Selling Expenses Margin']['now'] ?? 0)/$pl['Other Selling Expenses Margin']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
         <td>Other Revenue
         <td><?= number_format($pl['Other Revenue']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Other Revenue']['now'] ?? 0, 0, ',', '.') ?>
@@ -67,6 +91,18 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format($pl['Welfare Expenses']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($pl['Welfare Expenses']['now'] ?? 0) - ($pl['Welfare Expenses']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['Welfare Expenses']['old']) ? 0 : number_format((($pl['Welfare Expenses']['now'] ?? 0)/$pl['Welfare Expenses']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Personnel
+        <th><?= number_format($pl['Personnel']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['Personnel']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['Personnel']['now'] ?? 0) - ($pl['Personnel']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['Personnel']['old']) ? 0 : number_format((($pl['Personnel']['now'] ?? 0)/$pl['Personnel']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Personnel Margin
+        <th><?= number_format(($pl['Personnel Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['Personnel Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['Personnel Margin']['now'] ?? 0) - ($pl['Personnel Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['Personnel Margin']['old']) ? 0 : number_format((($pl['Personnel Margin']['now'] ?? 0)/$pl['Personnel Margin']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
         <td>Marketing
         <td><?= number_format($pl['Marketing']['old'] ?? 0, 0, ',', '.') ?>
@@ -176,11 +212,47 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format(($pl['Doubtful Accounts']['now'] ?? 0) - ($pl['Doubtful Accounts']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['Doubtful Accounts']['old']) ? 0 : number_format((($pl['Doubtful Accounts']['now'] ?? 0)/$pl['Doubtful Accounts']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
+        <th>Total Other OPEX
+        <th><?= number_format($pl['Total Other OPEX']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['Total Other OPEX']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['Total Other OPEX']['now'] ?? 0) - ($pl['Total Other OPEX']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['Total Other OPEX']['old']) ? 0 : number_format((($pl['Total Other OPEX']['now'] ?? 0)/$pl['Total Other OPEX']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Total Other OPEX Margin
+        <th><?= number_format(($pl['Total Other OPEX Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['Total Other OPEX Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['Total Other OPEX Margin']['now'] ?? 0) - ($pl['Total Other OPEX Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['Total Other OPEX Margin']['old']) ? 0 : number_format((($pl['Total Other OPEX Margin']['now'] ?? 0)/$pl['Total Other OPEX Margin']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>EBITDA
+        <th><?= number_format($pl['EBITDA']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['EBITDA']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['EBITDA']['now'] ?? 0) - ($pl['EBITDA']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['EBITDA']['old']) ? 0 : number_format((($pl['EBITDA']['now'] ?? 0)/$pl['EBITDA']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>EBITDA Margin
+        <th><?= number_format(($pl['EBITDA Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['EBITDA Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['EBITDA Margin']['now'] ?? 0) - ($pl['EBITDA Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['EBITDA Margin']['old']) ? 0 : number_format((($pl['EBITDA Margin']['now'] ?? 0)/$pl['EBITDA Margin']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
         <td>Depreciation
         <td><?= number_format($pl['Depreciation']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Depreciation']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($pl['Depreciation']['now'] ?? 0) - ($pl['Depreciation']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['Depreciation']['old']) ? 0 : number_format((($pl['Depreciation']['now'] ?? 0)/$pl['Depreciation']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>EBIT
+        <th><?= number_format($pl['EBIT']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['EBIT']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['EBIT']['now'] ?? 0) - ($pl['EBIT']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['EBIT']['old']) ? 0 : number_format((($pl['EBIT']['now'] ?? 0)/$pl['EBIT']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>EBIT Margin
+        <th><?= number_format(($pl['EBIT Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['EBIT Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['EBIT Margin']['now'] ?? 0) - ($pl['EBIT Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['EBIT Margin']['old']) ? 0 : number_format((($pl['EBIT Margin']['now'] ?? 0)/$pl['EBIT Margin']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
         <td>Interest Revenue
         <td><?= number_format($pl['Interest Revenue']['old'] ?? 0, 0, ',', '.') ?>
@@ -194,6 +266,18 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format(($pl['Interest Expenses']['now'] ?? 0) - ($pl['Interest Expenses']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['Interest Expenses']['old']) ? 0 : number_format((($pl['Interest Expenses']['now'] ?? 0)/$pl['Interest Expenses']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
+        <th>EBT
+        <th><?= number_format($pl['EBT']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['EBT']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['EBT']['now'] ?? 0) - ($pl['EBT']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['EBT']['old']) ? 0 : number_format((($pl['EBT']['now'] ?? 0)/$pl['EBT']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>EBT Margin
+        <th><?= number_format(($pl['EBT Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['EBT Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['EBT Margin']['now'] ?? 0) - ($pl['EBT Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['EBT Margin']['old']) ? 0 : number_format((($pl['EBT Margin']['now'] ?? 0)/$pl['EBT Margin']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
         <td>Taxes
         <td><?= number_format($pl['Taxes']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Taxes']['now'] ?? 0, 0, ',', '.') ?>
@@ -205,6 +289,18 @@ $pl = $this->getData('accountPositions');
         <td><?= number_format($pl['Transfer Of Profits']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($pl['Transfer Of Profits']['now'] ?? 0) - ($pl['Transfer Of Profits']['old'] ?? 0), 0, ',', '.') ?>
         <td><?= !isset($pl['Transfer Of Profits']['old']) ? 0 : number_format((($pl['Transfer Of Profits']['now'] ?? 0)/$pl['Transfer Of Profits']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Net Income
+        <th><?= number_format($pl['Net Income']['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($pl['Net Income']['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($pl['Net Income']['now'] ?? 0) - ($pl['Net Income']['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= !isset($pl['Net Income']['old']) ? 0 : number_format((($pl['Net Income']['now'] ?? 0)/$pl['Net Income']['old'] - 1)*100, 2, ',', '.')?> %
+    <tr>
+        <th>Net Income Margin
+        <th><?= number_format(($pl['Net Income Margin']['old'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format(($pl['Net Income Margin']['now'] ?? 0) * 100, 0, ',', '.') ?> %
+        <th><?= number_format((($pl['Net Income Margin']['now'] ?? 0) - ($pl['Net Income Margin']['old'] ?? 0)) * 100, 0, ',', '.') ?> %
+        <th><?= !isset($pl['Net Income Margin']['old']) ? 0 : number_format((($pl['Net Income Margin']['now'] ?? 0)/$pl['Net Income Margin']['old'] - 1)*100, 2, ',', '.')?> %
 </table>
 
 <div class="clear"></div>

@@ -89,4 +89,16 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^reporting/profit.*?i=month.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleProfitMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^reporting/profit.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showArticleProfitYear',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 ];

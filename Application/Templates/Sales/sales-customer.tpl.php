@@ -53,7 +53,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 <div class="clear"></div>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="customers-count" height="150"></canvas>
+    <canvas id="customers-count" height="100"></canvas>
 </div>
 
 <div class="clear"></div>

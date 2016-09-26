@@ -44,6 +44,11 @@
                         </ul>
                     <li><a href="">KPI</a>
                     <li><a href="">Sales & EBIT</a>
+                    <li><a>Gross Profit</a>
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=year'); ?>">Year</a>
+                        </ul>
                 </ul>
             <li>Analysis
                 <ul>
