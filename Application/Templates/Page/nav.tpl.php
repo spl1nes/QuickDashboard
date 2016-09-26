@@ -37,11 +37,6 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/pl?{?}&i=year'); ?>">Year</a>
                         </ul>
-                    <li><a>Balance</a>
-                        <ul>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/balance?{?}&i=month'); ?>">Month</a>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/balance?{?}&i=year'); ?>">Year</a>
-                        </ul>
                     <li><a>Gross Profit</a>
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=month'); ?>">Month</a>
