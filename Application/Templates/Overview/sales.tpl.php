@@ -36,7 +36,7 @@ $currentMonth = $this->getData('currentMonth');
 <div style="width: 100%;">
     <canvas id="overview-consolidated-sales"></canvas>
 </div>
-<p>The following chart shows the consolidated accumlated sales on a monthly basis for the last 3 years.</p>
+<p>The following chart shows the accumlated sales on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
     <canvas id="overview-acc-consolidated-sales"></canvas>
 </div>
