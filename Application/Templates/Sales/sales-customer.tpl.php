@@ -254,7 +254,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: 'Two Years Ago',
-                backgroundColor: "rgba(104, 226, 86, 1)",
+                backgroundColor: "rgba(255, 206, 86, 1)",
                 yAxisID: "y-axis-1",
                 data: [<?php echo implode(',', $customerCount[$current_2]); ?>]
             }, {
