@@ -139,14 +139,14 @@ $salesCountry = $this->getData('salesCountry');
 
 <div class="clear"></div>
 
-<p>The following world map shows the sales by country as well as the sales by region. A total of <?= count($salesCountry['now']); ?> countries are beeing delivered.</p>
+<p>The following world map shows the sales by country as well as the sales by region. A total of <?= count($salesCountry['now']); ?> countries have been delivered where last year <?= count($salesCountry['old']); ?> countries have been delivered.</p>
 
 <div class="box" id="world-map-country" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 <div class="box" id="world-map-region" style="position: relative; width: 50%; max-height: 450px; float: left;"></div>
 
 <div class="clear"></div>
 
-<p>The following chart shows the current top countries as well as the sales of these countries in the same month of the last year.</p>
+<p>The following chart shows the current top countries as well as the sales of these countries compared to last year.</p>
 
 <div class="box" style="width: 100%">
     <canvas id="top-countries-chart" height="100"></canvas>

@@ -41,7 +41,7 @@ $today = $this->getData('today');
         <th><?= number_format($salesAcc[$days] == 0 ? 0 : ($salesAcc[$days]/$salesAccLast[$today] - 1) * 100, 2, ',', '.'); ?> %
         <th><?= number_format($salesAccLast[count($salesAccLast)], 0, ',', '.'); ?>
         <th><?= number_format($salesAcc[$days], 0, ',', '.'); ?>
-        <th><?= number_format($salesAcc[$days] - $salesAccLast[$today], 0, ',', '.'); ?>
+        <th><?= number_format($salesAcc[$days] - $salesAccLast[count($salesAccLast)], 0, ',', '.'); ?>
         <th><?= number_format(($salesAcc[$days]/$salesAccLast[count($salesAccLast)] - 1) * 100, 2, ',', '.'); ?> %
 </table>
 </script>

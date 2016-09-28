@@ -7,9 +7,10 @@ class Queries
     public static function selectSalesYearMonth(\DateTime $start, \DateTime $end, array $accounts) : string
     {
         return 'SELECT 
-                t.years, t.months, SUM(t.sales) AS sales
+                t.account, t.years, t.months, SUM(t.sales) AS sales
             FROM (
                     SELECT 
+                        FiBuchungsArchiv.Konto as account,
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
@@ -19,10 +20,12 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
+                        FiBuchungsArchiv.Konto,
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104))
                 UNION ALL
                     SELECT 
+                        FiBuchungen.Konto as account,
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
                         SUM(-FiBuchungen.Betrag) AS sales
@@ -32,10 +35,11 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
+                        FiBuchungen.Konto,
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104))
                 ) t
-            GROUP BY t.years, t.months;';
+            GROUP BY t.account, t.years, t.months;';
     }
 
     public static function selectSalesDaily(\DateTime $start, \DateTime $end, array $accounts) : string

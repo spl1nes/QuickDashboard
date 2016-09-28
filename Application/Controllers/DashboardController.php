@@ -181,8 +181,16 @@ class DashboardController
         $start   = $this->getFiscalYearStart($current);
         $start->modify('-1 year');
 
-        $totalSales    = [];
-        $accTotalSales = [];
+        $totalSales    = [
+            'All' => [],
+            'Domestic' => [],
+            'Export' => [],
+        ];
+        $accTotalSales = [
+            'All' => [],
+            'Domestic' => [],
+            'Export' => [],
+        ];
 
         $accounts = StructureDefinitions::ACCOUNTS;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -199,12 +207,18 @@ class DashboardController
             $this->loopListYear($salesGDF, $totalSales);
         }
 
-        foreach ($totalSales as $year => $months) {
-            ksort($totalSales[$year]);
+        foreach ($totalSales['All'] as $year => $months) {
+            ksort($totalSales['All'][$year]);
+            ksort($totalSales['Domestic'][$year]);
+            ksort($totalSales['Export'][$year]);
 
             for ($i = 1; $i <= 12; $i++) {
-                $prev                     = $accTotalSales[$year][$i - 1] ?? 0.0;
-                $accTotalSales[$year][$i] = $prev + ($totalSales[$year][$i] ?? 0);
+                $prev                     = $accTotalSales['All'][$year][$i - 1] ?? 0.0;
+                $accTotalSales['All'][$year][$i] = $prev + ($totalSales['All'][$year][$i] ?? 0);
+                $prev                     = $accTotalSales['Domestic'][$year][$i - 1] ?? 0.0;
+                $accTotalSales['Domestic'][$year][$i] = $prev + ($totalSales['Domestic'][$year][$i] ?? 0);
+                $prev                     = $accTotalSales['Export'][$year][$i - 1] ?? 0.0;
+                $accTotalSales['Export'][$year][$i] = $prev + ($totalSales['Export'][$year][$i] ?? 0);
             }
         }
 
@@ -212,10 +226,18 @@ class DashboardController
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-        $view->setData('sales', $totalSales[$currentYear]);
-        $view->setData('salesAcc', $accTotalSales[$currentYear]);
-        $view->setData('salesLast', $totalSales[$currentYear - 1]);
-        $view->setData('salesAccLast', $accTotalSales[$currentYear - 1]);
+        $view->setData('sales', $totalSales['All'][$currentYear]);
+        $view->setData('salesAcc', $accTotalSales['All'][$currentYear]);
+        $view->setData('salesLast', $totalSales['All'][$currentYear - 1]);
+        $view->setData('salesAccLast', $accTotalSales['All'][$currentYear - 1]);
+        $view->setData('salesDomestic', $totalSales['Domestic'][$currentYear]);
+        $view->setData('salesAccDomestic', $accTotalSales['Domestic'][$currentYear]);
+        $view->setData('salesLastDomestic', $totalSales['Domestic'][$currentYear - 1]);
+        $view->setData('salesAccLastDomestic', $accTotalSales['Domestic'][$currentYear - 1]);
+        $view->setData('salesExport', $totalSales['Export'][$currentYear]);
+        $view->setData('salesAccExport', $accTotalSales['Export'][$currentYear]);
+        $view->setData('salesLastExport', $totalSales['Export'][$currentYear - 1]);
+        $view->setData('salesAccLastExport', $accTotalSales['Export'][$currentYear - 1]);
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
         $view->setData('date', $current);
@@ -230,11 +252,16 @@ class DashboardController
             $mod         = ($line['months'] - $this->app->config['fiscal_year']);
             $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
-                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            if (!isset($totalSales['All'][$fiscalYear][$fiscalMonth])) {
+                $totalSales['All'][$fiscalYear][$fiscalMonth] = 0.0;
+                $totalSales['Domestic'][$fiscalYear][$fiscalMonth] = 0.0;
+                $totalSales['Export'][$fiscalYear][$fiscalMonth] = 0.0;
             }
 
-            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+            $totalSales['All'][$fiscalYear][$fiscalMonth] += $line['sales'];
+
+            $region = StructureDefinitions::getDomesticExportAccount($line['account']);
+            $totalSales[$region][$fiscalYear][$fiscalMonth] += $line['sales'];
         }
     }
 
