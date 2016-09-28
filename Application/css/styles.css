@@ -236,6 +236,10 @@ select.plain {
         display: none;
     }
 
+    header {
+        background: none;
+    }
+
     main {
         min-height: 1%;
     }
