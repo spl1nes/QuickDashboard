@@ -781,8 +781,8 @@ class DashboardController
         arsort($salesCustomers['old']);
 
         $gini = [
-            'now' => Lorenzkurve::getGiniCoefficient($salesCustomers['now']),
-            'old' => Lorenzkurve::getGiniCoefficient($salesCustomers['old']),
+            'now' => Lorenzkurve::getGiniCoefficient(array_reverse($salesCustomers['now'])),
+            'old' => Lorenzkurve::getGiniCoefficient(array_reverse($salesCustomers['old'])),
         ];
 
         foreach ($customerCount as $year => $months) {
