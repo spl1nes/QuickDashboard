@@ -232,12 +232,12 @@ select.plain {
 }
 
 @media print {
-    nav {
+    nav, footer {
         display: none;
     }
 
-    footer {
-        color: #000;
+    main {
+        min-height: 1%;
     }
 
     @page {
