@@ -5,7 +5,7 @@ $salesAcc = $this->getData('salesAcc');
 $salesAccLast = $this->getData('salesAccLast');
 $today = $this->getData('currentMonth');
 ?>
-<h1>Sales List</h1>
+<h1>Sales List - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <table>
     <caption>Sales by Month</caption>
     <thead>

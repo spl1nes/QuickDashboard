@@ -72,6 +72,7 @@ class DashboardController
         $view->setData('currentMonth', $currentMonth);
         $view->setData('sales', $totalSales);
         $view->setData('salesAcc', $accTotalSales);
+        $view->setData('date', $current);
 
         return $view;
     }
@@ -155,6 +156,7 @@ class DashboardController
         $view->setData('salesAccLast', $accTotalSalesLast);
         $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
         $view->setData('today', $current->format('d') - 1);
+        $view->setData('date', $current);
 
         return $view;
     }
@@ -216,6 +218,7 @@ class DashboardController
         $view->setData('salesAccLast', $accTotalSales[$currentYear - 1]);
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
+        $view->setData('date', $current);
 
         return $view;
     }
@@ -342,6 +345,7 @@ class DashboardController
         $view->setData('salesRegion', $salesRegion);
         $view->setData('salesDevUndev', $salesDevUndev);
         $view->setData('salesExportDomestic', $salesExportDomestic);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
@@ -457,6 +461,7 @@ class DashboardController
         $view->setData('salesGroups', $salesGroups);
         $view->setData('segmentGroups', $segmentGroups);
         $view->setData('totalGroups', $totalGroups);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
@@ -592,6 +597,7 @@ class DashboardController
         $view->setData('salesGroups', $salesGroups);
         $view->setData('segmentGroups', $segmentGroups);
         $view->setData('totalGroups', $totalGroups);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
@@ -687,6 +693,7 @@ class DashboardController
         arsort($repsSales);
 
         $view->setData('repsSales', $repsSales);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
@@ -781,8 +788,8 @@ class DashboardController
         arsort($salesCustomers['old']);
 
         $gini = [
-            'now' => Lorenzkurve::getGiniCoefficient(array_reverse($salesCustomers['now'])),
-            'old' => Lorenzkurve::getGiniCoefficient(array_reverse($salesCustomers['old'])),
+            'now' => Lorenzkurve::getGiniCoefficient($salesCustomers['now']),
+            'old' => Lorenzkurve::getGiniCoefficient($salesCustomers['old']),
         ];
 
         foreach ($customerCount as $year => $months) {
@@ -795,6 +802,7 @@ class DashboardController
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('customerCount', $customerCount);
         $view->setData('gini', $gini);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
@@ -955,6 +963,7 @@ class DashboardController
         $accountPositions['Net Income Margin']['old'] = ($accountPositions['Net Income']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
         $view->setData('accountPositions', $accountPositions);
+        $view->setData('date', $endCurrent);
 
         return $view;
     }
