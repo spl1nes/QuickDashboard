@@ -380,6 +380,10 @@ class DashboardController
     private function loopLocation(string $period, array $resultset, array &$salesRegion, array &$salesDevUndev, array &$salesCountry)
     {
         foreach ($resultset as $line) {
+            if(!isset($line['countryChar'])) {
+                continue;
+            }
+
             $region = StructureDefinitions::getRegion($line['countryChar']);
             if (!isset($salesRegion[$period][$region])) {
                 $salesRegion[$period][$region] = 0.0;
@@ -1009,14 +1013,16 @@ class DashboardController
 
     private function calcCurrentMonth(\DateTime $date) : int
     {
-        return ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1) % 12 + 1;
+        $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);
+        return abs(($mod < 0 ? 12 + $mod : $mod) % 12 + 1);
     }
 
     private function getFiscalYearStart(SmartDateTime $date) : SmartDateTime
     {
         $newDate = new SmartDateTime($date->format('Y') . '-' . $date->format('m') . '-01');
+        $newDate->smartModify(0, -$this->calcCurrentMonth($date));
 
-        return $newDate->modify('-' . $this->calcCurrentMonth($date) . ' month');
+        return $newDate;
     }
 
     private function select(string $selectQuery, \DateTime $start, \DateTime $end, string $company, array $accounts) : array

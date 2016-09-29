@@ -118,7 +118,7 @@ $salesCountry = $this->getData('salesCountry');
         <td><?= number_format($salesRegion['old']['Oceania'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesRegion['now']['Oceania'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($salesRegion['now']['Oceania'] ?? 0) - ($salesRegion['old']['Oceania'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Oceania']) ? 0 : ($salesRegion['now']['Oceania']/$salesRegion['old']['Oceania']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesRegion['old']['Oceania']) ? 0 : (($salesRegion['now']['Oceania'] ?? 0)/$salesRegion['old']['Oceania']-1)*100, 0, ',', '.') ?> %
     <tr>
         <td>Other
         <td><?= number_format($salesRegion['old']['Other'] ?? 0, 0, ',', '.') ?>
