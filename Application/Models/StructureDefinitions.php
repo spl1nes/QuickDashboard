@@ -173,7 +173,7 @@ class StructureDefinitions
         3  => 'Digital Workflow',
         4  => 'IMPLA',
         5  => 'Misc.',
-        6  => 'Mani Articles',
+        6  => 'MANI Articles',
         10 => 'Precious Alloys',
         11 => 'Non-precious Alloys',
         12 => 'Acrylics',
