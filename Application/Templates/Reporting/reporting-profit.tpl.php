@@ -3,7 +3,7 @@ $salesGroups = $this->getData('salesGroups');
 $segmentGroups = $this->getData('segmentGroups');
 $totalGroups = $this->getData('totalGroups');
 ?>
-<h1>Gross Profit Segmentation - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>Gross Profit Segmentation - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 <p class="info">The following tables contain the gross profit of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 100%; float: left;">

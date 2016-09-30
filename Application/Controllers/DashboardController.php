@@ -157,6 +157,7 @@ class DashboardController
         $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
         $view->setData('today', $current->format('d') - 1);
         $view->setData('date', $current);
+        $view->setData('type', 'isolated');
 
         return $view;
     }
@@ -241,6 +242,7 @@ class DashboardController
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
         $view->setData('date', $current);
+        $view->setData('type', 'accumulated');
 
         return $view;
     }
@@ -279,7 +281,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showLocationYear(RequestAbstract $request, ResponseAbstract $response)
@@ -296,7 +301,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showLocation(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
@@ -421,7 +429,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showArticleYear(RequestAbstract $request, ResponseAbstract $response)
@@ -438,7 +449,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showArticle(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
@@ -550,7 +564,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showArticleProfit($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showArticleProfit($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showArticleProfitYear(RequestAbstract $request, ResponseAbstract $response)
@@ -567,7 +584,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showArticleProfit($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showArticleProfit($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showArticleProfit(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
@@ -678,7 +698,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showRepsYear(RequestAbstract $request, ResponseAbstract $response)
@@ -695,7 +718,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showReps(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
@@ -743,7 +769,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showCustomersYear(RequestAbstract $request, ResponseAbstract $response)
@@ -760,7 +789,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showCustomers(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
@@ -904,7 +936,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $startLast->getEndOfMonth();
 
-        return $this->showPL($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showPL($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+
+        return $view;
     }
 
     public function showPLYear(RequestAbstract $request, ResponseAbstract $response)
@@ -921,7 +956,10 @@ class DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        return $this->showPL($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view = $this->showPL($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+
+        return $view;
     }
 
     public function showPL(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)

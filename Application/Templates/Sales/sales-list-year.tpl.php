@@ -16,7 +16,7 @@ $salesAccLastExport = $this->getData('salesAccLastExport');
 
 $today = $this->getData('currentMonth');
 ?>
-<h1>Sales List - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>Sales List - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 <table>
     <caption>Sales by Month</caption>
     <thead>

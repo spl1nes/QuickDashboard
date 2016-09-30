@@ -1,7 +1,7 @@
 <?php
 $pl = $this->getData('accountPositions');
 ?>
-<h1>P&L - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>P&L - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 
 <table style="width: 100%; float: left;">
     <caption>P&L</caption>

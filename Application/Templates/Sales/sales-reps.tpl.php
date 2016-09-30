@@ -1,7 +1,7 @@
 <?php
 $reps = $this->getData('repsSales');
 ?>
-<h1>Sales by Sales Rep - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>Sales by Sales Rep - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 <table>
     <caption>Sales by Sales Rep</caption>
     <thead>

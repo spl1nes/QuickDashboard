@@ -4,7 +4,7 @@ $salesDevUndev = $this->getData('salesDevUndev');
 $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
-<h1>Sales Location - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>Sales Location - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 <p class="info">The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
 
 <table style="width: 50%; float: left;">
