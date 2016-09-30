@@ -5,7 +5,7 @@ $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
 <h1>Sales Location - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
+<p class="info">The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
 
 <table style="width: 50%; float: left;">
     <caption>Sales by Domestic/Export</caption>
@@ -138,6 +138,7 @@ $salesCountry = $this->getData('salesCountry');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
 
 <p>The following world map shows the sales by country as well as the sales by region. A total of <?= count($salesCountry['now']); ?> countries have been delivered where last year <?= count($salesCountry['old']); ?> countries have been delivered.</p>
 

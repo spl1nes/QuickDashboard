@@ -231,6 +231,10 @@ select.plain {
     color: #fff9d4;
 }
 
+.break {
+    display: none;
+}
+
 @media print {
     nav, footer {
         display: none;
@@ -246,5 +250,18 @@ select.plain {
 
     @page {
         size:210mm 297mm;
+    }
+
+    .break {
+        page-break-after: always;
+        display: block;
+    }
+
+    .info {
+        display: none;
+    }
+
+    blockquote {
+        display: none;
     }
 }

@@ -9,7 +9,7 @@ $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
 ?>
 <h1>Sales Customers - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
+<p class="info">The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 50%; float: left;">
     <caption>Sales by Customer Groups</caption>
@@ -58,6 +58,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
 
 <p>The follwoing chart shows the amount of active customers (have sales impact) per month.</p>
 

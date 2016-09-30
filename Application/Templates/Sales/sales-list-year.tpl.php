@@ -55,6 +55,8 @@ $today = $this->getData('currentMonth');
         <th><?= number_format($salesAccLast[$today] == 0 ? 0 : ($salesAcc[$today]/$salesAccLast[count($salesAccLast)] - 1) * 100, 2, ',', '.'); ?> %
 </table>
 
+<div class="break"></div>
+
 <table>
     <caption>Sales by Month Domestic</caption>
     <thead>

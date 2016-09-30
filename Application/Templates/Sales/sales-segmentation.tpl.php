@@ -4,7 +4,7 @@ $segmentGroups = $this->getData('segmentGroups');
 $totalGroups = $this->getData('totalGroups');
 ?>
 <h1>Sales Segmentation - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
+<p class="info">The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis.</p>
 
 <table style="width: 100%; float: left;">
     <caption>Sales Segmentation</caption>
@@ -47,6 +47,7 @@ $totalGroups = $this->getData('totalGroups');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
 
 <table style="width: 100%; float: left;">
     <caption>Sales Segmentation Domestic</caption>
@@ -91,6 +92,7 @@ $totalGroups = $this->getData('totalGroups');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
 
 <table style="width: 100%; float: left;">
     <caption>Sales Segmentation Export</caption>
