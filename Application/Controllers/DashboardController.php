@@ -37,7 +37,7 @@ class DashboardController
         $totalSales    = [];
         $accTotalSales = [];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -114,7 +114,7 @@ class DashboardController
         $accTotalSales     = [];
         $accTotalSalesLast = [];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -193,7 +193,7 @@ class DashboardController
             'Export' => [],
         ];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -326,7 +326,7 @@ class DashboardController
         $allGDFLast      = [];
         $allSDLast       = [];
 
-        $accounts          = StructureDefinitions::ACCOUNTS;
+        $accounts          = StructureDefinitions::PL_ACCOUNTS['Sales'];
         $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[]          = 8591;
@@ -482,7 +482,7 @@ class DashboardController
             'Export'   => ['now' => 0.0, 'old' => 0.0],
         ];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -613,8 +613,8 @@ class DashboardController
             'Costs' => ['now' => 0.0, 'old' => 0.0],
         ];
 
-        $accounts      = StructureDefinitions::ACCOUNTS;
-        $accountsCosts = StructureDefinitions::ACCOUNTS_COGS;
+        $accounts      = StructureDefinitions::PL_ACCOUNTS['Sales'];
+        $accountsCosts = StructureDefinitions::getCOGSAccounts();
 
         $accounts[]      = 8591;
         $accountsCosts[] = 3491;
@@ -729,7 +729,7 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-reps');
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -812,7 +812,7 @@ class DashboardController
         $salesCustomers = [];
         $customerCount  = [];
 
-        $accounts = StructureDefinitions::ACCOUNTS;
+        $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
         }
@@ -1046,6 +1046,74 @@ class DashboardController
             }
 
             $accountPositions[$position][$period] += $line['entries'];
+        }
+    }
+
+    public function showEBIT(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Reporting/reporting-ebit');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        $totalSales    = [];
+        $accTotalSales = [];
+
+        $accounts = StructureDefinitions::getEBITAccounts();
+        if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+            $accounts[] = 8591;
+            $accounts[] = 3491;
+        }
+        
+        if ($request->getData('u') !== 'gdf') {
+            $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
+            $this->loopEBIT($salesSD, $totalSales);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
+            $this->loopEBIT($salesGDF, $totalSales);
+        }
+
+        foreach ($totalSales as $year => $months) {
+            ksort($totalSales[$year]);
+
+            foreach ($totalSales[$year] as $month => $value) {
+                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                $accTotalSales[$year][$month] = $prev + $value;
+            }
+        }
+
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        unset($totalSales[$currentYear][$currentMonth]);
+        unset($accTotalSales[$currentYear][$currentMonth]);
+
+        $view->setData('currentFiscalYear', $currentYear);
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('ebit', $totalSales);
+        $view->setData('ebitAcc', $accTotalSales);
+        $view->setData('date', $current);
+
+        return $view;
+    }
+
+    private function loopEBIT(array $resultset, array &$totalSales)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
         }
     }
 

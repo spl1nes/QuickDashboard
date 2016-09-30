@@ -4,27 +4,12 @@ namespace QuickDashboard\Application\Models;
 
 class StructureDefinitions
 {
-    const ACCOUNTS = [
-        8050, 8052, 8055, 8090, 8095, 8100, 8105, 8106, 8110, 8113, 8115, 8120, 8121, 8122, 8125, 8130, 8140, 8160, 8592,
-        8161, 8162, 8300, 8305, 8306, 8310, 8315, 8320, 8330, 8340, 8360, 8361, 8362, 8367, 8368, 8380, 8740, 8746, 8749,
-        8765, 8781, 8791, 8793, 8841, 8843, 8851, 8853, 8861, 8863, 8871, 8873, 8955, 8000, 8005, 8006, 8010, 8013, 8020,
-        8021, 8022, 8030, 8040, 8060, 8062, 8064, 8065, 8070, 8075, 8400, 8405, 8406, 8410, 8413, 8415, 8420, 8425, 8910,
-        8430, 8440, 8460, 8461, 8462, 8463, 8464, 8465, 8487, 8488, 8489, 8502, 8505, 8506, 8507, 8508, 8509, 8690, 8733,
-        8734, 8736, 8739, 8756, 8757, 8794, 8796, 8799, 8840, 8850, 8860, 8870, 8998, 8865, 8500, 8503, 8510, 8511, 8512,
-        8520, 8530, 8584, 8585, 8730, 8855, 2894, 8700, 8200, 8205, 8206, 8210, 8213, 8215, 8220, 8221, 8225, 8230, 8240,
-        8260, 8261, 8262, 8263, 8264, 8287, 8289, 8290, 8741, 8753, 8754, 8761, 8782, 8792, 8795, 8842, 8852, 8862, 8872,
-    ];
-
     const ACCOUNTS_DOMESTIC = [
         8000, 8005, 8006, 8010, 8013, 8020, 8021, 8022, 8030, 8040, 8060, 8062, 8064, 8065, 8070, 8075, 8400, 8405, 8700,
         8406, 8410, 8413, 8415, 8420, 8425, 8430, 8440, 8460, 8461, 8462, 8463, 8464, 8465, 8487, 8488, 8489, 8502, 8505,
         8506, 8507, 8508, 8509, 8690, 8733, 8734, 8736, 8739, 8756, 8757, 8794, 8796, 8799, 8840, 8850, 8860, 8870, 8998,
         8865, 8500, 8503, 8510, 8511, 8512, 8520, 8530, 8584, 8585, 8730, 8855, 2894,
     ];
-
-    const ACCOUNTS_COGS = [
-        3400, 3401, 3405, 3407, 3410, 3410, 3411, 3415, 3420, 3430, 3440, 3460, 3461, 3462, 3465, 3470, 3480, 3500, 3505, 3510, 3515, 3520, 3600, 3730, 3731, 3735, 3736, 3737, 3739, 3756, 3300, 3305, 3310, 3319, 3329, 3340, 3380, 3381, 3382, 3385, 3530, 3660, 3669, 3740, 3742, 3746, 3749, 3200, 3210, 3285, 3492, 3650, 3741, 3800, 4710, 2725, 3961, 3962, 3963, 3965, 4000, 3487, 3490, 8999, 3485, 3486, 8080, 8081, 8085, 8285, 8480, 8485, 8504, 3960, 3964, 3552, 3553, 3554, 3555, 3557, 3100, 3101, 3105, 3110, 3119, 3840,
-        ];
 
     const PL_ACCOUNTS = [
         'Sales'                    => [8050, 8052, 8055, 8090, 8095, 8100, 8105, 8106, 8110, 8113, 8115, 8120, 8121, 8122, 8125, 8130, 8140, 8160, 8592,
@@ -313,5 +298,43 @@ class StructureDefinitions
         }
 
         return '';
+    }
+
+    public static function getCOGSAccounts() : array 
+    {
+        return array_merge(self::PL_ACCOUNTS['COGS Material'], self::PL_ACCOUNTS['COGS Services']);
+    }
+
+    public static function getEBITAccounts() : array 
+    {
+        return array_merge(
+            self::PL_ACCOUNTS['Sales'], 
+            self::PL_ACCOUNTS['COGS Material'], 
+            self::PL_ACCOUNTS['COGS Services'],
+            self::PL_ACCOUNTS['Freight'],
+            self::PL_ACCOUNTS['Provisions'],
+            self::PL_ACCOUNTS['External Seminars'],
+            self::PL_ACCOUNTS['Other Revenue'],
+            self::PL_ACCOUNTS['Wages & Salaries'],
+            self::PL_ACCOUNTS['Welfare Expenses'],
+            self::PL_ACCOUNTS['Marketing'],
+            self::PL_ACCOUNTS['Trade Fair'],
+            self::PL_ACCOUNTS['Rental & Leasing'],
+            self::PL_ACCOUNTS['Utilities'],
+            self::PL_ACCOUNTS['Repair/Maintenance'],
+            self::PL_ACCOUNTS['Stationary Expenses'],
+            self::PL_ACCOUNTS['Communication'],
+            self::PL_ACCOUNTS['Travel Expenses'],
+            self::PL_ACCOUNTS['Entertainment'],
+            self::PL_ACCOUNTS['External Consultants'],
+            self::PL_ACCOUNTS['R&D'],
+            self::PL_ACCOUNTS['Patents'],
+            self::PL_ACCOUNTS['Other Personnel Expenses'],
+            self::PL_ACCOUNTS['Other OPEX'],
+            self::PL_ACCOUNTS['Intercompany Expenses'],
+            self::PL_ACCOUNTS['Intercompany Revenue'],
+            self::PL_ACCOUNTS['Doubtful Accounts'],
+            self::PL_ACCOUNTS['Depreciation']
+        );
     }
 }
