@@ -101,6 +101,9 @@ class DashboardController
         if ($current->format('d') < self::MAX_PAST) {
             $current->modify('-' . self::MAX_PAST . ' day');
             $current = $current->getEndOfMonth();
+            $today = (int) $current->format('d');
+        } else {
+            $today = (int) $current->format('d') - 1;
         }
 
         $startCurrent = $current->getStartOfMonth();
@@ -155,7 +158,7 @@ class DashboardController
         $view->setData('salesLast', $totalSalesLast);
         $view->setData('salesAccLast', $accTotalSalesLast);
         $view->setData('maxDays', max($endCurrent->format('d'), $endLast->format('d')));
-        $view->setData('today', $current->format('d') - 1);
+        $view->setData('today', $today);
         $view->setData('date', $current);
         $view->setData('type', 'isolated');
 
