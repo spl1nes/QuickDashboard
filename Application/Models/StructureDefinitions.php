@@ -321,6 +321,7 @@ class StructureDefinitions
             self::PL_ACCOUNTS['Trade Fair'],
             self::PL_ACCOUNTS['Rental & Leasing'],
             self::PL_ACCOUNTS['Utilities'],
+            self::PL_ACCOUNTS['Carpool'],
             self::PL_ACCOUNTS['Repair/Maintenance'],
             self::PL_ACCOUNTS['Stationary Expenses'],
             self::PL_ACCOUNTS['Communication'],
