@@ -72,7 +72,7 @@ class DashboardController
         $view->setData('currentMonth', $currentMonth);
         $view->setData('sales', $totalSales);
         $view->setData('salesAcc', $accTotalSales);
-        $view->setData('date', $current);
+        $view->setData('date', $current->smartModify(0, -1));
 
         return $view;
     }
