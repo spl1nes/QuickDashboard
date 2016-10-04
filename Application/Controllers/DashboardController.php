@@ -223,6 +223,11 @@ class DashboardController
             }
         }
 
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
         $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
