@@ -34,11 +34,11 @@ $currentMonth = $this->getData('currentMonth');
         <td><?= '€  ' . number_format($ebitAcc[$current][$currentMonth-1]-$ebitAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
         <td><?= number_format(($ebitAcc[$current][$currentMonth-1]/$ebitAcc[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
 </table>
-<p>The following chart shows the consolidated ebit on a monthly basis for the last 3 years.</p>
+<p>The following chart shows the consolidated EBIT on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
     <canvas id="overview-consolidated-ebit"></canvas>
 </div>
-<p>The following chart shows the accumlated ebit on a monthly basis for the last 3 years.</p>
+<p>The following chart shows the accumlated EBIT on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
     <canvas id="overview-acc-consolidated-ebit"></canvas>
 </div>
@@ -80,7 +80,7 @@ $currentMonth = $this->getData('currentMonth');
             responsive: true,
             title:{
                 display:true,
-                text:'Consolidated Isolated Sales'
+                text:'Consolidated Isolated EBIT'
             },
             tooltips: {
                 mode: 'label',
@@ -108,7 +108,7 @@ $currentMonth = $this->getData('currentMonth');
                     display: true,
                     scaleLabel: {
                         show: true,
-                        labelString: 'Sales'
+                        labelString: 'EBIT'
                     },
                     ticks: {
                         userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
@@ -155,7 +155,7 @@ $currentMonth = $this->getData('currentMonth');
             responsive: true,
             title:{
                 display:true,
-                text:'Consolidated Accumulated Sales'
+                text:'Consolidated Accumulated EBIT'
             },
             tooltips: {
                 mode: 'label',
@@ -183,7 +183,7 @@ $currentMonth = $this->getData('currentMonth');
                     display: true,
                     scaleLabel: {
                         show: true,
-                        labelString: 'Sales'
+                        labelString: 'EBIT'
                     },
                     ticks: {
                         userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
