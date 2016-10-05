@@ -1024,20 +1024,20 @@ class DashboardController
         $accountPositions['EBITDA Margin']['now'] = ($accountPositions['EBITDA']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBITDA Margin']['old'] = ($accountPositions['EBITDA']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['EBIT']['now']        = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
-        $accountPositions['EBIT']['old']        = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
-        $accountPositions['EBIT Margin']['now'] = ($accountPositions['EBIT']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
-        $accountPositions['EBIT Margin']['old'] = ($accountPositions['EBIT']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
+        $accountPositions['Operating Income (EBIT)']['now']        = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
+        $accountPositions['Operating Income (EBIT)']['old']        = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
+        $accountPositions['EBIT Margin']['now'] = ($accountPositions['Operating Income (EBIT)']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
+        $accountPositions['EBIT Margin']['old'] = ($accountPositions['Operating Income (EBIT)']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['EBT']['now']        = ($accountPositions['EBIT']['now'] ?? 0) + ($accountPositions['Interest Revenue']['now'] ?? 0) + ($accountPositions['Interest Expenses']['now'] ?? 0);
-        $accountPositions['EBT']['old']        = ($accountPositions['EBIT']['old'] ?? 0) + ($accountPositions['Interest Revenue']['old'] ?? 0) + ($accountPositions['Interest Expenses']['old'] ?? 0);
+        $accountPositions['EBT']['now']        = ($accountPositions['Operating Income (EBIT)']['now'] ?? 0) + ($accountPositions['Interest Revenue']['now'] ?? 0) + ($accountPositions['Interest Expenses']['now'] ?? 0);
+        $accountPositions['EBT']['old']        = ($accountPositions['Operating Income (EBIT)']['old'] ?? 0) + ($accountPositions['Interest Revenue']['old'] ?? 0) + ($accountPositions['Interest Expenses']['old'] ?? 0);
         $accountPositions['EBT Margin']['now'] = ($accountPositions['EBT']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBT Margin']['old'] = ($accountPositions['EBT']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Net Income']['now']        = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
-        $accountPositions['Net Income']['old']        = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
-        $accountPositions['Net Income Margin']['now'] = ($accountPositions['Net Income']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
-        $accountPositions['Net Income Margin']['old'] = ($accountPositions['Net Income']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
+        $accountPositions['Net Income (EAT)']['now']        = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
+        $accountPositions['Net Income (EAT)']['old']        = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
+        $accountPositions['Net Income Margin']['now'] = ($accountPositions['Net Income (EAT)']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
+        $accountPositions['Net Income Margin']['old'] = ($accountPositions['Net Income (EAT)']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
         $view->setData('accountPositions', $accountPositions);
         $view->setData('date', $endCurrent);
