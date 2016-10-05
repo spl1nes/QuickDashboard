@@ -7,7 +7,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
 ?>
 <h1>EBIT - <?= $this->getData('date')->format('Y/m'); ?></h1>
-
+<p>Please be aware that the following EBIT figures are always unconsolidated. The EBIT doesn't include the interim profit resulting from different stock evaluations.</p>
 <p class="info">The following table compares the values based on the last month. The currently ongoing month is not considered for easier comparison purpose.</p>
 <table>
     <thead>
