@@ -101,7 +101,7 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^reporting/ebit$' => [
+    '^reporting/ebit.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showEBIT',
             'verb' => RouteVerb::GET,
