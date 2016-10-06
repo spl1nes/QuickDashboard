@@ -326,10 +326,12 @@ class Queries
     public static function selectGroupsByCustomer(\DateTime $start, \DateTime $end, array $accounts, int $customer) : string
     {
         return 'SELECT DISTINCT
-                t.entry, t.costcenter, SUM(t.sales) AS sales
+                t.entry, t.years, t.months, t.costcenter, SUM(t.sales) AS sales
             FROM (
                     SELECT 
                         FiBuchungsArchiv.BelegNr AS entry,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
                         FiBuchungsArchiv.KST AS costcenter,
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
                     FROM FiBuchungsArchiv
@@ -339,10 +341,15 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        FiBuchungsArchiv.BelegNr, FiBuchungsArchiv.KST
+                        FiBuchungsArchiv.BelegNr, 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)),
+                        FiBuchungsArchiv.KST
                 UNION ALL
                     SELECT 
                         FiBuchungen.BelegNr AS entry,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
                         FiBuchungen.KST AS costcenter,
                         SUM(-FiBuchungen.Betrag) AS sales
                     FROM FiBuchungen
@@ -352,14 +359,17 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
-                        FiBuchungen.BelegNr, FiBuchungen.KST
+                        FiBuchungen.BelegNr,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)),
+                        FiBuchungen.KST
                 ) t
-            GROUP BY t.entry, t.costcenter;';
+            GROUP BY t.entry, t.years, t.months, t.costcenter;';
     }
 
     public static function selectCustomerInformation(int $customer) : string
     {
-        return 'SELECT KUNDENADRESSE.NAME1, KUNDENADRESSE.ORT, KUNDENADRESSE.PLZ, KUNDENADRESSE.STRASSE, KUNDENADRESSE.LAENDERKUERZEL, Personalstamm.Name
+        return 'SELECT KUNDENADRESSE.NAME1, KUNDENADRESSE.ORT, KUNDENADRESSE.PLZ, KUNDENADRESSE.STRASSE, KUNDENADRESSE.LAENDERKUERZEL, KUNDENADRESSE._KUNDENGRUPPE,KUNDENADRESSE.ROW_CREATE_TIME, Personalstamm.Name
             FROM KUNDENADRESSE, Personalstamm
             WHERE 
                 KUNDENADRESSE.KONTO = ' . $customer . '

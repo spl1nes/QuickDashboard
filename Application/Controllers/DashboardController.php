@@ -4,6 +4,7 @@ namespace QuickDashboard\Application\Controllers;
 
 use phpOMS\DataStorage\Database\Query\Builder;
 use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Datatypes\Location;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
@@ -11,6 +12,7 @@ use phpOMS\Message\ResponseAbstract;
 use phpOMS\Utils\ArrayUtils;
 use phpOMS\Views\View;
 use QuickDashboard\Application\Models\Queries;
+use QuickDashboard\Application\Models\Customer;
 use QuickDashboard\Application\Models\StructureDefinitions;
 use QuickDashboard\Application\WebApplication;
 
@@ -1130,13 +1132,113 @@ class DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-customer');
 
-        if($request->getData('cu') === 'gdf') {
-            $customerInfo = $this->selectCustomerInformation('gdf', (int) $this->getData('customer') ?? 0);
-        } else {
-            $customerInfo = $this->selectCustomerInformation('sd', (int) $this->getData('customer') ?? 0);
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        if(($request->getData('customer') ?? 0) != 0) {
+            if($request->getData('cu') === 'gdf') {
+                $company = 'gdf';
+            } else {
+                $company = 'sd';
+            }
+
+            $customerInfo = $this->selectCustomerInformation($company, (int) $request->getData('customer') ?? 0);
+
+            if($customerInfo !== false) {
+                $location = new Location();
+                $location->setPostal($customerInfo['PLZ']);
+                $location->setCity($customerInfo['ORT']);
+                $location->setAddress($customerInfo['STRASSE']);
+                $location->setCountry($customerInfo['LAENDERKUERZEL']);
+
+                $customer = new Customer(
+                    (int) $request->getData('customer'),
+                    $customerInfo['NAME1'], 
+                    $location, 
+                    $customerInfo['Name'], 
+                    new \DateTime($customerInfo['ROW_CREATE_TIME'] ?? 'now'),
+                    StructureDefinitions::CUSTOMER_GROUP[$company][$customerInfo['_KUNDENGRUPPE']]
+                );
+
+                $accounts = StructureDefinitions::getEBITAccounts();
+                $accounts[] = 8591;
+
+                $salesCustomer = [];
+                $groupSales = [];
+                $accGroupSales = [];
+                $accGroupSalesTotal = [];
+                $accSalesCustomer = [];
+                
+                $sales = $this->selectGroupsByCustomer($start, $current, $company, $accounts, (int) $request->getData('customer'));
+                $this->loopSalesCustomer($sales, $salesCustomer, $groupSales);
+
+                $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+                $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+                $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+                foreach ($salesCustomer as $year => $months) {
+                    ksort($salesCustomer[$year]);
+                    ksort($groupSales[$year]);
+
+                    foreach ($salesCustomer[$year] as $month => $value) {
+                        $prev                         = $accSalesCustomer[$year][$month - 1] ?? 0.0;
+                        $accSalesCustomer[$year][$month] = $prev + $value;
+
+                        foreach($groupSales[$year][$month] as $group => $value) {
+                            if(!isset($accGroupSalesTotal[$year][$group])) {
+                                $accGroupSales[$year][$group] = 0.0;
+                                $accGroupSalesTotal[$year][$group] = 0.0;
+                            }
+
+                            if($month < $currentMonth) {
+                                $accGroupSales[$year][$group] += $value;
+                            }
+
+                            $accGroupSalesTotal[$year][$group] += $value;
+                        }
+                    }
+                }
+
+                $view->setData('currentFiscalYear', $currentYear);
+                $view->setData('currentMonth', $currentMonth);
+                $view->setData('sales', $salesCustomer);
+                $view->setData('salesAcc', $accSalesCustomer);
+                $view->setData('salesGroups', $accGroupSales);
+                $view->setData('salesGroupsTotal', $accGroupSalesTotal);
+                $view->setData('date', $current->smartModify(0, -1));
+                $view->setData('customer', $customer);
+            }
         }
 
         return $view;
+    }
+
+    private function loopSalesCustomer(array $resultset, array &$totalSales, array &$groupSales)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
+            if (!isset(StructureDefinitions::NAMING[$group])) {
+                continue;
+            }
+
+            $group = StructureDefinitions::NAMING[$group];
+
+            if (!isset($groupSales[$fiscalYear][$fiscalMonth][$group])) {
+                $groupSales[$fiscalYear][$fiscalMonth][$group] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+            $groupSales[$fiscalYear][$fiscalMonth][$group] += $line['sales'];
+        }
     }
 
     private function calcCurrentMonth(\DateTime $date) : int
@@ -1157,6 +1259,16 @@ class DashboardController
     {
         $query = new Builder($this->app->dbPool->get($company));
         $query->raw(Queries::{$selectQuery}($start, $end, $accounts));
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
+
+        return $result;
+    }
+
+    private function selectGroupsByCustomer(\DateTime $start, \DateTime $end, string $company, array $accounts, int $customer) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::selectGroupsByCustomer($start, $end, $accounts, $customer));
         $result = $query->execute()->fetchAll();
         $result = empty($result) ? [] : $result;
 

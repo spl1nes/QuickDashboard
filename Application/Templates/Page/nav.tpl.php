@@ -44,7 +44,7 @@
                         </ul>
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/ebit?{?}'); ?>">EBIT</a>
                 </ul>
-                <li><i class="fa fa-bar-search"></i> Analysis
+                <li><i class="fa fa-search"></i> Analysis
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer?{?}'); ?>">Customer</a>
                     </ul>
