@@ -2,7 +2,7 @@
     <table>
         <tr>
             <td><label for="customer">Customer ID:</label>
-            <td><input id="customer" name="customer" type="text" value="<?= $this->request->getData('customer') ?? ''; ?>" blaceholder="123456" pattern="[0-9]{6}">
+            <td><input id="customer" name="customer" type="text" value="<?= $this->request->getData('customer') ?? ''; ?>" placeholder="123456" pattern="[0-9]{6}">
             <td><label for="cu">Unit:</label>
             <td><select id="cu" name="cu">
                 <option value='sd'<?= $this->request->getData('cu') !== 'gdf' ? ' selected' : ''; ?>>SD
