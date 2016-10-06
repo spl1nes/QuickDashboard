@@ -49,6 +49,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
         <tr><th>Registered:<td><?= $customer->getCreatedAt()->format('Y-m-d'); ?>
 </table>
 
+<?php if(isset($sales[$current]) || isset($sales[$current_1]) || isset($sales[$current_2])) : ?>
 <table style="width: calc(50% - 5px); float: right;">
     <caption>Stats</caption>
     <thead>
@@ -58,16 +59,12 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
         <th>Current
         <th>Diff
     <tbody>
-        <tr><th>DSO:<td><?= 1; ?><td><?= 1; ?><td><?= 1; ?>
-        <tr><th>Orders:<td><?= 1; ?><td><?= 1; ?><td><?= 1; ?>
-        <tr><th>Avg. Order:<td><?= 1; ?><td><?= 1; ?><td><?= 1; ?>
-        <tr><th>Sales:<td><?= 1; ?><td><?= 1; ?><td><?= 1; ?>
-        <tr><th>Total Sales:<td><?= 1; ?><td><?= 1; ?><td><?= 1; ?>
+        <tr><th>Sales:<td><?= number_format($old = ($salesAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.'); ?><td><?= number_format($now = ($salesAcc[$current][$currentMonth] ?? 0), 0, ',', '.'); ?><td><?= $old == 0 ? 0 : number_format(($now/$old - 1)*100, 0, ',', '.'); ?> %
+        <tr><th>Total Sales:<td><?= number_format($old = ($salesAcc[$current_1][12] ?? 0), 0, ',', '.'); ?><td><?= number_format($now = ($salesAcc[$current][$currentMonth] ?? 0), 0, ',', '.'); ?><td><?= $old == 0 ? 0 : number_format(($now/$old - 1)*100, 0, ',', '.'); ?> %
 </table>
 
 <div class="clear"></div>
 
-<?php if(isset($sales[$current]) || isset($sales[$current_1]) || isset($sales[$current_2])) : ?>
 <div class="box" style="width: 50%; float: left">
     <canvas id="sales-month" height="270"></canvas>
 </div>

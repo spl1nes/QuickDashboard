@@ -3,16 +3,16 @@
 namespace QuickDashboard\Application\Controllers;
 
 use phpOMS\DataStorage\Database\Query\Builder;
-use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Datatypes\Location;
+use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Utils\ArrayUtils;
 use phpOMS\Views\View;
-use QuickDashboard\Application\Models\Queries;
 use QuickDashboard\Application\Models\Customer;
+use QuickDashboard\Application\Models\Queries;
 use QuickDashboard\Application\Models\StructureDefinitions;
 use QuickDashboard\Application\WebApplication;
 
@@ -103,7 +103,7 @@ class DashboardController
         if ($current->format('d') < self::MAX_PAST) {
             $current->modify('-' . self::MAX_PAST . ' day');
             $current = $current->getEndOfMonth();
-            $today = (int) $current->format('d');
+            $today   = (int) $current->format('d');
         } else {
             $today = (int) $current->format('d') - 1;
         }
@@ -188,14 +188,14 @@ class DashboardController
         $start->modify('-1 year');
 
         $totalSales    = [
-            'All' => [],
+            'All'      => [],
             'Domestic' => [],
-            'Export' => [],
+            'Export'   => [],
         ];
         $accTotalSales = [
-            'All' => [],
+            'All'      => [],
             'Domestic' => [],
-            'Export' => [],
+            'Export'   => [],
         ];
 
         $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
@@ -219,12 +219,12 @@ class DashboardController
             ksort($totalSales['Export'][$year]);
 
             for ($i = 1; $i <= 12; $i++) {
-                $prev                     = $accTotalSales['All'][$year][$i - 1] ?? 0.0;
-                $accTotalSales['All'][$year][$i] = $prev + ($totalSales['All'][$year][$i] ?? 0);
-                $prev                     = $accTotalSales['Domestic'][$year][$i - 1] ?? 0.0;
+                $prev                                 = $accTotalSales['All'][$year][$i - 1] ?? 0.0;
+                $accTotalSales['All'][$year][$i]      = $prev + ($totalSales['All'][$year][$i] ?? 0);
+                $prev                                 = $accTotalSales['Domestic'][$year][$i - 1] ?? 0.0;
                 $accTotalSales['Domestic'][$year][$i] = $prev + ($totalSales['Domestic'][$year][$i] ?? 0);
-                $prev                     = $accTotalSales['Export'][$year][$i - 1] ?? 0.0;
-                $accTotalSales['Export'][$year][$i] = $prev + ($totalSales['Export'][$year][$i] ?? 0);
+                $prev                                 = $accTotalSales['Export'][$year][$i - 1] ?? 0.0;
+                $accTotalSales['Export'][$year][$i]   = $prev + ($totalSales['Export'][$year][$i] ?? 0);
             }
         }
 
@@ -265,9 +265,9 @@ class DashboardController
             $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
             if (!isset($totalSales['All'][$fiscalYear][$fiscalMonth])) {
-                $totalSales['All'][$fiscalYear][$fiscalMonth] = 0.0;
+                $totalSales['All'][$fiscalYear][$fiscalMonth]      = 0.0;
                 $totalSales['Domestic'][$fiscalYear][$fiscalMonth] = 0.0;
-                $totalSales['Export'][$fiscalYear][$fiscalMonth] = 0.0;
+                $totalSales['Export'][$fiscalYear][$fiscalMonth]   = 0.0;
             }
 
             $totalSales['All'][$fiscalYear][$fiscalMonth] += $line['sales'];
@@ -398,7 +398,7 @@ class DashboardController
     private function loopLocation(string $period, array $resultset, array &$salesRegion, array &$salesDevUndev, array &$salesCountry)
     {
         foreach ($resultset as $line) {
-            if(!isset($line['countryChar'])) {
+            if (!isset($line['countryChar'])) {
                 continue;
             }
 
@@ -1026,18 +1026,18 @@ class DashboardController
         $accountPositions['EBITDA Margin']['now'] = ($accountPositions['EBITDA']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBITDA Margin']['old'] = ($accountPositions['EBITDA']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Operating Income (EBIT)']['now']        = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
-        $accountPositions['Operating Income (EBIT)']['old']        = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
-        $accountPositions['EBIT Margin']['now'] = ($accountPositions['Operating Income (EBIT)']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
-        $accountPositions['EBIT Margin']['old'] = ($accountPositions['Operating Income (EBIT)']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
+        $accountPositions['Operating Income (EBIT)']['now'] = ($accountPositions['EBITDA']['now'] ?? 0) + ($accountPositions['Depreciation']['now'] ?? 0);
+        $accountPositions['Operating Income (EBIT)']['old'] = ($accountPositions['EBITDA']['old'] ?? 0) + ($accountPositions['Depreciation']['old'] ?? 0);
+        $accountPositions['EBIT Margin']['now']             = ($accountPositions['Operating Income (EBIT)']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
+        $accountPositions['EBIT Margin']['old']             = ($accountPositions['Operating Income (EBIT)']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
         $accountPositions['EBT']['now']        = ($accountPositions['Operating Income (EBIT)']['now'] ?? 0) + ($accountPositions['Interest Revenue']['now'] ?? 0) + ($accountPositions['Interest Expenses']['now'] ?? 0);
         $accountPositions['EBT']['old']        = ($accountPositions['Operating Income (EBIT)']['old'] ?? 0) + ($accountPositions['Interest Revenue']['old'] ?? 0) + ($accountPositions['Interest Expenses']['old'] ?? 0);
         $accountPositions['EBT Margin']['now'] = ($accountPositions['EBT']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['EBT Margin']['old'] = ($accountPositions['EBT']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
-        $accountPositions['Net Income (EAT)']['now']        = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
-        $accountPositions['Net Income (EAT)']['old']        = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
+        $accountPositions['Net Income (EAT)']['now']  = ($accountPositions['EBT']['now'] ?? 0) + ($accountPositions['Taxes']['now'] ?? 0);
+        $accountPositions['Net Income (EAT)']['old']  = ($accountPositions['EBT']['old'] ?? 0) + ($accountPositions['Taxes']['old'] ?? 0);
         $accountPositions['Net Income Margin']['now'] = ($accountPositions['Net Income (EAT)']['now'] ?? 0) / ($accountPositions['Sales']['now'] ?? 0);
         $accountPositions['Net Income Margin']['old'] = ($accountPositions['Net Income (EAT)']['old'] ?? 0) / ($accountPositions['Sales']['old'] ?? 0);
 
@@ -1076,7 +1076,7 @@ class DashboardController
             $accounts[] = 8591;
             $accounts[] = 3491;
         }
-        
+
         if ($request->getData('u') !== 'gdf') {
             $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
             $this->loopEBIT($salesSD, $totalSales);
@@ -1136,8 +1136,8 @@ class DashboardController
         $start   = $this->getFiscalYearStart($current);
         $start->modify('-2 year');
 
-        if(($request->getData('customer') ?? 0) != 0) {
-            if($request->getData('cu') === 'gdf') {
+        if (($request->getData('customer') ?? 0) != 0) {
+            if ($request->getData('cu') === 'gdf') {
                 $company = 'gdf';
             } else {
                 $company = 'sd';
@@ -1145,7 +1145,7 @@ class DashboardController
 
             $customerInfo = $this->selectCustomerInformation($company, (int) $request->getData('customer') ?? 0);
 
-            if($customerInfo !== false) {
+            if ($customerInfo !== false) {
                 $location = new Location();
                 $location->setPostal($customerInfo['PLZ']);
                 $location->setCity($customerInfo['ORT']);
@@ -1154,22 +1154,22 @@ class DashboardController
 
                 $customer = new Customer(
                     (int) $request->getData('customer'),
-                    $customerInfo['NAME1'], 
-                    $location, 
-                    $customerInfo['Name'], 
+                    $customerInfo['NAME1'],
+                    $location,
+                    $customerInfo['Name'],
                     new \DateTime($customerInfo['ROW_CREATE_TIME'] ?? 'now'),
                     StructureDefinitions::CUSTOMER_GROUP[$company][$customerInfo['_KUNDENGRUPPE']]
                 );
 
-                $accounts = StructureDefinitions::getEBITAccounts();
+                $accounts   = StructureDefinitions::getEBITAccounts();
                 $accounts[] = 8591;
 
-                $salesCustomer = [];
-                $groupSales = [];
-                $accGroupSales = [];
+                $salesCustomer      = [];
+                $groupSales         = [];
+                $accGroupSales      = [];
                 $accGroupSalesTotal = [];
-                $accSalesCustomer = [];
-                
+                $accSalesCustomer   = [];
+
                 $sales = $this->selectGroupsByCustomer($start, $current, $company, $accounts, (int) $request->getData('customer'));
                 $this->loopSalesCustomer($sales, $salesCustomer, $groupSales);
 
@@ -1182,20 +1182,20 @@ class DashboardController
                     ksort($groupSales[$year]);
 
                     foreach ($salesCustomer[$year] as $month => $value) {
-                        $prev                         = $accSalesCustomer[$year][$month - 1] ?? 0.0;
+                        $prev                            = $accSalesCustomer[$year][$month - 1] ?? 0.0;
                         $accSalesCustomer[$year][$month] = $prev + $value;
 
-                        foreach($groupSales[$year][$month] as $group => $value) {
-                            if(!isset($accGroupSalesTotal[$year][$group])) {
-                                $accGroupSales[$year][$group] = 0.0;
+                        foreach ($groupSales[$year][$month] as $group => $value2) {
+                            if (!isset($accGroupSalesTotal[$year][$group])) {
+                                $accGroupSales[$year][$group]      = 0.0;
                                 $accGroupSalesTotal[$year][$group] = 0.0;
                             }
 
-                            if($month < $currentMonth) {
-                                $accGroupSales[$year][$group] += $value;
+                            if ($month < $currentMonth) {
+                                $accGroupSales[$year][$group] += $value2;
                             }
 
-                            $accGroupSalesTotal[$year][$group] += $value;
+                            $accGroupSalesTotal[$year][$group] += $value2;
                         }
                     }
                 }
@@ -1230,6 +1230,7 @@ class DashboardController
                 continue;
             }
 
+            /** @noinspection PhpUnreachableStatementInspection */
             $group = StructureDefinitions::NAMING[$group];
 
             if (!isset($groupSales[$fiscalYear][$fiscalMonth][$group])) {
@@ -1244,6 +1245,7 @@ class DashboardController
     private function calcCurrentMonth(\DateTime $date) : int
     {
         $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);
+
         return abs(($mod < 0 ? 12 + $mod : $mod) % 12 + 1);
     }
 
@@ -1275,12 +1277,12 @@ class DashboardController
         return $result;
     }
 
-    private function selectCustomerInformation(string $company, int $customer) 
+    private function selectCustomerInformation(string $company, int $customer)
     {
         $query = new Builder($this->app->dbPool->get($company));
         $query->raw(Queries::selectCustomerInformation($customer));
         $result = $query->execute()->fetch();
-        
+
         return $result;
     }
 }
