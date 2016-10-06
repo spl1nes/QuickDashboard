@@ -85,7 +85,6 @@ $currentMonth = $this->getData('currentMonth');
                 callbacks: {
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
 
                             return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                           }
@@ -160,7 +159,6 @@ $currentMonth = $this->getData('currentMonth');
                 callbacks: {
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
-                            let label = data.labels[tooltipItem.index];
 
                             return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
                           }
