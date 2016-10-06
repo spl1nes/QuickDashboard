@@ -44,16 +44,10 @@
                         </ul>
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/ebit?{?}'); ?>">EBIT</a>
                 </ul>
-                <li><li><li><li><li>
-                <!--
-            <li>Analysis
-                <ul>
-                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps?{?}'); ?>">Sales Rep</a>
-                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/article?{?}'); ?>">Article</a>
-                    <li><a href="">Customer</a>
-                    <li><a href="">Account</a>
-                    <li><a href="">Cost Center</a>
-                    <li><a href="">Cost Object</a>
-                </ul>-->
+                <li><i class="fa fa-bar-search"></i> Analysis
+                    <ul>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer?{?}'); ?>">Customer</a>
+                    </ul>
+                <li><li><li><li>
     </nav>
 </div>

@@ -1125,6 +1125,20 @@ class DashboardController
         }
     }
 
+    public function showAnalysisCustomer(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-customer');
+
+        if($request->getData('cu') === 'gdf') {
+            $customerInfo = $this->selectCustomerInformation('gdf', (int) $this->getData('customer') ?? 0);
+        } else {
+            $customerInfo = $this->selectCustomerInformation('sd', (int) $this->getData('customer') ?? 0);
+        }
+
+        return $view;
+    }
+
     private function calcCurrentMonth(\DateTime $date) : int
     {
         $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);
@@ -1146,6 +1160,15 @@ class DashboardController
         $result = $query->execute()->fetchAll();
         $result = empty($result) ? [] : $result;
 
+        return $result;
+    }
+
+    private function selectCustomerInformation(string $company, int $customer) 
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::selectCustomerInformation($customer));
+        $result = $query->execute()->fetch();
+        
         return $result;
     }
 }

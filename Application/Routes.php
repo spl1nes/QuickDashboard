@@ -76,6 +76,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/customer.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showAnalysisCustomer',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 
     '^reporting/pl.*?i=month.*$' => [
         [
