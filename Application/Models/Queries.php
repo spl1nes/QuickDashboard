@@ -548,4 +548,46 @@ class Queries
                 ) t
             GROUP BY t.countryChar;';
     }
+
+    public static function selectCountrySalesYearMonth(\DateTime $start, \DateTime $end, array $accounts, array $countries) : string
+    {
+        return 'SELECT 
+                t.account, t.years, t.months, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.Konto as account,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (' . rtrim(implode('","', $countries), ',"') . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungsArchiv.Konto,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104))
+                UNION ALL
+                    SELECT 
+                        FiBuchungen.Konto as account,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (' . rtrim(implode('","', $countries), ',"') . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungen.Konto,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104))
+                ) t
+            GROUP BY t.account, t.years, t.months;';
+    }
 }

@@ -332,16 +332,16 @@ class StructureDefinitions
         return '';
     }
 
-    public static function getCOGSAccounts() : array 
+    public static function getCOGSAccounts() : array
     {
         return array_merge(self::PL_ACCOUNTS['COGS Material'], self::PL_ACCOUNTS['COGS Services']);
     }
 
-    public static function getEBITAccounts() : array 
+    public static function getEBITAccounts() : array
     {
         return array_merge(
-            self::PL_ACCOUNTS['Sales'], 
-            self::PL_ACCOUNTS['COGS Material'], 
+            self::PL_ACCOUNTS['Sales'],
+            self::PL_ACCOUNTS['COGS Material'],
             self::PL_ACCOUNTS['COGS Services'],
             self::PL_ACCOUNTS['Freight'],
             self::PL_ACCOUNTS['Provisions'],
@@ -371,7 +371,7 @@ class StructureDefinitions
         );
     }
 
-    public static function getCountries() : array 
+    public static function getCountries() : array
     {
         $countries = [];
 
@@ -380,5 +380,29 @@ class StructureDefinitions
         }
 
         return $countries;
+    }
+
+    public static function getLocations(string $location) : array
+    {
+        $locations = [];
+        $countries = self::getCountries();
+
+        if($location === 'Export') {
+            $locations = array_diff($countries, ['DE']);
+        } elseif($location === 'Domestic' || $location === 'DE') {
+            $locations = ['DE'];
+        } elseif($location === 'Developed') {
+            $locations = self::DEVELOPED;
+        } elseif($location === 'Undeveloped') {
+            $locations = array_diff($countries, self::DEVELOPED);
+        } elseif(isset(self::REGIONS[$location])) {
+            $locations = self::REGIONS[$location];
+        } elseif(in_array($location, $countries)) {
+            $locations = [$location];
+        } else {
+            throw new \Exception('Unknown location ' . $location);
+        }
+
+        return $locations;
     }
 }
