@@ -3,7 +3,7 @@
         <tr>
             <td><label for="segment">Segment:</label>
             <td><select id="segment" name="segment"><?php foreach(\QuickDashboard\Application\Models\StructureDefinitions::NAMING as $id => $name) : ?>
-                <option value="<?= $id; ?>"<?= ((int) $this->request->getData('segment')) == (int) $id ? ' selected' : ''; ?>><?= $id; ?> - <?= $name; ?>
+                <option value="<?= $id; ?>"<?php if(((int) $this->request->getData('segment')) == (int) $id) { echo ' selected'; $gId = $id; $gName = $name; }; ?>><?= $id; ?> - <?= $name; ?>
             <?php endforeach; ?>
             </select>
             <td style="width: 100%">
@@ -32,7 +32,7 @@ $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
 <?php if(!empty($salesAcc)) : ?>
-<h1><?= $id; ?> <?= $name; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1><?= $gId; ?> <?= $gName; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
 <table>
     <thead>
