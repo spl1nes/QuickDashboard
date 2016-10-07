@@ -27,6 +27,7 @@ $gini = $this->getData('gini');
 ?>
 <?php if(!empty($salesAcc)) : ?>
 <h1>Segmentation Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h2>Sales</h2>
 <table>
     <thead>
     <tr>
@@ -62,6 +63,9 @@ $gini = $this->getData('gini');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
+
+<h2>Customers</h2>
 
 <p>The customer sales distribution last year had a Gini-Coefficient of <?= number_format($gini['old'] ?? 0, 4, ',', '.'); ?> and this year of <?= number_format($gini['now'] ?? 0, 4, ',', '.'); ?>.</p>
 
@@ -90,6 +94,9 @@ $gini = $this->getData('gini');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
+
+<h2>Location</h2>
 
 <script>
     let configConsolidated = {
