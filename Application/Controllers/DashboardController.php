@@ -1291,6 +1291,7 @@ class DashboardController
             $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
             $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
+            // CUSTOMERS
             $salesCustomers = [];
             $customerCount  = [];
 
@@ -1316,7 +1317,7 @@ class DashboardController
                 $this->loopCustomerCount($customerGDF, $customerCount);
             }
 
-             $gini = [];
+            $gini = [];
             if(isset($salesCustomers['now'])) {
                 arsort($salesCustomers['now']);
                 $gini['now'] = Lorenzkurve::getGiniCoefficient($salesCustomers['now']);
@@ -1331,6 +1332,75 @@ class DashboardController
                 ksort($customerCount[$year]);
             }
 
+            // LOCATION
+            $salesRegion         = [];
+            $salesDevUndev       = [];
+            $salesExportDomestic = [];
+            $salesCountry        = [];
+
+            $domesticSD      = [];
+            $domesticGDF     = [];
+            $domesticSDLast  = [];
+            $domesticGDFLast = [];
+            $allGDF          = [];
+            $allSD           = [];
+            $allGDFLast      = [];
+            $allSDLast       = [];
+
+            $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+            if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                $accounts_DOMESTIC[] = 8591;
+            }
+
+            if ($request->getData('u') !== 'gdf') {
+                $countrySD     = $this->selectGroup('selectGroupSalesByCountry', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
+                $countrySDLast = $this->selectGroup('selectGroupSalesByCountry', $startLast, $endLast, 'sd', $accounts, $groups);
+
+                $this->loopLocation('now', $countrySD, $salesRegion, $salesDevUndev, $salesCountry);
+                $this->loopLocation('old', $countrySDLast, $salesRegion, $salesDevUndev, $salesCountry);
+
+                $domesticSDLast = $this->selectGroup('selectGroupAccounts', $startLast, $endLast, 'sd', $accounts_DOMESTIC, $groups);
+                $domesticSD     = $this->selectGroup('selectGroupAccounts', $startCurrent, $endCurrent, 'sd', $accounts_DOMESTIC, $groups);
+
+                $allSD     = $this->selectGroup('selectGroupAccounts', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
+                $allSDLast = $this->selectGroup('selectGroupAccounts', $startLast, $endLast, 'sd', $accounts, $groups);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $countryGDF     = $this->selectGroup('selectGroupSalesByCountry', $startCurrent, $endCurrent, 'gdf', $accounts, $groups);
+                $countryGDFLast = $this->selectGroup('selectGroupSalesByCountry', $startLast, $endLast, 'gdf', $accounts, $groups);
+
+                $this->loopLocation('now', $countryGDF, $salesRegion, $salesDevUndev, $salesCountry);
+                $this->loopLocation('old', $countryGDFLast, $salesRegion, $salesDevUndev, $salesCountry);
+
+                $domesticGDFLast = $this->selectGroup('selectGroupAccounts', $startLast, $endLast, 'gdf', $accounts_DOMESTIC, $groups);
+                $domesticGDF     = $this->selectGroup('selectGroupAccounts', $startCurrent, $endCurrent, 'gdf', $accounts_DOMESTIC, $groups);
+
+                $allGDF     = $this->selectGroup('selectGroupAccounts', $startCurrent, $endCurrent, 'gdf', $accounts, $groups);
+                $allGDFLast = $this->selectGroup('selectGroupAccounts', $startLast, $endLast, 'gdf', $accounts, $groups);
+            }
+
+            $salesExportDomestic['now']['Domestic'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
+            $salesExportDomestic['old']['Domestic'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
+            $salesExportDomestic['now']['Export']   = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $salesExportDomestic['now']['Domestic'];
+            $salesExportDomestic['old']['Export']   = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $salesExportDomestic['old']['Domestic'];
+            $salesCountry['now']['DEU']             = $salesExportDomestic['now']['Domestic'];
+            $salesCountry['old']['DEU']             = $salesExportDomestic['old']['Domestic'];
+
+            if(isset($salesCountry['now'])) {
+                arsort($salesCountry['now']);
+            }
+
+            $salesDevUndev['now']['Developed'] = ($salesDevUndev['now']['Developed'] ?? 0) + array_sum($salesExportDomestic['now'] ?? []) - array_sum($salesDevUndev['now'] ?? []);
+            $salesDevUndev['old']['Developed'] = ($salesDevUndev['old']['Developed'] ?? 0) + array_sum($salesExportDomestic['old'] ?? []) - array_sum($salesDevUndev['old'] ?? []);
+
+            $salesRegion['now']['Europe'] = ($salesRegion['now']['Europe'] ?? 0) + array_sum($salesExportDomestic['now'] ?? []) - array_sum($salesRegion['now'] ?? []);
+            $salesRegion['old']['Europe'] = ($salesRegion['old']['Europe'] ?? 0) + array_sum($salesExportDomestic['old'] ?? []) - array_sum($salesRegion['old'] ?? []);
+
+            $view->setData('salesCountry', $salesCountry);
+            $view->setData('salesRegion', $salesRegion);
+            $view->setData('salesDevUndev', $salesDevUndev);
+            $view->setData('salesExportDomestic', $salesExportDomestic);
             $view->setData('currentFiscalYear', $currentYear);
             $view->setData('currentMonth', $currentMonth);
             $view->setData('sales', $totalSales);

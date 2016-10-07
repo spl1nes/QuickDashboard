@@ -19,14 +19,14 @@ $salesCountry = $this->getData('salesCountry');
     <tbody>
     <tr>
         <td>Export
-        <td><?= number_format($salesExportDomestic['old']['Export'], 0, ',', '.') ?>
-        <td><?= number_format($salesExportDomestic['now']['Export'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['old']['Export'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Export'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesExportDomestic['now']['Export']-$salesExportDomestic['old']['Export'], 0, ',', '.') ?>
         <td><?= number_format(!isset($salesExportDomestic['old']['Export']) || $salesExportDomestic['old']['Export'] == 0 ? 0 : ($salesExportDomestic['now']['Export']/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
     <tr>
         <td>Domestic
-        <td><?= number_format($salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
-        <td><?= number_format($salesExportDomestic['now']['Domestic'], 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['old']['Domestic'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesExportDomestic['now']['Domestic'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesExportDomestic['now']['Domestic']-$salesExportDomestic['old']['Domestic'], 0, ',', '.') ?>
         <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) || $salesExportDomestic['old']['Domestic'] == 0 ? 0 : ($salesExportDomestic['now']['Domestic']/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
     <tr>
@@ -34,7 +34,7 @@ $salesCountry = $this->getData('salesCountry');
         <th><?= number_format(array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
         <th><?= number_format(array_sum($salesExportDomestic['now']), 0, ',', '.') ?>
         <th><?= number_format(array_sum($salesExportDomestic['now'])-array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesExportDomestic['old']) ? 0 : (array_sum($salesExportDomestic['now'])/array_sum($salesExportDomestic['old'])-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format(!isset($salesExportDomestic['old']) || $sum = array_sum($salesExportDomestic['old']) == 0 ? 0 : (array_sum($salesExportDomestic['now'])/$sum-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 50%; float: left">
@@ -55,15 +55,15 @@ $salesCountry = $this->getData('salesCountry');
     <tbody>
     <tr>
         <td>Developed
-        <td><?= number_format($salesDevUndev['old']['Developed'], 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Developed'], 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Developed']-$salesDevUndev['old']['Developed'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['old']['Developed'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Developed'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesDevUndev['now']['Developed'] ?? 0)-($salesDevUndev['old']['Developed'] ?? 0), 0, ',', '.') ?>
         <td><?= number_format(!isset($salesDevUndev['old']['Developed']) || $salesDevUndev['old']['Developed'] == 0 ? 0 : ($salesDevUndev['now']['Developed']/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
     <tr>
         <td>Undeveloped
-        <td><?= number_format($salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Undeveloped'], 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Undeveloped']-$salesDevUndev['old']['Undeveloped'], 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['old']['Undeveloped'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesDevUndev['now']['Undeveloped'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($salesDevUndev['now']['Undeveloped'] ?? 0)-($salesDevUndev['old']['Undeveloped'] ?? 0), 0, ',', '.') ?>
         <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) || $salesDevUndev['old']['Undeveloped'] == 0 ? 0 : ($salesDevUndev['now']['Undeveloped']/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
     <tr>
         <th>Total
