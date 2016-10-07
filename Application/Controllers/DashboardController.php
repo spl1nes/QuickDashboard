@@ -1191,7 +1191,7 @@ class DashboardController
                                 $accGroupSalesTotal[$year][$group] = 0.0;
                             }
 
-                            if ($month < $currentMonth) {
+                            if ($month <= $currentMonth) {
                                 $accGroupSales[$year][$group] += $value2;
                             }
 
