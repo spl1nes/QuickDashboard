@@ -1181,11 +1181,11 @@ class DashboardController
                     ksort($salesCustomer[$year]);
                     ksort($groupSales[$year]);
 
-                    foreach ($salesCustomer[$year] as $month => $value) {
+                    for($month = 1; $month < 13; $month++) {
                         $prev                            = $accSalesCustomer[$year][$month - 1] ?? 0.0;
-                        $accSalesCustomer[$year][$month] = $prev + $value;
+                        $accSalesCustomer[$year][$month] = $prev + ($salesCustomer[$year][$month] ?? 0);
 
-                        foreach ($groupSales[$year][$month] as $group => $value2) {
+                        foreach ($groupSales[$year][$month] ?? [] as $group => $value2) {
                             if (!isset($accGroupSalesTotal[$year][$group])) {
                                 $accGroupSales[$year][$group]      = 0.0;
                                 $accGroupSalesTotal[$year][$group] = 0.0;
