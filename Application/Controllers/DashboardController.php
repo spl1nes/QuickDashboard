@@ -1206,7 +1206,7 @@ class DashboardController
                 $view->setData('salesAcc', $accSalesCustomer);
                 $view->setData('salesGroups', $accGroupSales);
                 $view->setData('salesGroupsTotal', $accGroupSalesTotal);
-                $view->setData('date', $current->smartModify(0, -1));
+                $view->setData('date', $current);
                 $view->setData('customer', $customer);
             }
         }
