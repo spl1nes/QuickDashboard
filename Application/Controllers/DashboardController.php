@@ -1242,6 +1242,14 @@ class DashboardController
         }
     }
 
+    public function showAnalysisSegmentation(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-segmentation');
+
+        return $view;
+    }
+
     private function calcCurrentMonth(\DateTime $date) : int
     {
         $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);

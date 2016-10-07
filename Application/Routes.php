@@ -82,6 +82,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/segmentation.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\DashboardController:showAnalysisSegmentation',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 
     '^reporting/pl.*?i=month.*$' => [
         [
