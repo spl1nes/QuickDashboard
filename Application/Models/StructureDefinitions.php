@@ -370,4 +370,15 @@ class StructureDefinitions
             self::PL_ACCOUNTS['Depreciation']
         );
     }
+
+    public static function getCountries() : array 
+    {
+        $countries = [];
+
+        foreach(self::REGIONS as $region) {
+            $countries = array_merge($countries, $region);
+        }
+
+        return $countries;
+    }
 }

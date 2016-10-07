@@ -1429,6 +1429,109 @@ class DashboardController
         }
     }
 
+    public function showAnalysisLocation(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-location');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        if($request->getData('location') !== null) {
+            $totalSales    = [];
+            $accTotalSales = [];
+
+            $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
+            if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                $accounts[] = 8591;
+            }
+
+            $countries = StructureDefinitions::getLocations((int) $request->getData('location'));
+
+            if ($request->getData('u') !== 'gdf') {
+                $salesSD = $this->selectGroup('selectSalesGroupYearMonth', $start, $current, 'sd', $accounts, $countries);
+                $this->loopOverview($salesSD, $totalSales);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $salesGDF = $this->selectGroup('selectSalesGroupYearMonth', $start, $current, 'gdf', $accounts, $countries);
+                $this->loopOverview($salesGDF, $totalSales);
+            }
+
+            foreach ($totalSales as $year => $months) {
+                ksort($totalSales[$year]);
+
+                for($month = 1; $month < 13; $month++) {
+                    $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                    $accTotalSales[$year][$month] = $prev + ($totalSales[$year][$month] ?? 0);
+                }
+            }
+
+            $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+            $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+            $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            // CUSTOMERS
+            $salesCustomers = [];
+            $customerCount  = [];
+
+            if ($request->getData('u') !== 'gdf') {
+                $customersSD     = $this->selectGroup('selectGroupCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
+                $customersSDLast = $this->selectGroup('selectGroupCustomer', $startLast, $endLast, 'sd', $accounts, $countries);
+
+                $this->loopCustomer('now', $customersSD, $salesCustomers);
+                $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+
+                $customerSD = $this->selectGroup('selectGroupCustomerCount', $start, $current, 'sd', $accounts, $countries);
+                $this->loopCustomerCount($customerSD, $customerCount);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $customersGDF     = $this->selectGroup('selectGroupCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
+                $customersGDFLast = $this->selectGroup('selectGroupCustomer', $startLast, $endLast, 'gdf', $accounts, $countries);
+
+                $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+
+                $customerGDF = $this->selectGroup('selectGroupCustomerCount', $start, $current, 'gdf', $accounts, $countries);
+                $this->loopCustomerCount($customerGDF, $customerCount);
+            }
+
+            $gini = [];
+            if(isset($salesCustomers['now'])) {
+                arsort($salesCustomers['now']);
+                $gini['now'] = Lorenzkurve::getGiniCoefficient($salesCustomers['now']);
+            }
+
+            if(isset($salesCustomers['old'])) {
+                arsort($salesCustomers['old']);
+                $gini['old'] = Lorenzkurve::getGiniCoefficient($salesCustomers['old']);
+            }
+
+            foreach ($customerCount as $year => $months) {
+                ksort($customerCount[$year]);
+            }
+
+            $view->setData('currentFiscalYear', $currentYear);
+            $view->setData('currentMonth', $currentMonth);
+            $view->setData('sales', $totalSales);
+            $view->setData('salesAcc', $accTotalSales);
+            $view->setData('customer', $salesCustomers);
+            $view->setData('customerCount', $customerCount);
+            $view->setData('gini', $gini);
+            $view->setData('date', $current);
+        }
+
+        return $view;
+    }
+
     private function calcCurrentMonth(\DateTime $date) : int
     {
         $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);
