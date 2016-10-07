@@ -32,7 +32,7 @@ $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
 <?php if(!empty($salesAcc)) : ?>
-<h1>Segmentation Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1><?= $id; ?> <?= $name; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
 <table>
     <thead>
