@@ -275,6 +275,10 @@ class StructureDefinitions
     public static function getSalesGroups(int $id) : array {
         $groups = [];
 
+        if($id === 16) {
+            return [161];
+        }
+
         foreach(self::GROUPING as $segmentId => $group) {
             foreach($group as $groupId => $salesGroup) {
                 foreach($salesGroup as $salesGroupId) {
