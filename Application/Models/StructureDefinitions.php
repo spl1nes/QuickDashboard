@@ -272,6 +272,34 @@ class StructureDefinitions
         return 0;
     }
 
+    public static function getSalesGroups(int $id) : array {
+        $groups = [];
+
+        foreach(self::GROUPING as $segmentId => $group) {
+            foreach($group as $groupId => $salesGroup) {
+                foreach($salesGroup as $salesGroupId) {
+                    if($segmentId === $id || $groupId === $id || $salesGroupId === $id) {
+                        $groups[] = $salesGroupId;
+                    }
+
+                    if($salesGroupId === $id) {
+                        break 3;
+                    }
+                }
+
+                if($groupId === $id) {
+                    break 2;
+                }
+            }
+
+            if($segmentId === $id) {
+                break;
+            }
+        }
+
+        return array_unique($groups);
+    }
+
     public static function getAccountPLPosition(int $id) : string
     {
         foreach (self::PL_ACCOUNTS as $key => $account) {
