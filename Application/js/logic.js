@@ -31,4 +31,8 @@ jsOMS.ready(function ()
     "use strict";
 
     window.omsApp = new jsOMS.Application();
+    window.onbeforeunload = function() {
+        jsOMS.removeClass(document.getElementById('darken'), 'hidden');
+        jsOMS.removeClass(document.getElementById('loader'), 'hidden');
+    }
 });

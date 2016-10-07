@@ -1,3 +1,4 @@
+<div id="darken" class="hidden"></div>
 <header>
     <div class="floater">
 	    <a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}'); ?>" id="logo-img"><img src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/img/logo.png'); ?>"></a>
