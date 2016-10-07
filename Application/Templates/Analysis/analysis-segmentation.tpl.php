@@ -169,7 +169,7 @@ $salesCountry = $this->getData('salesCountry');
         <th><?= number_format(array_sum($salesDevUndev['old']), 0, ',', '.') ?>
         <th><?= number_format(array_sum($salesDevUndev['now']), 0, ',', '.') ?>
         <th><?= number_format(array_sum($salesDevUndev['now'])-array_sum($salesDevUndev['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesDevUndev['old']) || $sum = array_sum($salesDevUndev['old']) == 0 ? 0 : (array_sum($salesDevUndev['now'])/$sum-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format(!isset($salesDevUndev['old']) || ($sum = array_sum($salesDevUndev['old'])) == 0 ? 0 : (array_sum($salesDevUndev['now'])/$sum-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 50%; float: left">
