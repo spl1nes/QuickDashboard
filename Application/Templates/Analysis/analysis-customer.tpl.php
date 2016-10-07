@@ -1,13 +1,11 @@
-<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer?{?}'); ?>">
+<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer'); ?>">
     <table>
         <tr>
             <td><label for="customer">Customer ID:</label>
             <td><input id="customer" name="customer" type="text" value="<?= $this->request->getData('customer') ?? ''; ?>" placeholder="123456" pattern="[0-9]{6}">
-            <td><label for="cu">Unit:</label>
-            <td><select id="cu" name="cu">
-                <option value='sd'<?= $this->request->getData('cu') !== 'gdf' ? ' selected' : ''; ?>>SD
-                <option value='gdf'<?= $this->request->getData('cu') === 'gdf' ? ' selected' : ''; ?>>GDF</select>
             <td style="width: 100%">
+                <input type="hidden" name="u" value="<?= $this->request->getData('u') ?? ''; ?>">
+                <input type="hidden" name="t" value="<?= $this->request->getData('t') ?? ''; ?>">
         <tr>
             <td colspan="5"><input type="submit" value="Analyse">
     </table>

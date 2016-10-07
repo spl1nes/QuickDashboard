@@ -1137,7 +1137,7 @@ class DashboardController
         $start->modify('-2 year');
 
         if (($request->getData('customer') ?? 0) != 0) {
-            if ($request->getData('cu') === 'gdf') {
+            if ($request->getData('u') === 'gdf') {
                 $company = 'gdf';
             } else {
                 $company = 'sd';
