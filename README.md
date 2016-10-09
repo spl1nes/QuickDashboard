@@ -16,6 +16,7 @@ The server requirements are as follows:
 ## Required PHP modules & drivers
 
 1. SQLSRV 4.0
+2. ODBC 11 Driver
 
 # Setup
 
