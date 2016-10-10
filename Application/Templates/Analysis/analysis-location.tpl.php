@@ -14,7 +14,7 @@
                     <option value="<?= $id; ?>"><?= $id; ?>
                 <?php endforeach; ?>-->
                 <optgroup label="Country">
-            <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); foreach($countries as $id => $name) : ?>
+            <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); asort($countries); foreach($countries as $id => $name) : ?>
                 <option value="<?= $name; ?>"><?= $name; ?>
             <?php endforeach; ?>
             </select>
