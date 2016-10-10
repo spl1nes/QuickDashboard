@@ -121,13 +121,13 @@ $salesCountry = $this->getData('salesCountry');
         <td><?= number_format($salesExportDomestic['old']['Export'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesExportDomestic['now']['Export'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($salesExportDomestic['now']['Export'] ?? 0)-($salesExportDomestic['old']['Export'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesExportDomestic['old']['Export']) || $salesExportDomestic['old']['Export'] == 0 ? 0 : ($salesExportDomestic['now']['Export']/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesExportDomestic['old']['Export']) || $salesExportDomestic['old']['Export'] == 0 ? 0 : (($salesExportDomestic['now']['Export'] ?? 0)/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
     <tr>
         <td>Domestic
         <td><?= number_format($salesExportDomestic['old']['Domestic'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesExportDomestic['now']['Domestic'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($salesExportDomestic['now']['Domestic'] ?? 0)-($salesExportDomestic['old']['Domestic'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) || $salesExportDomestic['old']['Domestic'] == 0 ? 0 : ($salesExportDomestic['now']['Domestic']/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) || $salesExportDomestic['old']['Domestic'] == 0 ? 0 : (($salesExportDomestic['now']['Domestic'] ?? 0)/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
     <tr>
         <th>Total
         <th><?= number_format(array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
@@ -157,19 +157,19 @@ $salesCountry = $this->getData('salesCountry');
         <td><?= number_format($salesDevUndev['old']['Developed'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesDevUndev['now']['Developed'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesDevUndev['now']['Developed']-$salesDevUndev['old']['Developed'], 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesDevUndev['old']['Developed']) || $salesDevUndev['old']['Developed'] == 0 ? 0 : ($salesDevUndev['now']['Developed']/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesDevUndev['old']['Developed']) || $salesDevUndev['old']['Developed'] == 0 ? 0 : (($salesDevUndev['now']['Developed'] ?? 0)/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
     <tr>
         <td>Undeveloped
         <td><?= number_format($salesDevUndev['old']['Undeveloped'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesDevUndev['now']['Undeveloped'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format(($salesDevUndev['now']['Undeveloped'] ?? 0)-($salesDevUndev['old']['Undeveloped'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) || $salesDevUndev['old']['Undeveloped'] == 0 ? 0 : ($salesDevUndev['now']['Undeveloped']/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
+        <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) || $salesDevUndev['old']['Undeveloped'] == 0 ? 0 : (($salesDevUndev['now']['Undeveloped'] ?? 0)/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
     <tr>
         <th>Total
-        <th><?= number_format(array_sum($salesDevUndev['old']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesDevUndev['now']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesDevUndev['now'])-array_sum($salesDevUndev['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesDevUndev['old']) || ($sum = array_sum($salesDevUndev['old'])) == 0 ? 0 : (array_sum($salesDevUndev['now'])/$sum-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format(array_sum($salesDevUndev['old'] ?? []), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesDevUndev['now'] ?? []), 0, ',', '.') ?>
+        <th><?= number_format(array_sum($salesDevUndev['now'] ?? [])-array_sum($salesDevUndev['old'] ?? []), 0, ',', '.') ?>
+        <th><?= number_format(!isset($salesDevUndev['old']) || ($sum = array_sum($salesDevUndev['old'] ?? [])) == 0 ? 0 : (array_sum($salesDevUndev['now'] ?? [])/$sum-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="box" style="width: 50%; float: left">
