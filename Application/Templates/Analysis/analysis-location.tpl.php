@@ -6,7 +6,7 @@
                 <optgroup label="Domestic/Export">
                     <option value="Domestic">Domestic
                     <option value="Export">Export
-                <optgroup label="Developed/Undeveloped">
+                <!--<optgroup label="Developed/Undeveloped">
                     <option value="Developed">Developed
                     <option value="Undeveloped">Undeveloped
                 <optgroup label="Region">
@@ -16,7 +16,7 @@
                 <optgroup label="Country">
             <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); foreach($countries as $id => $name) : ?>
                 <option value="<?= $name; ?>"><?= $name; ?>
-            <?php endforeach; ?>
+            <?php endforeach; ?>-->
             </select>
             <td style="width: 100%">
                 <input type="hidden" name="u" value="<?= $this->request->getData('u') ?? ''; ?>">
@@ -25,7 +25,7 @@
             <td colspan="3"><input type="submit" value="Analyse">
     </table>
 </form>
-<?php if(($this->request->getData('segment') ?? '') != '') : ?>
+<?php if(($this->request->getData('location') ?? '') != '') : ?>
 <?php
 $sales = $this->getData('sales');
 $salesAcc = $this->getData('salesAcc');

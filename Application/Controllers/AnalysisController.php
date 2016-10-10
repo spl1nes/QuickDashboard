@@ -8,6 +8,7 @@ use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
+use phpOMS\Localization\ISO3166TwoEnum;
 use QuickDashboard\Application\Models\Customer;
 use QuickDashboard\Application\Models\StructureDefinitions;
 
@@ -25,6 +26,63 @@ class AnalysisController extends DashboardController
             }
 
             $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
+    }
+
+    private function loopCustomer(string $period, array $resultset, array &$salesCustomers)
+    {
+        foreach ($resultset as $line) {
+            $customer = trim($line['customer']);
+            if (!isset($salesCustomers[$period][$customer])) {
+                $salesCustomers[$period][$customer] = 0.0;
+            }
+
+            $salesCustomers[$period][$customer] += $line['sales'];
+        }
+    }
+
+    private function loopCustomerCount(array $resultset, array &$customerCount)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($customerCount[$fiscalYear][$fiscalMonth])) {
+                $customerCount[$fiscalYear][$fiscalMonth] = 0;
+            }
+
+            $customerCount[$fiscalYear][$fiscalMonth] += $line['customers'];
+        }
+    }
+
+    private function loopLocation(string $period, array $resultset, array &$salesRegion, array &$salesDevUndev, array &$salesCountry)
+    {
+        foreach ($resultset as $line) {
+            if (!isset($line['countryChar'])) {
+                continue;
+            }
+
+            $region = StructureDefinitions::getRegion($line['countryChar']);
+            if (!isset($salesRegion[$period][$region])) {
+                $salesRegion[$period][$region] = 0.0;
+            }
+
+            $salesRegion[$period][$region] += $line['sales'];
+
+            $devundev = StructureDefinitions::getDevelopedUndeveloped($line['countryChar']);
+            if (!isset($salesDevUndev[$period][$devundev])) {
+                $salesDevUndev[$period][$devundev] = 0.0;
+            }
+
+            $salesDevUndev[$period][$devundev] += $line['sales'];
+
+            $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+            if (!isset($salesCountry[$period][$iso3166Char3])) {
+                $salesCountry[$period][$iso3166Char3] = 0.0;
+            }
+
+            $salesCountry[$period][$iso3166Char3] += $line['sales'];
         }
     }
     
@@ -344,8 +402,7 @@ class AnalysisController extends DashboardController
 
             if ($request->getData('u') !== 'gdf') {
                 if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
-                    $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', StructureDefinitions::ACCOUNTS_DOMESTIC);
-                    $this->loopOverview($salesSD, $totalSales);
+                    $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
                 }
 
                 if (!isset($countries)) {
@@ -359,8 +416,7 @@ class AnalysisController extends DashboardController
 
             if ($request->getData('u') !== 'sd') {
                 if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
-                    $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', StructureDefinitions::ACCOUNTS_DOMESTIC);
-                    $this->loopOverview($salesGDF, $totalSales);
+                    $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
                 }
 
                 if (!isset($countries)) {
@@ -371,6 +427,15 @@ class AnalysisController extends DashboardController
 
                 $this->loopOverview($salesGDF, $totalSales);
             }
+
+            foreach ($totalSales as $year => $months) {
+            ksort($totalSales[$year]);
+
+            foreach ($totalSales[$year] as $month => $value) {
+                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                $accTotalSales[$year][$month] = $prev + $value;
+            }
+        }
 
             $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
             $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];

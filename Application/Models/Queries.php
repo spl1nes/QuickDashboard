@@ -563,7 +563,7 @@ class Queries
                     WHERE 
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (' . rtrim(implode('","', $countries), ',"') . ')
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN ("' . rtrim(implode('","', $countries), ',"')  . '")
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -580,7 +580,7 @@ class Queries
                     WHERE 
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (' . rtrim(implode('","', $countries), ',"') . ')
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN ("' . rtrim(implode('","', $countries), ',"')  . '")
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
