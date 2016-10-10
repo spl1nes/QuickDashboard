@@ -559,11 +559,11 @@ class Queries
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
-                    FROM FiBuchungsArchiv
+                    FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
-                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN ("' . rtrim(implode('","', $countries), ',"')  . '")
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -576,11 +576,11 @@ class Queries
                         datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
                         SUM(-FiBuchungen.Betrag) AS sales
-                    FROM FiBuchungen
+                    FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
-                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN ("' . rtrim(implode('","', $countries), ',"')  . '")
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY

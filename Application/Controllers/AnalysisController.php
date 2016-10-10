@@ -400,9 +400,27 @@ class AnalysisController extends DashboardController
                 $countries = StructureDefinitions::getLocations($request->getData('location'));
             }
 
+            if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                $countries = array_diff($countries, ['DE']);
+            }
+
             if ($request->getData('u') !== 'gdf') {
                 if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
                     $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
+
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts[] = 8591;
+                    }
+                }
+
+                if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                    $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts_DOMESTIC[] = 8591;
+                    }
+
+                    $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts_DOMESTIC);
+                    $this->loopOverview($salesSD, $totalSales);
                 }
 
                 if (!isset($countries)) {
@@ -417,6 +435,20 @@ class AnalysisController extends DashboardController
             if ($request->getData('u') !== 'sd') {
                 if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
                     $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
+
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts[] = 8591;
+                    }
+                }
+
+                if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                    $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts_DOMESTIC[] = 8591;
+                    }
+
+                    $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts_DOMESTIC);
+                    $this->loopOverview($salesGDF, $totalSales);
                 }
 
                 if (!isset($countries)) {
