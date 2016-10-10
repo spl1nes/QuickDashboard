@@ -4,8 +4,8 @@
             <td><label for="location">Location:</label>
             <td><select id="location" name="location">
                 <optgroup label="Domestic/Export">
-                    <option value="Domestic">Domestic
-                    <option value="Export">Export
+                    <option value="Domestic"<?= $this->request->getData('location') == 'Domestic' ? ' selected' : ''; ?>>Domestic
+                    <option value="Export"<?= $this->request->getData('location') == 'Export' ? ' selected' : ''; ?>>Export
                 <!--<optgroup label="Developed/Undeveloped">
                     <option value="Developed">Developed
                     <option value="Undeveloped">Undeveloped
@@ -35,7 +35,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
 ?>
 <?php if(!empty($salesAcc)) : ?>
-<h1>Location Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1><?= $this->request->getData('location') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
 <table>
     <thead>
