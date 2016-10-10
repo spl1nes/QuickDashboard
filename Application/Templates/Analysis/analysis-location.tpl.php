@@ -12,11 +12,11 @@
                 <optgroup label="Region">
                 <?php foreach(\QuickDashboard\Application\Models\StructureDefinitions::REGIONS as $id => $countries) : ?>
                     <option value="<?= $id; ?>"><?= $id; ?>
-                <?php endforeach; ?>
+                <?php endforeach; ?>-->
                 <optgroup label="Country">
             <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); foreach($countries as $id => $name) : ?>
                 <option value="<?= $name; ?>"><?= $name; ?>
-            <?php endforeach; ?>-->
+            <?php endforeach; ?>
             </select>
             <td style="width: 100%">
                 <input type="hidden" name="u" value="<?= $this->request->getData('u') ?? ''; ?>">

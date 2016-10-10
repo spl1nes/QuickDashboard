@@ -461,13 +461,13 @@ class AnalysisController extends DashboardController
             }
 
             foreach ($totalSales as $year => $months) {
-            ksort($totalSales[$year]);
+                ksort($totalSales[$year]);
 
-            foreach ($totalSales[$year] as $month => $value) {
-                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
-                $accTotalSales[$year][$month] = $prev + $value;
+                for ($month = 1; $month < 13; $month++) {
+                    $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                    $accTotalSales[$year][$month] = $prev + ($totalSales[$year][$month] ?? 0);
+                }
             }
-        }
 
             $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
             $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
