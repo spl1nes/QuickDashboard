@@ -106,7 +106,7 @@ class StructureDefinitions
 
     const DEVELOPED = [
         'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'GR', 'ES', 'FR', 'GR', 'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL',
-        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU', 'QU',
+        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU',
     ];
 
     const GROUPING = [

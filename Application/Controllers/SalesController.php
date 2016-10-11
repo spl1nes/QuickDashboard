@@ -254,10 +254,9 @@ class SalesController extends DashboardController
         $allGDFLast      = [];
         $allSDLast       = [];
 
-        $accounts          = StructureDefinitions::PL_ACCOUNTS['Sales'];
+        $accounts          = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
         $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
-            $accounts[]          = 8591;
             $accounts_DOMESTIC[] = 8591;
         }
 
@@ -291,18 +290,22 @@ class SalesController extends DashboardController
 
         $salesExportDomestic['now']['Domestic'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesExportDomestic['old']['Domestic'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
-        $salesExportDomestic['now']['Export']   = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $salesExportDomestic['now']['Domestic'];
-        $salesExportDomestic['old']['Export']   = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $salesExportDomestic['old']['Domestic'];
+        $salesExportDomestic['now']['Export']   = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0);
+        $salesExportDomestic['old']['Export']   = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0);
         $salesCountry['now']['DEU']             = $salesExportDomestic['now']['Domestic'];
         $salesCountry['old']['DEU']             = $salesExportDomestic['old']['Domestic'];
 
         arsort($salesCountry['now']);
 
-        $salesDevUndev['now']['Developed'] += array_sum($salesExportDomestic['now']) - array_sum($salesDevUndev['now']);
-        $salesDevUndev['old']['Developed'] += array_sum($salesExportDomestic['old']) - array_sum($salesDevUndev['old']);
+        $salesDevUndev['now']['Developed'] = $salesExportDomestic['now']['Domestic'] + $salesDevUndev['now']['Developed'];
+        $salesDevUndev['old']['Developed'] = $salesExportDomestic['old']['Domestic'] + $salesDevUndev['old']['Developed'];
+        $salesDevUndev['now']['Undeveloped'] = $salesExportDomestic['now']['Domestic'] + $salesExportDomestic['now']['Export'] - $salesDevUndev['now']['Developed'];
+        $salesDevUndev['old']['Undeveloped'] = $salesExportDomestic['old']['Domestic'] + $salesExportDomestic['old']['Export'] - $salesDevUndev['old']['Developed'];
 
-        $salesRegion['now']['Europe'] += array_sum($salesExportDomestic['now']) - array_sum($salesRegion['now']);
-        $salesRegion['old']['Europe'] += array_sum($salesExportDomestic['old']) - array_sum($salesRegion['old']);
+        $salesRegion['now']['Europe'] = $salesExportDomestic['now']['Domestic'] + $salesRegion['now']['Europe'];
+        $salesRegion['old']['Europe'] = $salesExportDomestic['old']['Domestic'] + $salesRegion['old']['Europe'];
+        $salesRegion['now']['Europe'] -= array_sum($salesRegion['now']) - ($salesExportDomestic['now']['Domestic'] + $salesExportDomestic['now']['Export']);
+        $salesRegion['old']['Europe'] -= array_sum($salesRegion['old']) - ($salesExportDomestic['old']['Domestic'] + $salesExportDomestic['old']['Export']);
 
         $view->setData('salesCountry', $salesCountry);
         $view->setData('salesRegion', $salesRegion);
