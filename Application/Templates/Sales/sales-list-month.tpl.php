@@ -5,13 +5,17 @@ $salesLast = $this->getData('salesLast');
 $salesAccLast = $this->getData('salesAccLast');
 $days = $this->getData('maxDays');
 $today = $this->getData('today');
+$nowDate = $this->getData('nowDate');
+$oldDate = $this->getData('oldDate');
 ?>
 <h1>Sales List - <?= $this->getData('date')->format('Y/m'); ?> <?= $this->getData('type'); ?></h1>
 <table>
     <caption>Sales by Day</caption>
     <thead>
     <tr>
-        <th>Day
+        <th>
+        <th>Day Last
+        <th>Day Current
         <th>Last
         <th>Current
         <th>Diff
@@ -24,6 +28,8 @@ $today = $this->getData('today');
     <?php for($i = 1; $i <= $days; $i++) : ?>
     <tr<?= $i === $today ? ' class="bold"' : '';?>>
         <td><?= $i; ?>
+        <td><?= $oldDate->format('D'); ?>
+        <td><?= $nowDate->format('D'); ?>
         <td><?= !isset($salesLast[$i]) ? '' : number_format($salesLast[$i], 0, ',', '.'); ?>
         <td><?= !isset($sales[$i]) ? '' : number_format($sales[$i], 0, ',', '.'); ?>
         <td><?= number_format(($sales[$i] ?? 0) - ($salesLast[$i] ?? 0), 0, ',', '.'); ?>
@@ -32,9 +38,9 @@ $today = $this->getData('today');
         <td><?= !isset($salesAcc[$i]) ? '' : number_format($salesAcc[$i] ?? 0, 0, ',', '.'); ?>
         <td><?= number_format(($salesAcc[$i] ?? 0) - ($salesAccLast[$i] ?? 0), 0, ',', '.'); ?>
         <td><?= number_format(($salesAccLast[$i] ?? 0) == 0 ? 0 : (($salesAcc[$i] ?? 0)/($salesAccLast[$i] ?? 0) - 1) * 100, 2, ',', '.'); ?> %
-    <?php endfor; ?>
+    <?php $nowDate->modify('+1 day'); $oldDate->modify('+1 day'); endfor; ?>
     <tr>
-        <th>Current
+        <th colspan="3">Current
         <th><?= number_format($salesAccLast[$today], 0, ',', '.'); ?>
         <th><?= number_format($salesAcc[$days], 0, ',', '.'); ?>
         <th><?= number_format($salesAcc[$days] - $salesAccLast[$today], 0, ',', '.'); ?>

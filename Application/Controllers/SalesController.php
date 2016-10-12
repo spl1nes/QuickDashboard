@@ -81,6 +81,8 @@ class SalesController extends DashboardController
         $view->setData('today', $today);
         $view->setData('date', $current);
         $view->setData('type', 'isolated');
+        $view->setData('nowDate', $startCurrent);
+        $view->setData('oldDate', $startLast);
 
         return $view;
     }
