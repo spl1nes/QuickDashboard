@@ -94,7 +94,6 @@ $gini = $this->getData('gini');
 </div>
 
 <div class="clear"></div>
-<div class="break"></div>
 
 <p>The follwoing chart shows the amount of active customers (have sales impact) per month.</p>
 
