@@ -95,6 +95,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/opex.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisOPEX',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 
     '^reporting/pl.*?i=month.*$' => [
         [
@@ -120,9 +126,40 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^reporting/opex.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ReportingController:showOPEX',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^reporting/ebit.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\ReportingController:showEBIT',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+
+    '^kpi/finance.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\KpiController:showFinance',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^kpi/marketing.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\KpiController:showMarketing',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^kpi/personnel.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\KpiController:showPersonnel',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^kpi/Quality.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\KpiController:showQuality',
             'verb' => RouteVerb::GET,
         ],
     ],

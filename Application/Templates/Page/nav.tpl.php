@@ -42,14 +42,24 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/profit?{?}&i=year'); ?>">Year</a>
                         </ul>
+                    <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/opex?{?}'); ?>">OPEX</a>
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/ebit?{?}'); ?>">EBIT</a>
                 </ul>
+                <li><i class="fa fa-search"></i> KPI
+                    <ul>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/finance?{?}'); ?>">Finance</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/marketing?{?}'); ?>">Marketing</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/personnel?{?}'); ?>">Personnel</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/quality?{?}'); ?>">Quality</a>
+                    </ul>
+                <li>
                 <li><i class="fa fa-search"></i> Analysis
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/location?{?}'); ?>">Location</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/segmentation?{?}'); ?>">Segmentation</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer?{?}'); ?>">Customer</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/opex?{?}'); ?>">OPEX</a>
                     </ul>
-                <li><li><li><li>
+                <li><li><li>
     </nav>
 </div>
