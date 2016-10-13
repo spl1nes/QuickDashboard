@@ -4,11 +4,11 @@ namespace QuickDashboard\Application\Controllers;
 
 use phpOMS\Datatypes\Location;
 use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
-use phpOMS\Localization\ISO3166TwoEnum;
 use QuickDashboard\Application\Models\Customer;
 use QuickDashboard\Application\Models\StructureDefinitions;
 
@@ -115,7 +115,7 @@ class AnalysisController extends DashboardController
             $totalGroups['All'][$period] += $line['sales'];
         }
     }
-    
+
     public function showAnalysisCustomer(RequestAbstract $request, ResponseAbstract $response)
     {
         $view = new View($this->app, $request, $response);
@@ -600,6 +600,54 @@ class AnalysisController extends DashboardController
             $view->setData('salesGroups', $salesGroups);
             $view->setData('segmentGroups', $segmentGroups);
             $view->setData('totalGroups', $totalGroups);
+        }
+
+        return $view;
+    }
+
+    public function showAnalysisOPEX(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-opex');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        if (isset(StructureDefinitions::PL_ACCOUNTS[$request->getData('opex')])) {
+            $accounts   = StructureDefinitions::getOPEXAccounts();
+
+            $opexCosts      = [];
+            $accOpexCosts   = [];
+
+            if ($request->getData('u') !== 'gdf') {
+                $costs = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
+                $this->loopOverview($costs, $opexCosts);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $costs = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
+                $this->loopOverview($costs, $opexCosts);
+            }
+
+            $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+            $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+            $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            foreach ($opexCosts as $year => $months) {
+                ksort($opexCosts[$year]);
+
+                for ($month = 1; $month < 13; $month++) {
+                    $prev                        = $accOpexCosts[$year][$month - 1] ?? 0.0;
+                    $accOpexCosts[$year][$month] = $prev + ($opexCosts[$year][$month] ?? 0);
+                }
+            }
+
+            $view->setData('currentFiscalYear', $currentYear);
+            $view->setData('currentMonth', $currentMonth);
+            $view->setData('opex', $opexCosts);
+            $view->setData('opexAcc', $accOpexCosts);
+            $view->setData('date', $current);
         }
 
         return $view;

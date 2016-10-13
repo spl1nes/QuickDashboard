@@ -105,53 +105,53 @@ class StructureDefinitions
     ];
 
     const DEPARTMENTS_SD = [
-        'Finance' => [5600],
-        'Personnel' => [5700],
+        'Finance'                    => [5600],
+        'Personnel'                  => [5700],
         'Sales Domestic Back Office' => [5100, 5200, 5400],
-        'Sales Domestic Reps' => [4500],
-        'Sales Export Back Office' => [3500],
-        'Sales Export Reps' => [3300],
-        'Sales Dentist Reps' => [4700],
-        'Sales Management' => [6100],
-        'Service' => [1199],
-        'Support' => [600, 6050],
-        'Production' => [],
-        'Purchase' => [5450],
-        'Warehouse' => [5300, 6300],
-        'R&D' => [1000],
-        'Management' => [5000],
-        'Trainees' => [6400],
-        'Marketing' => [5800],
-        'IT' => [5500],
-        'Secretariat' => [5900],
-        'QA' => [6200],
-        'MANI' => [4800],
-        'General' => [4900, 2900, 3400],
+        'Sales Domestic Reps'        => [4500],
+        'Sales Export Back Office'   => [3500],
+        'Sales Export Reps'          => [3300],
+        'Sales Dentist Reps'         => [4700],
+        'Sales Management'           => [6100],
+        'Service'                    => [1199],
+        'Support'                    => [600, 6050],
+        'Production'                 => [],
+        'Purchase'                   => [5450],
+        'Warehouse'                  => [5300, 6300],
+        'R&D'                        => [1000],
+        'Management'                 => [5000],
+        'Trainees'                   => [6400],
+        'Marketing'                  => [5800],
+        'IT'                         => [5500],
+        'Secretariat'                => [5900],
+        'QA'                         => [6200],
+        'MANI'                       => [4800],
+        'General'                    => [4900, 2900, 3400],
     ];
 
     const DEPARTMENTS_GDF = [
-        'Finance' => [5600],
-        'Personnel' => [5700],
+        'Finance'                    => [5600],
+        'Personnel'                  => [5700],
         'Sales Domestic Back Office' => [4500, 5400],
-        'Sales Domestic Reps' => [],
-        'Sales Export Back Office' => [],
-        'Sales Export Reps' => [3300],
-        'Sales Dentist Reps' => [],
-        'Sales Management' => [],
-        'Service' => [],
-        'Support' => [],
-        'Production' => [4300, 4400, 4450, 4600],
-        'Purchase' => [],
-        'Warehouse' => [6300],
-        'R&D' => [4000],
-        'Management' => [5000],
-        'Trainees' => [6400],
-        'Marketing' => [],
-        'IT' => [5500],
-        'Secretariat' => [5900],
-        'QA' => [6000],
-        'MANI' => [4800],
-        'General' => [4900, 4009, 4120, 5900],
+        'Sales Domestic Reps'        => [],
+        'Sales Export Back Office'   => [],
+        'Sales Export Reps'          => [3300],
+        'Sales Dentist Reps'         => [],
+        'Sales Management'           => [],
+        'Service'                    => [],
+        'Support'                    => [],
+        'Production'                 => [4300, 4400, 4450, 4600],
+        'Purchase'                   => [],
+        'Warehouse'                  => [6300],
+        'R&D'                        => [4000],
+        'Management'                 => [5000],
+        'Trainees'                   => [6400],
+        'Marketing'                  => [],
+        'IT'                         => [5500],
+        'Secretariat'                => [5900],
+        'QA'                         => [6000],
+        'MANI'                       => [4800],
+        'General'                    => [4900, 4009, 4120, 5900],
     ];
 
     const DEVELOPED = [
@@ -322,31 +322,32 @@ class StructureDefinitions
         return 0;
     }
 
-    public static function getSalesGroups(int $id) : array {
+    public static function getSalesGroups(int $id) : array
+    {
         $groups = [];
 
-        if($id === 16) {
+        if ($id === 16) {
             return [161];
         }
 
-        foreach(self::GROUPING as $segmentId => $group) {
-            foreach($group as $groupId => $salesGroup) {
-                foreach($salesGroup as $salesGroupId) {
-                    if($segmentId === $id || $groupId === $id || $salesGroupId === $id) {
+        foreach (self::GROUPING as $segmentId => $group) {
+            foreach ($group as $groupId => $salesGroup) {
+                foreach ($salesGroup as $salesGroupId) {
+                    if ($segmentId === $id || $groupId === $id || $salesGroupId === $id) {
                         $groups[] = $salesGroupId;
                     }
 
-                    if($salesGroupId === $id) {
+                    if ($salesGroupId === $id) {
                         break 3;
                     }
                 }
 
-                if($groupId === $id) {
+                if ($groupId === $id) {
                     break 2;
                 }
             }
 
-            if($segmentId === $id) {
+            if ($segmentId === $id) {
                 break;
             }
         }
@@ -362,9 +363,9 @@ class StructureDefinitions
             }
         }
 
-        if($id === 8591) {
+        if ($id === 8591) {
             return 'Sales';
-        } elseif($id === 3491) {
+        } elseif ($id === 3491) {
             return 'COGS Material';
         }
 
@@ -387,35 +388,26 @@ class StructureDefinitions
         return array_merge(self::PL_ACCOUNTS['COGS Material'], self::PL_ACCOUNTS['COGS Services']);
     }
 
+    public static function getOPEXPositions() : array
+    {
+        return [
+            'Freight', 'Provisions', 'External Seminars', 'Other Revenue', 'Wages & Salaries', 'Welfare Expenses',
+            'Marketing', 'Trade Fair', 'Rental & Leasing', 'Utilities', 'Carpool', 'Repair/Maintenance',
+            'Stationary Expenses', 'Communication', 'Travel Expenses', 'Entertainment', 'External Consultants', 'R&D',
+            'Patents', 'Other Personnel Expenses', 'Other OPEX', 'Intercompany Expenses', 'Intercompany Revenue',
+            'Doubtful Accounts', 'Depreciation'];
+    }
+
     public static function getOPEXAccounts() : array
     {
-        return array_merge(
-            self::PL_ACCOUNTS['Freight'],
-            self::PL_ACCOUNTS['Provisions'],
-            self::PL_ACCOUNTS['External Seminars'],
-            self::PL_ACCOUNTS['Other Revenue'],
-            self::PL_ACCOUNTS['Wages & Salaries'],
-            self::PL_ACCOUNTS['Welfare Expenses'],
-            self::PL_ACCOUNTS['Marketing'],
-            self::PL_ACCOUNTS['Trade Fair'],
-            self::PL_ACCOUNTS['Rental & Leasing'],
-            self::PL_ACCOUNTS['Utilities'],
-            self::PL_ACCOUNTS['Carpool'],
-            self::PL_ACCOUNTS['Repair/Maintenance'],
-            self::PL_ACCOUNTS['Stationary Expenses'],
-            self::PL_ACCOUNTS['Communication'],
-            self::PL_ACCOUNTS['Travel Expenses'],
-            self::PL_ACCOUNTS['Entertainment'],
-            self::PL_ACCOUNTS['External Consultants'],
-            self::PL_ACCOUNTS['R&D'],
-            self::PL_ACCOUNTS['Patents'],
-            self::PL_ACCOUNTS['Other Personnel Expenses'],
-            self::PL_ACCOUNTS['Other OPEX'],
-            self::PL_ACCOUNTS['Intercompany Expenses'],
-            self::PL_ACCOUNTS['Intercompany Revenue'],
-            self::PL_ACCOUNTS['Doubtful Accounts'],
-            self::PL_ACCOUNTS['Depreciation']
-        );
+        $accounts = [];
+        $positions = self::getOPEXPositions();
+
+        foreach($positions as $position) {
+            $accounts = array_merge($accounts, self::PL_ACCOUNTS[$position]);
+        }
+
+        return $accounts;
     }
 
     public static function getEBITAccounts() : array
@@ -456,7 +448,7 @@ class StructureDefinitions
     {
         $countries = [];
 
-        foreach(self::REGIONS as $region) {
+        foreach (self::REGIONS as $region) {
             $countries = array_merge($countries, $region);
         }
 
@@ -468,21 +460,21 @@ class StructureDefinitions
         $locations = [];
         $countries = self::getCountries();
 
-        if($location === 'Export') {
+        if ($location === 'Export') {
             $locations = array_diff($countries, ['DE']);
-        } elseif($location === 'Domestic' || $location === 'DE') {
+        } elseif ($location === 'Domestic' || $location === 'DE') {
             $locations = ['DE'];
-        } elseif($location === 'Developed') {
+        } elseif ($location === 'Developed') {
             $locations = self::DEVELOPED;
-        } elseif($location === 'Undeveloped') {
+        } elseif ($location === 'Undeveloped') {
             $locations = array_diff($countries, self::DEVELOPED);
-        } elseif(isset(self::REGIONS[$location])) {
-            $locations = self::REGIONS[$location];
-        } elseif(in_array($location, $countries)) {
-            $locations = [$location];
-        } else {
-            throw new \Exception('Unknown location ' . $location);
-        }
+        } elseif (isset(self::REGIONS[$location])) {
+        $locations = self::REGIONS[$location];
+    } elseif(in_array($location, $countries)) {
+        $locations = [$location];
+    } else {
+        throw new \Exception('Unknown location ' . $location);
+    }
 
         return $locations;
     }
