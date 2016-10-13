@@ -469,13 +469,26 @@ class StructureDefinitions
         } elseif ($location === 'Undeveloped') {
             $locations = array_diff($countries, self::DEVELOPED);
         } elseif (isset(self::REGIONS[$location])) {
-        $locations = self::REGIONS[$location];
-    } elseif(in_array($location, $countries)) {
-        $locations = [$location];
-    } else {
-        throw new \Exception('Unknown location ' . $location);
-    }
+            $locations = self::REGIONS[$location];
+        } elseif(in_array($location, $countries)) {
+            $locations = [$location];
+        } else {
+            throw new \Exception('Unknown location ' . $location);
+        }
 
         return $locations;
+    }
+
+    public static function getDepartmentByCostCenter(int $costcenter, string $company) : string
+    {
+        $departments = $company === 'gdf' ? self::DEPARTMENTS_SD : self::DEPARTMENTS_GDF;
+
+        foreach($departments as $name => $costcenters) {
+            if(in_array($costcenter, $costcenters)) {
+                return $name;
+            }
+        }
+
+        return '';
     }
 }

@@ -5,6 +5,7 @@ $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
+$opexGroup = $this->getData('opexGroups');
 ?>
 <h1>EBIT - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <p>Please be aware that the following EBIT figures are always unconsolidated. The EBIT doesn't include the interim profit resulting from different stock evaluations.</p>
@@ -42,6 +43,14 @@ $currentMonth = $this->getData('currentMonth');
 <div style="width: 100%;">
     <canvas id="overview-acc-consolidated-opex"></canvas>
 </div>
+
+<div class="clear"></div>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="opex-groups" height="130"></canvas>
+</div>
+
+<div class="clear"></div>
 <script>
     let configConsolidated = {
         type: 'line',
@@ -193,11 +202,75 @@ $currentMonth = $this->getData('currentMonth');
         }
     };
 
+    let configOPEXGroups = {
+        type: 'bar',
+        data: {
+            labels: [<?php $groupNames = array_unique(array_merge(array_keys($opexGroup[$current] ?? []), array_keys($opexGroup[$current_1] ?? []), array_keys($opexGroup[$current_2] ?? []))); echo '"' . implode('","', $groupNames) . '"'; ?>],
+            datasets: [{
+                label: 'Two Years Ago',
+                backgroundColor: "rgba(255, 206, 86, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current_2][$name] ?? 0; } echo implode(',', $data); ?>]
+            }, {
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current_1][$name] ?? 0; } echo implode(',', $data); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current][$name] ?? 0; } echo implode(',', $data); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"OPEX by Departments"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxConsolidated = document.getElementById("overview-consolidated-opex").getContext("2d");
         window.consolidatedLine = new Chart(ctxConsolidated, configConsolidated);
 
         let ctxConsolidatedAcc = document.getElementById("overview-acc-consolidated-opex").getContext("2d");
         window.consolidatedLineAcc = new Chart(ctxConsolidatedAcc, configConsolidatedAcc);
+
+        let ctxGroupSales = document.getElementById("opex-groups").getContext("2d");
+        window.groupSales = new Chart(ctxGroupSales, configOPEXGroups);
     };
 </script>
