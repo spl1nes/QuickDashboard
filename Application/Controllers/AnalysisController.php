@@ -394,6 +394,11 @@ class AnalysisController extends DashboardController
             $totalSales    = [];
             $accTotalSales = [];
 
+            $salesGroups    = [];
+            $totalGroups    = ['now' => 0.0, 'old' => 0.0];
+            $salesCustomers = [];
+            $customerCount  = [];
+
             $accounts = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
 
             if($request->getData('location') !== 'Domestic' && $request->getData('location') !== 'DE' && $request->getData('location') !== 'Export') {
@@ -421,15 +426,31 @@ class AnalysisController extends DashboardController
 
                     $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts_DOMESTIC);
                     $this->loopOverview($salesSD, $totalSales);
+
+                    $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts_DOMESTIC);
+                    $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts_DOMESTIC);
+                    $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts_DOMESTIC);
+                    $this->loopCustomer('now', $customersSD, $salesCustomers);
+                    $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+                    $this->loopCustomerCount($customerSD, $customerCount);
                 }
 
                 if (!isset($countries)) {
                     $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
+                    $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
+                    $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts);
                 } else {
                     $salesSD = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'sd', $accounts, $countries);
+                    $customersSD     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
+                    $customersSDLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'sd', $accounts, $countries);
+                    $customerSD = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'sd', $accounts, $countries);
                 }
 
                 $this->loopOverview($salesSD, $totalSales);
+                $this->loopCustomer('now', $customersSD, $salesCustomers);
+                $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+                $this->loopCustomerCount($customerSD, $customerCount);
             }
 
             if ($request->getData('u') !== 'sd') {
@@ -449,15 +470,43 @@ class AnalysisController extends DashboardController
 
                     $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts_DOMESTIC);
                     $this->loopOverview($salesGDF, $totalSales);
+
+                    $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts_DOMESTIC);
+                    $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts_DOMESTIC);
+                    $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts_DOMESTIC);
+                    $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                    $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+                    $this->loopCustomerCount($customerGDF, $customerCount);
                 }
 
                 if (!isset($countries)) {
                     $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
+                    $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
+                    $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts);
                 } else {
                     $salesGDF = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'gdf', $accounts, $countries);
+                    $customersGDF     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
+                    $customersGDFLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'gdf', $accounts, $countries);
+                    $customerGDF = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'gdf', $accounts, $countries);
                 }
 
                 $this->loopOverview($salesGDF, $totalSales);
+                $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+                $this->loopCustomerCount($customerGDF, $customerCount);
+            }
+
+            arsort($salesCustomers['now']);
+            arsort($salesCustomers['old']);
+
+            $gini = [
+                'now' => Lorenzkurve::getGiniCoefficient($salesCustomers['now']),
+                'old' => Lorenzkurve::getGiniCoefficient($salesCustomers['old']),
+            ];
+
+            foreach ($customerCount as $year => $months) {
+                ksort($customerCount[$year]);
             }
 
             foreach ($totalSales as $year => $months) {
@@ -478,6 +527,9 @@ class AnalysisController extends DashboardController
             $view->setData('sales', $totalSales);
             $view->setData('salesAcc', $accTotalSales);
             $view->setData('date', $current);
+            $view->setData('customer', $salesCustomers);
+            $view->setData('customerCount', $customerCount);
+            $view->setData('gini', $gini);
         }
 
         return $view;
