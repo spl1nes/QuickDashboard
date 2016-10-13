@@ -16,6 +16,20 @@ class KpiController extends DashboardController
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Kpi/kpi-finance');
 
+        // dso (total/domestic/export)
+
+        // dpo
+
+        // dio
+
+        // ebit margin
+
+        // gross profit margin
+
+        // opex quote
+
+        // personnel quote
+
         return $view;
     }
 
@@ -23,6 +37,12 @@ class KpiController extends DashboardController
     {
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Kpi/kpi-marketing');
+
+        // roi on p
+
+        // roi on k
+
+        // marketing+fairs
 
         return $view;
     }
@@ -39,6 +59,8 @@ class KpiController extends DashboardController
     {
         $view = new View($this->app, $request, $response);
         $view->setTemplate('/QuickDashboard/Application/Templates/Kpi/kpi-quality');
+
+        // credit notes
 
         return $view;
     }
