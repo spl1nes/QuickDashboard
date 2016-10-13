@@ -370,17 +370,17 @@ $gini = $this->getData('gini');
                 label: 'Two Years Ago',
                 backgroundColor: "rgba(255, 206, 86, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current_2] ?? []); ?>]
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $customerCount[$current_2][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
             }, {
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current_1] ?? []); ?>]
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $customerCount[$current_1][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current] ?? []); ?>]
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $customerCount[$current][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
             }]
         },
         options: {
