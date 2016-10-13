@@ -340,4 +340,68 @@ class ReportingController extends DashboardController
         }
     }
 
+    public function showOPEX(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Reporting/reporting-opex');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        $totalSales    = [];
+        $accTotalSales = [];
+
+        $accounts = StructureDefinitions::getOPEXAccounts();
+
+        if ($request->getData('u') !== 'gdf') {
+            $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
+            $this->loopOPEX($salesSD, $totalSales);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
+            $this->loopOPEX($salesGDF, $totalSales);
+        }
+
+        foreach ($totalSales as $year => $months) {
+            ksort($totalSales[$year]);
+
+            foreach ($totalSales[$year] as $month => $value) {
+                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                $accTotalSales[$year][$month] = $prev + $value;
+            }
+        }
+
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        unset($totalSales[$currentYear][$currentMonth]);
+        unset($accTotalSales[$currentYear][$currentMonth]);
+
+        $view->setData('currentFiscalYear', $currentYear);
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('opex', $totalSales);
+        $view->setData('opexAcc', $accTotalSales);
+        $view->setData('date', $current->smartModify(0, -1));
+
+        return $view;
+    }
+
+    private function loopOPEX(array $resultset, array &$totalSales)
+    {
+        foreach ($resultset as $line) {
+            $fiscalYear  = $line['months'] - $this->app->config['fiscal_year'] < 0 ? $line['years'] - 1 : $line['years'];
+            $mod         = ($line['months'] - $this->app->config['fiscal_year']);
+            $fiscalMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
+                $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+            }
+
+            $totalSales[$fiscalYear][$fiscalMonth] += $line['sales'];
+        }
+    }
+
 }

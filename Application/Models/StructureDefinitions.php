@@ -387,6 +387,37 @@ class StructureDefinitions
         return array_merge(self::PL_ACCOUNTS['COGS Material'], self::PL_ACCOUNTS['COGS Services']);
     }
 
+    public static function getOPEXAccounts() : array
+    {
+        return array_merge(
+            self::PL_ACCOUNTS['Freight'],
+            self::PL_ACCOUNTS['Provisions'],
+            self::PL_ACCOUNTS['External Seminars'],
+            self::PL_ACCOUNTS['Other Revenue'],
+            self::PL_ACCOUNTS['Wages & Salaries'],
+            self::PL_ACCOUNTS['Welfare Expenses'],
+            self::PL_ACCOUNTS['Marketing'],
+            self::PL_ACCOUNTS['Trade Fair'],
+            self::PL_ACCOUNTS['Rental & Leasing'],
+            self::PL_ACCOUNTS['Utilities'],
+            self::PL_ACCOUNTS['Carpool'],
+            self::PL_ACCOUNTS['Repair/Maintenance'],
+            self::PL_ACCOUNTS['Stationary Expenses'],
+            self::PL_ACCOUNTS['Communication'],
+            self::PL_ACCOUNTS['Travel Expenses'],
+            self::PL_ACCOUNTS['Entertainment'],
+            self::PL_ACCOUNTS['External Consultants'],
+            self::PL_ACCOUNTS['R&D'],
+            self::PL_ACCOUNTS['Patents'],
+            self::PL_ACCOUNTS['Other Personnel Expenses'],
+            self::PL_ACCOUNTS['Other OPEX'],
+            self::PL_ACCOUNTS['Intercompany Expenses'],
+            self::PL_ACCOUNTS['Intercompany Revenue'],
+            self::PL_ACCOUNTS['Doubtful Accounts'],
+            self::PL_ACCOUNTS['Depreciation']
+        );
+    }
+
     public static function getEBITAccounts() : array
     {
         return array_merge(
