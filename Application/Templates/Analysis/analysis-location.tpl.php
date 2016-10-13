@@ -33,6 +33,9 @@ $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
+$salesGroups = $this->getData('salesGroups');
+$segmentGroups = $this->getData('segmentGroups');
+$totalGroups = $this->getData('totalGroups');
 $topCustomers = $this->getData('customer');
 $customerCount = $this->getData('customerCount');
 $gini = $this->getData('gini');
@@ -72,6 +75,10 @@ $gini = $this->getData('gini');
 
 <div style="width: 50%; float: left;">
     <canvas id="overview-acc-consolidated-sales" height="270"></canvas>
+</div>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="group-sales" height="150"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -252,6 +259,62 @@ $gini = $this->getData('gini');
         }
     };
 
+    let configSalesGroups = {
+        type: 'bar',
+        data: {
+            labels: [<?php $groupNames = []; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } $groupNames = array_merge($groupNames, array_keys($groups)); }; echo '"' . implode('","', $groupNames) . '"'; ?>],
+            datasets: [{
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['old'] ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = ''; foreach($salesGroups['All'] as $key => $groups) { if(!is_array($groups)) { continue; } foreach($groups as $group) { $data .= ($group['now']  ?? 0) . ','; } } echo rtrim($data, ','); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"Sales by Groups"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     let configTopCustomers = {
         type: 'bar',
         data: {
@@ -428,6 +491,9 @@ $gini = $this->getData('gini');
 
         let ctxConsolidatedAcc = document.getElementById("overview-acc-consolidated-sales").getContext("2d");
         window.consolidatedLineAcc = new Chart(ctxConsolidatedAcc, configConsolidatedAcc);
+
+        let ctxSalesGroups = document.getElementById("group-sales");
+        window.salesGroups = new Chart(ctxSalesGroups, configSalesGroups);
 
         let ctxSalesCustomers = document.getElementById("top-customers-sales");
         window.salesCustomers = new Chart(ctxSalesCustomers, configTopCustomers);

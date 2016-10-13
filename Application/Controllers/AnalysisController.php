@@ -85,6 +85,36 @@ class AnalysisController extends DashboardController
             $salesCountry[$period][$iso3166Char3] += $line['sales'];
         }
     }
+
+    private function loopArticleGroups(string $period, array $resultset, array &$salesGroups, array &$segmentGroups, array &$totalGroups)
+    {
+        foreach ($resultset as $line) {
+            $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
+
+            if ($group === 0) {
+                continue;
+            }
+
+            $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+            if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                continue;
+            }
+
+            /** @noinspection PhpUnreachableStatementInspection */
+            if (!isset($salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period])) {
+                $salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period]      = 0.0;
+            }
+
+            if (!isset($segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period])) {
+                $segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period]      = 0.0;
+            }
+
+            $salesGroups['All'][StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] += $line['sales'];
+            $segmentGroups['All'][StructureDefinitions::NAMING[$segment]][$period] += $line['sales'];
+            $totalGroups['All'][$period] += $line['sales'];
+        }
+    }
     
     public function showAnalysisCustomer(RequestAbstract $request, ResponseAbstract $response)
     {
@@ -399,6 +429,20 @@ class AnalysisController extends DashboardController
             $salesCustomers = [];
             $customerCount  = [];
 
+            $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
+
+            $salesGroups   = [];
+            $segmentGroups = [];
+
+            foreach ($temp as $segment) {
+                $salesGroups['All'][$segment]   = null;
+                $segmentGroups['All'][$segment] = null;
+            }
+
+            $totalGroups = [
+                'All'      => ['now' => 0.0, 'old' => 0.0],
+            ];
+
             $accounts = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
 
             if($request->getData('location') !== 'Domestic' && $request->getData('location') !== 'DE' && $request->getData('location') !== 'Export') {
@@ -433,6 +477,11 @@ class AnalysisController extends DashboardController
                     $this->loopCustomer('now', $customersSD, $salesCustomers);
                     $this->loopCustomer('old', $customersSDLast, $salesCustomers);
                     $this->loopCustomerCount($customerSD, $customerCount);
+
+                    $groupsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
+                    $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+                    $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
                 }
 
                 if (!isset($countries)) {
@@ -440,17 +489,23 @@ class AnalysisController extends DashboardController
                     $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
                     $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
                     $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts);
+                    $groupsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
                 } else {
                     $salesSD = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'sd', $accounts, $countries);
                     $customersSD     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
                     $customersSDLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'sd', $accounts, $countries);
                     $customerSD = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'sd', $accounts, $countries);
+                    $groupsSD     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
+                    $groupsSDLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'sd', $accounts, $countries);
                 }
 
                 $this->loopOverview($salesSD, $totalSales);
                 $this->loopCustomer('now', $customersSD, $salesCustomers);
                 $this->loopCustomer('old', $customersSDLast, $salesCustomers);
                 $this->loopCustomerCount($customerSD, $customerCount);
+                $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
             }
 
             if ($request->getData('u') !== 'sd') {
@@ -477,6 +532,11 @@ class AnalysisController extends DashboardController
                     $this->loopCustomer('now', $customersGDF, $salesCustomers);
                     $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
                     $this->loopCustomerCount($customerGDF, $customerCount);
+
+                    $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
+                    $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+                    $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
                 }
 
                 if (!isset($countries)) {
@@ -484,17 +544,24 @@ class AnalysisController extends DashboardController
                     $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
                     $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
                     $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts);
+                    $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
+
                 } else {
                     $salesGDF = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'gdf', $accounts, $countries);
                     $customersGDF     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
                     $customersGDFLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'gdf', $accounts, $countries);
                     $customerGDF = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'gdf', $accounts, $countries);
+                    $groupsGDF     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
+                    $groupsGDFLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'gdf', $accounts, $countries);
                 }
 
                 $this->loopOverview($salesGDF, $totalSales);
                 $this->loopCustomer('now', $customersGDF, $salesCustomers);
                 $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
                 $this->loopCustomerCount($customerGDF, $customerCount);
+                $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
             }
 
             arsort($salesCustomers['now']);
@@ -530,6 +597,9 @@ class AnalysisController extends DashboardController
             $view->setData('customer', $salesCustomers);
             $view->setData('customerCount', $customerCount);
             $view->setData('gini', $gini);
+            $view->setData('salesGroups', $salesGroups);
+            $view->setData('segmentGroups', $segmentGroups);
+            $view->setData('totalGroups', $totalGroups);
         }
 
         return $view;

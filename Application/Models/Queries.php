@@ -664,4 +664,40 @@ class Queries
                 ) t
             GROUP BY t.years, t.months;';
     }
+
+    public static function selectCountrySalesArticleGroups(\DateTime $start, \DateTime $end, array $accounts, array $countries) : string
+    {
+        return 'SELECT DISTINCT
+                t.account, t.costcenter, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.Konto as account,
+                        FiBuchungsArchiv.KST AS costcenter,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungsArchiv.Konto, FiBuchungsArchiv.KST
+                UNION ALL
+                    SELECT 
+                        FiBuchungen.Konto as account,
+                        FiBuchungen.KST AS costcenter,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungen.Konto, FiBuchungen.KST
+                ) t
+            GROUP BY t.account, t.costcenter;';
+    }
 }
