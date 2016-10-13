@@ -15,7 +15,7 @@
                 <?php endforeach; ?>-->
                 <optgroup label="Country">
             <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); asort($countries); foreach($countries as $id => $name) : ?>
-                <option value="<?= $name; ?>"><?= $name; ?>
+                <option value="<?= $name; ?>"<?= $this->request->getData('location') == $name ? ' selected' : ''; ?>><?= $name; ?>
             <?php endforeach; ?>
             </select>
             <td style="width: 100%">
@@ -370,17 +370,17 @@ $gini = $this->getData('gini');
                 label: 'Two Years Ago',
                 backgroundColor: "rgba(255, 206, 86, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current_2]); ?>]
+                data: [<?php echo implode(',', $customerCount[$current_2] ?? []); ?>]
             }, {
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current_1]); ?>]
+                data: [<?php echo implode(',', $customerCount[$current_1] ?? []); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php echo implode(',', $customerCount[$current]); ?>]
+                data: [<?php echo implode(',', $customerCount[$current] ?? []); ?>]
             }]
         },
         options: {
@@ -414,7 +414,7 @@ $gini = $this->getData('gini');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return value.toString(); },
+                        userCallback: function(value, index, values) { return Math.floor(value).toString(); },
                         beginAtZero: true,
                         min: 0
                     }
