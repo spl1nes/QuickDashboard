@@ -51,6 +51,36 @@ $opexGroup = $this->getData('opexGroups');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Department
+        <th>2 Years Ago
+        <th>Last Year
+        <th>Currently
+        <th>Diff Last Year
+        <th>Diff Last Year %
+    <tbody>
+    <?php $groupNames = array_unique(array_merge(array_keys($opexGroup[$current] ?? []), array_keys($opexGroup[$current_1] ?? []), array_keys($opexGroup[$current_2] ?? []))); asort($groupNames); foreach($groupNames as $name) : ?>
+        <tr>
+            <td><?= $name; ?>
+            <td><?= '€  ' . number_format($opexGroup[$current_2][$name] ?? 0, 0, ',', '.');  ?>
+            <td><?= '€  ' . number_format($opexGroup[$current_1][$name] ?? 0, 0, ',', '.');  ?>
+            <td><?= '€  ' . number_format($opexGroup[$current][$name] ?? 0, 0, ',', '.');  ?>
+            <td><?= '€  ' . number_format(($opexGroup[$current][$name] ?? 0)-($opexGroup[$current_1][$name] ?? 0), 0, ',', '.');  ?>
+            <td><?= ($opexGroup[$current_1][$name] ?? 0) == 0 ? 0 : number_format((($opexGroup[$current][$name] ?? 0)/$opexGroup[$current_1][$name]-1)*100, 2, ',', '.') . '%';  ?>
+    <?php endforeach; ?>
+    <tr>
+        <th>Accumulated Year
+        <th><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth-1], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1]-$opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
+        <th><?= number_format(($opexAcc[$current][$currentMonth-1]/$opexAcc[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
+</table>
+
 <script>
     let configConsolidated = {
         type: 'line',
@@ -207,7 +237,7 @@ $opexGroup = $this->getData('opexGroups');
     let configOPEXGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = array_unique(array_merge(array_keys($opexGroup[$current] ?? []), array_keys($opexGroup[$current_1] ?? []), array_keys($opexGroup[$current_2] ?? []))); echo '"' . implode('","', $groupNames) . '"'; ?>],
+            labels: [<?php echo '"' . implode('","', $groupNames) . '"'; ?>],
             datasets: [{
                 label: 'Two Years Ago',
                 backgroundColor: "rgba(255, 206, 86, 1)",
