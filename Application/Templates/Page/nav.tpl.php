@@ -45,13 +45,13 @@
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/opex?{?}'); ?>">OPEX</a>
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/ebit?{?}'); ?>">EBIT</a>
                 </ul>
-                <li><i class="fa fa-search"></i> KPI
+                <!--<li><i class="fa fa-search"></i> KPI
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/finance?{?}'); ?>">Finance</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/marketing?{?}'); ?>">Marketing</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/personnel?{?}'); ?>">Personnel</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/quality?{?}'); ?>">Quality</a>
-                    </ul>
+                    </ul>-->
                 <li><i class="fa fa-search"></i> Analysis
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/location?{?}'); ?>">Location</a>
