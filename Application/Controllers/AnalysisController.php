@@ -685,4 +685,12 @@ class AnalysisController extends DashboardController
             $totalGroup[$fiscalYear][$fiscalMonth][$department] += $line['sales'];
         }
     }
+
+    public function showAnalysisDepartment(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-department');
+
+        return $view;
+    }
 }

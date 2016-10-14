@@ -101,6 +101,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/department.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisDepartment',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 
     '^reporting/pl.*?i=month.*$' => [
         [

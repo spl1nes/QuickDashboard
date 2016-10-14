@@ -5,7 +5,7 @@
             <td><select id="opex" name="opex">
                 <?php $opex = \QuickDashboard\Application\Models\StructureDefinitions::getOPEXPositions(); foreach($opex as $id => $name) : ?>
                     <option value="<?= $name; ?>"<?= $this->request->getData('opex') == $name ? ' selected' : ''; ?>><?= $name; ?>
-                <?php endforeach; ?>-->
+                <?php endforeach; ?>
             </select>
             <td style="width: 100%">
                 <input type="hidden" name="u" value="<?= $this->request->getData('u') ?? ''; ?>">
@@ -251,7 +251,7 @@ $opexGroup = $this->getData('opexGroups');
     let configOPEXGroups = {
         type: 'bar',
         data: {
-            labels: [<?php $groupNames = array_unique(array_merge(array_keys($opexGroup[$current] ?? []), array_keys($opexGroup[$current_1] ?? []), array_keys($opexGroup[$current_2] ?? []))); echo '"' . implode('","', $groupNames) . '"'; ?>],
+            labels: [<?php echo '"' . implode('","', $groupNames) . '"'; ?>],
             datasets: [{
                 label: 'Two Years Ago',
                 backgroundColor: "rgba(255, 206, 86, 1)",

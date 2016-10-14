@@ -334,11 +334,11 @@ $salesCountry = $this->getData('salesCountry');
     });
 
     worldMapRegion.bubbles([
-        {name: 'Europe', latitude: 51.1657, longitude: 10.4515, radius: <?= log($salesRegion['now']['Europe'] ?? 1); ?>, fillKey: 'gt50'},
-        {name: 'Asia', latitude: 53.4815, longitude: 88.7695, radius: <?= log($salesRegion['now']['Asia'] ?? 1); ?>, fillKey: 'gt50'},
-        {name: 'America', latitude: 12.8010, longitude: -87.3632, radius: <?= log($salesRegion['now']['America'] ?? 1); ?>, fillKey: 'gt50'},
-        {name: 'Africa', latitude: 13.8274, longitude: 15.6445, radius: <?= log($salesRegion['now']['Africa'] ?? 1); ?>, fillKey: 'gt50'},
-        {name: 'Oceania', latitude: -25.2744, longitude: 133.7751, radius: <?= log($salesRegion['now']['Oceania'] ?? 1); ?>, fillKey: 'gt50'},
+        {name: 'Europe', latitude: 51.1657, longitude: 10.4515, radius: <?= max(log($salesRegion['now']['Europe'] ?? 1), 0); ?>, fillKey: 'gt50'},
+        {name: 'Asia', latitude: 53.4815, longitude: 88.7695, radius: <?= max(log($salesRegion['now']['Asia'] ?? 1), 0); ?>, fillKey: 'gt50'},
+        {name: 'America', latitude: 12.8010, longitude: -87.3632, radius: <?= max(log($salesRegion['now']['America'] ?? 1), 0); ?>, fillKey: 'gt50'},
+        {name: 'Africa', latitude: 13.8274, longitude: 15.6445, radius: <?= max(log($salesRegion['now']['Africa'] ?? 1), 0); ?>, fillKey: 'gt50'},
+        {name: 'Oceania', latitude: -25.2744, longitude: 133.7751, radius: <?= max(log($salesRegion['now']['Oceania'] ?? 1), 0); ?>, fillKey: 'gt50'},
     ], {
         popupTemplate: function(geo, data) {
             return "<div class='hoverinfo'>Sales " + data.name + ": € " + Math.round(Math.exp(data.radius)).toString().split(/(?=(?:...)*$)/).join('.'); + "</div>";
