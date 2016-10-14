@@ -349,8 +349,8 @@ class ReportingController extends DashboardController
         $start   = $this->getFiscalYearStart($current);
         $start->modify('-2 year');
 
-        $totalSales    = [];
-        $accTotalSales = [];
+        $opexCosts    = [];
+        $accTotalOpex = [];
 
         $groupOpex         = [];
         $accGroupOpex      = [];
@@ -371,12 +371,12 @@ class ReportingController extends DashboardController
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-        foreach ($totalSales as $year => $months) {
-            ksort($totalSales[$year]);
+        foreach ($opexCosts as $year => $months) {
+            ksort($opexCosts[$year]);
 
-            foreach ($totalSales[$year] as $month => $value) {
-                $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
-                $accTotalSales[$year][$month] = $prev + $value;
+            foreach ($opexCosts[$year] as $month => $value) {
+                $prev                         = $accTotalOpex[$year][$month - 1] ?? 0.0;
+                $accTotalOpex[$year][$month] = $prev + $value;
 
                 foreach ($groupOpex[$year][$month] ?? [] as $group => $value2) {
                     if (!isset($accGroupOpex[$year][$group])) {
@@ -390,13 +390,13 @@ class ReportingController extends DashboardController
             }
         }
 
-        unset($totalSales[$currentYear][$currentMonth]);
-        unset($accTotalSales[$currentYear][$currentMonth]);
+        unset($opexCosts[$currentYear][$currentMonth]);
+        unset($accTotalOpex[$currentYear][$currentMonth]);
 
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
-        $view->setData('opex', $totalSales);
-        $view->setData('opexAcc', $accTotalSales);
+        $view->setData('opex', $opexCosts);
+        $view->setData('opexAcc', $accTotalOpex);
         $view->setData('opexGroups', $accGroupOpex);
         $view->setData('date', $current->smartModify(0, -1));
 
@@ -414,8 +414,8 @@ class ReportingController extends DashboardController
                 $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
             }
 
-            $department = StructureDefinitions::getDepartmentByCostCenter($line['costcenter'], $company);
-            if (!isset($totalSales[$fiscalYear][$fiscalMonth][$department])) {
+            $department = StructureDefinitions::getDepartmentByCostCenter((int) ($line['costcenter'] ?? 0), $company);
+            if (!isset($totalGroup[$fiscalYear][$fiscalMonth][$department])) {
                 $totalGroup[$fiscalYear][$fiscalMonth][$department] = 0.0;
             }
 

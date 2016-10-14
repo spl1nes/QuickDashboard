@@ -157,7 +157,7 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
-    '^kpi/Quality.*$' => [
+    '^kpi/quality.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\KpiController:showQuality',
             'verb' => RouteVerb::GET,

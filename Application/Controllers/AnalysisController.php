@@ -613,7 +613,7 @@ class AnalysisController extends DashboardController
         $start->modify('-2 year');
 
         if (isset(StructureDefinitions::PL_ACCOUNTS[$request->getData('opex')])) {
-            $accounts   = StructureDefinitions::getOPEXAccounts();
+            $accounts   = StructureDefinitions::PL_ACCOUNTS[$request->getData('opex')];
 
             $opexCosts      = [];
             $accOpexCosts   = [];
@@ -676,8 +676,8 @@ class AnalysisController extends DashboardController
                 $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
             }
 
-            $department = StructureDefinitions::getDepartmentByCostCenter($line['costcenter'], $company);
-            if (!isset($totalSales[$fiscalYear][$fiscalMonth][$department])) {
+            $department = StructureDefinitions::getDepartmentByCostCenter((int) ($line['costcenter'] ?? 0), $company);
+            if (!isset($totalGroup[$fiscalYear][$fiscalMonth][$department])) {
                 $totalGroup[$fiscalYear][$fiscalMonth][$department] = 0.0;
             }
 

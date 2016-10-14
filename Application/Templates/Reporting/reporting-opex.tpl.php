@@ -7,7 +7,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
 $opexGroup = $this->getData('opexGroups');
 ?>
-<h1>EBIT - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1>OPEX - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <p>Please be aware that the following EBIT figures are always unconsolidated. The EBIT doesn't include the interim profit resulting from different stock evaluations.</p>
 <p class="info">The following table compares the values based on the last month. The currently ongoing month is not considered for easier comparison purpose.</p>
 <table>
@@ -37,17 +37,17 @@ $opexGroup = $this->getData('opexGroups');
 </table>
 <p>The following chart shows the consolidated EBIT on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
-    <canvas id="overview-consolidated-opex"></canvas>
+    <canvas id="overview-consolidated-opex" height="90"></canvas>
 </div>
 <p>The following chart shows the accumlated EBIT on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
-    <canvas id="overview-acc-consolidated-opex"></canvas>
+    <canvas id="overview-acc-consolidated-opex" height="90"></canvas>
 </div>
 
 <div class="clear"></div>
 
 <div class="box" style="width: 100%; float: left">
-    <canvas id="opex-groups" height="130"></canvas>
+    <canvas id="opex-groups" height="120"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -120,7 +120,8 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'EBIT'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        reverse: true
                     }
                 }]
             }
@@ -195,7 +196,8 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'EBIT'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        reverse: true
                     }
                 }]
             }
@@ -210,17 +212,17 @@ $opexGroup = $this->getData('opexGroups');
                 label: 'Two Years Ago',
                 backgroundColor: "rgba(255, 206, 86, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current_2][$name] ?? 0; } echo implode(',', $data); ?>]
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = ($temp = ($opexGroup[$current_2][$name] ?? 0)) < 0 ? $temp : 0; } echo implode(',', $data); ?>]
             }, {
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current_1][$name] ?? 0; } echo implode(',', $data); ?>]
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = ($temp = ($opexGroup[$current_1][$name] ?? 0)) < 0 ? $temp : 0; } echo implode(',', $data); ?>]
             }, {
                 label: 'Current',
                 backgroundColor: "rgba(255,99,132,1)",
                 yAxisID: "y-axis-1",
-                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = $opexGroup[$current][$name] ?? 0; } echo implode(',', $data); ?>]
+                data: [<?php $data = []; foreach($groupNames as $key => $name) { $data[] = ($temp = ($opexGroup[$current][$name] ?? 0)) < 0 ? $temp : 0; } echo implode(',', $data); ?>]
             }]
         },
         options: {
@@ -256,7 +258,8 @@ $opexGroup = $this->getData('opexGroups');
                     ticks: {
                         userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
                         beginAtZero: true,
-                        min: 0
+                        reverse: true,
+                        max: 0
                     }
                 }],
             }

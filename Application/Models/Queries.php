@@ -627,7 +627,7 @@ class Queries
 
     public static function selectCountryCustomerCount(\DateTime $start, \DateTime $end, array $accounts, array $countries) : string
     {
-        return 'SELECT DISTINCT
+        return 'SELECT
                 t.years, t.months, COUNT(t.customer) AS customers
             FROM (
                     SELECT
@@ -667,7 +667,7 @@ class Queries
 
     public static function selectCountrySalesArticleGroups(\DateTime $start, \DateTime $end, array $accounts, array $countries) : string
     {
-        return 'SELECT DISTINCT
+        return 'SELECT
                 t.account, t.costcenter, SUM(t.sales) AS sales
             FROM (
                     SELECT 
@@ -736,6 +736,6 @@ class Queries
                         datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)),
                         FiBuchungen.KST
                 ) t
-            GROUP BY t.entry, t.years, t.months, t.costcenter;';
+            GROUP BY t.years, t.months, t.costcenter;';
     }
 }

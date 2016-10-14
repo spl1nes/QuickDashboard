@@ -481,7 +481,7 @@ class StructureDefinitions
 
     public static function getDepartmentByCostCenter(int $costcenter, string $company) : string
     {
-        $departments = $company === 'gdf' ? self::DEPARTMENTS_SD : self::DEPARTMENTS_GDF;
+        $departments = $company !== 'gdf' ? self::DEPARTMENTS_SD : self::DEPARTMENTS_GDF;
 
         foreach($departments as $name => $costcenters) {
             if(in_array($costcenter, $costcenters)) {
@@ -489,6 +489,6 @@ class StructureDefinitions
             }
         }
 
-        return '';
+        return 'Misc.';
     }
 }

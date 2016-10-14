@@ -52,7 +52,6 @@
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/personnel?{?}'); ?>">Personnel</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/quality?{?}'); ?>">Quality</a>
                     </ul>
-                <li>
                 <li><i class="fa fa-search"></i> Analysis
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/location?{?}'); ?>">Location</a>

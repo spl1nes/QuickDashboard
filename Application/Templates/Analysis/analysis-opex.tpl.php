@@ -136,7 +136,8 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        reverse: true
                     }
                 }]
             }
@@ -210,7 +211,8 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        reverse: true
                     }
                 }]
             }
@@ -271,7 +273,7 @@ $opexGroup = $this->getData('opexGroups');
                     ticks: {
                         userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
                         beginAtZero: true,
-                        min: 0
+                        reverse: true
                     }
                 }],
             }
