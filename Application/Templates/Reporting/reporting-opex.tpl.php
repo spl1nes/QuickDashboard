@@ -98,7 +98,7 @@ $opexGroup = $this->getData('opexGroups');
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
                             let label = data.labels[tooltipItem.index];
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -120,7 +120,7 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'EBIT'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         reverse: true
                     }
                 }]
@@ -174,7 +174,7 @@ $opexGroup = $this->getData('opexGroups');
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
                             let label = data.labels[tooltipItem.index];
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -196,7 +196,7 @@ $opexGroup = $this->getData('opexGroups');
                         labelString: 'EBIT'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         reverse: true
                     }
                 }]
@@ -240,7 +240,7 @@ $opexGroup = $this->getData('opexGroups');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -256,7 +256,7 @@ $opexGroup = $this->getData('opexGroups');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         beginAtZero: true,
                         reverse: true,
                         max: 0
