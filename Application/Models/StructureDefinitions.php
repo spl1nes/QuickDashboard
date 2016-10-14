@@ -391,7 +391,7 @@ class StructureDefinitions
     public static function getOPEXPositions() : array
     {
         return [
-            'Freight', 'Provisions', 'External Seminars', 'Other Revenue', 'Wages & Salaries', 'Welfare Expenses',
+            'Freight', 'Provisions', 'External Seminars', 'Wages & Salaries', 'Welfare Expenses',
             'Marketing', 'Trade Fair', 'Rental & Leasing', 'Utilities', 'Carpool', 'Repair/Maintenance',
             'Stationary Expenses', 'Communication', 'Travel Expenses', 'Entertainment', 'External Consultants', 'R&D',
             'Patents', 'Other Personnel Expenses', 'Other OPEX', 'Intercompany Expenses', 'Intercompany Revenue',

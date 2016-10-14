@@ -61,6 +61,37 @@ $departmentGroup = $this->getData('departmentGroups');
 </div>
 
 <div class="clear"></div>
+<div class="break"></div>
+
+<table>
+    <thead>
+    <tr>
+        <th>Name
+        <th>2 Years Ago
+        <th>Last Year
+        <th>Currently
+        <th>Diff Last Year
+        <th>Diff Last Year %
+    <tbody>
+    <?php $groupNames = array_unique(array_merge(array_keys($departmentGroup[$current] ?? []), array_keys($departmentGroup[$current_1] ?? []), array_keys($departmentGroup[$current_2] ?? []))); asort($groupNames); foreach($groupNames as $name) : ?>
+    <tr>
+        <td><?= $name; ?>
+        <td><?= '€  ' . number_format($departmentGroup[$current_2][$name] ?? 0, 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($departmentGroup[$current_1][$name] ?? 0, 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($departmentGroup[$current][$name] ?? 0, 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format(($departmentGroup[$current][$name] ?? 0) - ($departmentGroup[$current_1][$name] ?? 0), 0, ',', '.');  ?>
+        <td><?= !isset($departmentGroup[$current_1][$name]) || $departmentGroup[$current_1][$name] == 0 ? 0 : number_format((($departmentGroup[$current][$name] ?? 0)/$departmentGroup[$current_1][$name]-1)*100, 2, ',', '.') . '%';  ?>
+    <?php endforeach; ?>
+    <tr>
+        <th>Accumulated Year
+        <th><?= '€  ' . number_format($departmentAcc[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($departmentAcc[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($departmentAcc[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format(($departmentAcc[$current][$currentMonth] ?? 0) - ($departmentAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
+        <th><?= !isset($departmentAcc[$current_1][$currentMonth]) || $departmentAcc[$current_1][$currentMonth] == 0? 0 : number_format((($departmentAcc[$current][$currentMonth] ?? 0)/$departmentAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
+</table>
+
+<div class="clear"></div>
 
 <script>
     let configConsolidated = {
@@ -214,10 +245,10 @@ $departmentGroup = $this->getData('departmentGroups');
     };
 
     window.onload = function() {
-        let ctxConsolidated = document.getElementById("overview-consolidated-opex").getContext("2d");
+        let ctxConsolidated = document.getElementById("overview-consolidated-department").getContext("2d");
         window.consolidatedLine = new Chart(ctxConsolidated, configConsolidated);
 
-        let ctxConsolidatedAcc = document.getElementById("overview-acc-consolidated-opex").getContext("2d");
+        let ctxConsolidatedAcc = document.getElementById("overview-acc-consolidated-department").getContext("2d");
         window.consolidatedLineAcc = new Chart(ctxConsolidatedAcc, configConsolidatedAcc);
     };
 </script>

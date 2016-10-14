@@ -738,4 +738,44 @@ class Queries
                 ) t
             GROUP BY t.years, t.months, t.costcenter;';
     }
+
+    public static function selectAccountsByCostCenter(\DateTime $start, \DateTime $end, array $accounts, array $costcenters) : string
+    {
+        return 'SELECT
+                t.years, t.months, t.account, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
+                        FiBuchungsArchiv.Konto as account,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungsArchiv.KST IN (\'' . rtrim(implode(' \',\'', $costcenters), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)),
+                        FiBuchungsArchiv.Konto
+                UNION ALL
+                    SELECT 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
+                        FiBuchungen.Konto as account,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungen.KST IN (\'' . rtrim(implode(' \',\'', $costcenters), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)),
+                        FiBuchungen.Konto
+                ) t
+            GROUP BY t.years, t.months, t.account;';
+    }
 }
