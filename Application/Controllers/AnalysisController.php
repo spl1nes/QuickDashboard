@@ -136,18 +136,18 @@ class AnalysisController extends DashboardController
 
             if ($customerInfo !== false) {
                 $location = new Location();
-                $location->setPostal($customerInfo['PLZ']);
-                $location->setCity($customerInfo['ORT']);
-                $location->setAddress($customerInfo['STRASSE']);
-                $location->setCountry($customerInfo['LAENDERKUERZEL']);
+                $location->setPostal($customerInfo['PLZ'] ?? 'n/a');
+                $location->setCity($customerInfo['ORT'] ?? 'n/a');
+                $location->setAddress($customerInfo['STRASSE'] ?? 'n/a');
+                $location->setCountry($customerInfo['LAENDERKUERZEL'] ?? 'n/a');
 
                 $customer = new Customer(
                     (int) $request->getData('customer'),
-                    $customerInfo['NAME1'],
+                    $customerInfo['NAME1'] ?? 'n/a',
                     $location,
-                    $customerInfo['Name'],
+                    $customerInfo['Name'] ?? 'n/a',
                     new \DateTime($customerInfo['ROW_CREATE_TIME'] ?? 'now'),
-                    StructureDefinitions::CUSTOMER_GROUP[$company][$customerInfo['_KUNDENGRUPPE']]
+                    StructureDefinitions::CUSTOMER_GROUP[$company][$customerInfo['_KUNDENGRUPPE']] ?? 'n/a'
                 );
 
                 $accounts   = StructureDefinitions::getEBITAccounts();
