@@ -318,7 +318,7 @@ $gini = $this->getData('gini');
     let configTopCustomers = {
         type: 'bar',
         data: {
-            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['now'], 0, 15, true))) . '"'; ?>],
+            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['now'] ?? [], 0, 15, true))) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",
@@ -372,7 +372,7 @@ $gini = $this->getData('gini');
     let configTopCustomersOld = {
         type: 'bar',
         data: {
-            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['old'], 0, 15, true))) . '"'; ?>],
+            labels: [<?= '"' . implode('","', array_keys($top = array_slice($topCustomers['old'] ?? [], 0, 15, true))) . '"'; ?>],
             datasets: [{
                 label: 'Last Year',
                 backgroundColor: "rgba(54, 162, 235, 1)",

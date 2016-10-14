@@ -562,13 +562,17 @@ class AnalysisController extends DashboardController
                 $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
             }
 
-            arsort($salesCustomers['now']);
-            arsort($salesCustomers['old']);
+            $gini = null;
 
-            $gini = [
-                'now' => Lorenzkurve::getGiniCoefficient($salesCustomers['now']),
-                'old' => Lorenzkurve::getGiniCoefficient($salesCustomers['old']),
-            ];
+            if(isset($salesCustomers['now'])) {
+                arsort($salesCustomers['now']);
+                $gini['now'] = Lorenzkurve::getGiniCoefficient($salesCustomers['now']);
+            }
+
+            if(isset($salesCustomers['old'])) {
+                arsort($salesCustomers['old']);
+                $gini['old'] = Lorenzkurve::getGiniCoefficient($salesCustomers['old']);
+            }
 
             foreach ($customerCount as $year => $months) {
                 ksort($customerCount[$year]);
