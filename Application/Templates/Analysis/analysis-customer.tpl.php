@@ -20,6 +20,7 @@ $sales = $this->getData('sales');
 $salesAcc = $this->getData('salesAcc');
 $dso = $this->getData('dso');
 $op = $this->getData('op');
+$due = $this->getData('due');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -63,6 +64,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
         <tr><th>Total Sales:<td><?= number_format($old = ($salesAcc[$current_1][12] ?? 0), 0, ',', '.'); ?><td><?= number_format($now = ($salesAcc[$current][$currentMonth] ?? 0), 0, ',', '.'); ?><td><?= $old == 0 ? 0 : number_format(($now/$old - 1)*100, 0, ',', '.'); ?> %
         <tr><th>DSO:<td><?= $dso['old']; ?><td><?= $dso['now']; ?><td><?= (!isset($dso['old']) || $dso['old'] == 0) ? 0 : number_format(($dso['now']/$dso['old'] - 1)*100, 0, ',', '.'); ?> %
         <tr><th>Balance:<td><?= number_format($old = ($op['old'] ?? 0), 0, ',', '.'); ?><td><?= number_format($now = ($op['now'] ?? 0), 0, ',', '.'); ?><td><?= $old == 0 ? 0 : number_format(($now/$old - 1)*100, 0, ',', '.'); ?> %
+        <tr><th>Due:<td><?= number_format($old = ($due['old'] ?? 0), 0, ',', '.'); ?><td><?= number_format($now = ($due['now'] ?? 0), 0, ',', '.'); ?><td><?= $old == 0 ? 0 : number_format(($now/$old - 1)*100, 0, ',', '.'); ?> %
 </table>
 
 <div class="clear"></div>

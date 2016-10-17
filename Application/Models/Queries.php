@@ -803,4 +803,30 @@ class Queries
                         OR FiOffenePosten.Ausgleichsdatum IS NULL
                     )';
     }
+
+    public static function selectOPByAccountDebitDue(\DateTime $end, int $account) : string
+    {
+        return self::selectOPByAccountDue($end, $account, 'S');
+    }
+
+    public static function selectOPByAccountCreditDue(\DateTime $end, int $account) : string
+    {
+        return self::selectOPByAccountDue($end, $account, 'H');
+    }
+
+    private static function selectOPByAccountDue(\DateTime $end, int $account, string $type) : string
+    {
+        return 'SELECT
+                    SUM(FiOffenePosten.Betrag) 
+                FROM FiOffenePosten
+                WHERE 
+                    FiOffenePosten.Konto = ' . $account . '
+                    AND FiOffenePosten.OPKennzeichen = \'' . $type . '\'
+                    AND CONVERT(VARCHAR(30), FiOffenePosten.faellig, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    AND CONVERT(VARCHAR(30), FiOffenePosten.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    AND (
+                        CONVERT(VARCHAR(30), FiOffenePosten.Ausgleichsdatum, 104) >= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                        OR FiOffenePosten.Ausgleichsdatum IS NULL
+                    )';
+    }
 }

@@ -166,6 +166,7 @@ class AnalysisController extends DashboardController
 
                 $customerDSO = ['old' => 0.0, 'now' => 0.0];
                 $customerOP = ['old' => 0.0, 'now' => 0.0];
+                $customerDue = ['old' => 0.0, 'now' => 0.0];
 
                 $sales = $this->selectAddon('selectGroupsByCustomer', $start, $current, $company, $accounts, (int) $request->getData('customer'));
                 $this->loopSalesCustomer($sales, $salesCustomer, $groupSales);
@@ -202,10 +203,18 @@ class AnalysisController extends DashboardController
                 $customerDSO['now'] = (int) round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
                 $customerOP['now'] = $dso;
 
+                $due = $this->selectDSO('selectOPByAccountDebitDue', $current, $company, (int) $request->getData('customer')) ?? 0;
+                $due -= $this->selectDSO('selectOPByAccountCreditDue', $current, $company, (int) $request->getData('customer')) ?? 0;
+                $customerDue['now'] = $due;
+
                 $dso = $this->selectDSO('selectOPByAccountDebit', $old, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $old, $company, (int) $request->getData('customer')) ?? 0;
                 $customerDSO['old'] = (int) round(!isset($accSalesCustomer[$currentYear-1][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear-1][$currentMonth] / $days));
                 $customerOP['old'] = $dso;
+
+                $due = $this->selectDSO('selectOPByAccountDebitDue', $old, $company, (int) $request->getData('customer')) ?? 0;
+                $due -= $this->selectDSO('selectOPByAccountCreditDue', $old, $company, (int) $request->getData('customer')) ?? 0;
+                $customerDue['old'] = $due;
 
                 $view->setData('currentFiscalYear', $currentYear);
                 $view->setData('currentMonth', $currentMonth);
@@ -216,6 +225,7 @@ class AnalysisController extends DashboardController
                 $view->setData('date', $current);
                 $view->setData('dso', $customerDSO);
                 $view->setData('op', $customerOP);
+                $view->setData('due', $customerDue);
                 $view->setData('customer', $customer);
             }
         }
