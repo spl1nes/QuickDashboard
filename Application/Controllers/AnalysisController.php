@@ -165,6 +165,7 @@ class AnalysisController extends DashboardController
                 $accSalesCustomer   = [];
 
                 $customerDSO = ['old' => 0.0, 'now' => 0.0];
+                $customerOP = ['old' => 0.0, 'now' => 0.0];
 
                 $sales = $this->selectAddon('selectGroupsByCustomer', $start, $current, $company, $accounts, (int) $request->getData('customer'));
                 $this->loopSalesCustomer($sales, $salesCustomer, $groupSales);
@@ -199,10 +200,12 @@ class AnalysisController extends DashboardController
                 $dso = $this->selectDSO('selectOPByAccountDebit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $customerDSO['now'] = (int) round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
+                $customerOP['now'] = $dso;
 
                 $dso = $this->selectDSO('selectOPByAccountDebit', $old, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $old, $company, (int) $request->getData('customer')) ?? 0;
                 $customerDSO['old'] = (int) round(!isset($accSalesCustomer[$currentYear-1][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear-1][$currentMonth] / $days));
+                $customerOP['old'] = $dso;
 
                 $view->setData('currentFiscalYear', $currentYear);
                 $view->setData('currentMonth', $currentMonth);
@@ -212,6 +215,7 @@ class AnalysisController extends DashboardController
                 $view->setData('salesGroupsTotal', $accGroupSalesTotal);
                 $view->setData('date', $current);
                 $view->setData('dso', $customerDSO);
+                $view->setData('op', $customerOP);
                 $view->setData('customer', $customer);
             }
         }

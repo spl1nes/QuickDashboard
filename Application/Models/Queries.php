@@ -797,6 +797,7 @@ class Queries
                 WHERE 
                     FiOffenePosten.Konto = ' . $account . '
                     AND FiOffenePosten.OPKennzeichen = \'' . $type . '\'
+                    AND CONVERT(VARCHAR(30), FiOffenePosten.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     AND (
                         CONVERT(VARCHAR(30), FiOffenePosten.Ausgleichsdatum, 104) >= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
                         OR FiOffenePosten.Ausgleichsdatum IS NULL
