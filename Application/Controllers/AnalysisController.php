@@ -11,6 +11,8 @@ use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
 use QuickDashboard\Application\Models\Customer;
 use QuickDashboard\Application\Models\StructureDefinitions;
+use phpOMS\DataStorage\Database\Query\Builder;
+use QuickDashboard\Application\Models\Queries;
 
 class AnalysisController extends DashboardController
 {
@@ -123,7 +125,10 @@ class AnalysisController extends DashboardController
 
         $current = new SmartDateTime($request->getData('t') ?? 'now');
         $start   = $this->getFiscalYearStart($current);
+        $days = ($current->getTimestamp() - $start->getTimestamp()) / (60 * 60 * 24);
         $start->modify('-2 year');
+        $old = clone $current;
+        $old->modify('-2 year');
 
         if (($request->getData('customer') ?? 0) != 0) {
             if ($request->getData('u') === 'gdf') {
@@ -159,6 +164,8 @@ class AnalysisController extends DashboardController
                 $accGroupSalesTotal = [];
                 $accSalesCustomer   = [];
 
+                $customerDSO = ['old' => 0.0, 'now' => 0.0];
+
                 $sales = $this->selectAddon('selectGroupsByCustomer', $start, $current, $company, $accounts, (int) $request->getData('customer'));
                 $this->loopSalesCustomer($sales, $salesCustomer, $groupSales);
 
@@ -189,6 +196,14 @@ class AnalysisController extends DashboardController
                     }
                 }
 
+                $dso = $this->selectDSO('selectOPByAccountDebit', $current, $company, (int) $request->getData('customer')) ?? 0;
+                $dso -= $this->selectDSO('selectOPByAccountCredit', $current, $company, (int) $request->getData('customer')) ?? 0;
+                $customerDSO['now'] = (int) round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
+
+                $dso = $this->selectDSO('selectOPByAccountDebit', $old, $company, (int) $request->getData('customer')) ?? 0;
+                $dso -= $this->selectDSO('selectOPByAccountCredit', $old, $company, (int) $request->getData('customer')) ?? 0;
+                $customerDSO['old'] = (int) round(!isset($accSalesCustomer[$currentYear-1][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear-1][$currentMonth] / $days));
+
                 $view->setData('currentFiscalYear', $currentYear);
                 $view->setData('currentMonth', $currentMonth);
                 $view->setData('sales', $salesCustomer);
@@ -196,11 +211,22 @@ class AnalysisController extends DashboardController
                 $view->setData('salesGroups', $accGroupSales);
                 $view->setData('salesGroupsTotal', $accGroupSalesTotal);
                 $view->setData('date', $current);
+                $view->setData('dso', $customerDSO);
                 $view->setData('customer', $customer);
             }
         }
 
         return $view;
+    }
+
+    protected function selectDSO(string $selectQuery, \DateTime $end, string $company, int $account)
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::{$selectQuery}($end, $account));
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? 0 : $result[0][0];
+
+        return (float) $result;
     }
 
     private function loopSalesCustomer(array $resultset, array &$totalSales, array &$groupSales)

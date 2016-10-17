@@ -778,4 +778,28 @@ class Queries
                 ) t
             GROUP BY t.years, t.months, t.account;';
     }
+
+    public static function selectOPByAccountDebit(\DateTime $end, int $account) : string
+    {
+        return self::selectOPByAccount($end, $account, 'S');
+    }
+
+    public static function selectOPByAccountCredit(\DateTime $end, int $account) : string
+    {
+        return self::selectOPByAccount($end, $account, 'H');
+    }
+
+    private static function selectOPByAccount(\DateTime $end, int $account, string $type) : string
+    {
+        return 'SELECT
+                    SUM(FiOffenePosten.Betrag) 
+                FROM FiOffenePosten
+                WHERE 
+                    FiOffenePosten.Konto = ' . $account . '
+                    AND FiOffenePosten.OPKennzeichen = \'' . $type . '\'
+                    AND (
+                        CONVERT(VARCHAR(30), FiOffenePosten.Ausgleichsdatum, 104) >= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                        OR FiOffenePosten.Ausgleichsdatum IS NULL
+                    )';
+    }
 }
