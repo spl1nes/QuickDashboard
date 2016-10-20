@@ -155,8 +155,8 @@ class StructureDefinitions
     ];
 
     const DEVELOPED = [
-        'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'GR', 'ES', 'FR', 'GR', 'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL',
-        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU',
+        'BE', 'BG', 'CZ', 'DK', 'DE', 'EE', 'GR', 'ES', 'FR', 'IT', 'CY', 'LV', 'LT', 'LU', 'HU', 'MT', 'NL', 'HR',
+        'AT', 'PL', 'PT', 'RO', 'SI', 'SK', 'FI', 'SE', 'GB', 'IS', 'NO', 'CH', 'LI', 'JP', 'CA', 'US', 'AU', 'QU'
     ];
 
     const GROUPING = [
