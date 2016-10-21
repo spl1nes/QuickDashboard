@@ -195,7 +195,8 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true
                     }
                 }],
             }
@@ -244,7 +245,8 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        beginAtZero: true
                     }
                 }],
             }
