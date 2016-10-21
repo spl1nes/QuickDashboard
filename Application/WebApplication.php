@@ -39,10 +39,14 @@ class WebApplication extends ApplicationAbstract
         $request  = new Request(new Localization(), $uri);
         $response = new Response(new Localization());
 
+        $expire = new \DateTime('now');
+        $expire->modify('+12 hour');
+
         $response->getHeader()->set('x-xss-protection', '1; mode=block');
         $response->getHeader()->set('x-content-type-options', 'nosniff');
         $response->getHeader()->set('x-frame-options', 'SAMEORIGIN');
         $response->getHeader()->set('content-security-policy', 'script-src \'self\' \'unsafe-inline\' https://cdnjs.cloudflare.com; frame-src \'self\'', true);
+        $response->getHeader()->set('expires', $expire->format('D, d M Y H:i:s \G\M\T'));
 
         if ($this->config['page']['https']) {
             $response->getHeader()->set('strict-transport-security', 'max-age=31536000');
