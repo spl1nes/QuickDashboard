@@ -567,8 +567,8 @@ class SalesController extends DashboardController
             }
 
             foreach ($repsGDFLast as $line) {
-                if(!isset($repsSales[$line['rep']]['now'])) {
-                    $repsSales[$line['rep']]['now'] = 0.0;
+                if(!isset($repsSales[$line['rep']]['old'])) {
+                    $repsSales[$line['rep']]['old'] = 0.0;
                 }
 
                 $repsSales[$line['rep']]['old'] += $line['sales'];
