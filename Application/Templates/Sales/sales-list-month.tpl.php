@@ -4,7 +4,7 @@ $salesAcc = $this->getData('salesAcc');
 $salesLast = $this->getData('salesLast');
 $salesAccLast = $this->getData('salesAccLast');
 $days = $this->getData('maxDays');
-$today = $this->request->getData('u') == 'gdf' ? $this->getData('today') - 1 : $this->getData('today');
+$today = $this->request->getData('u') == 'gdf' && $this->getData('today') != $days  ? $this->getData('today') - 1 : $this->getData('today');
 $nowDate = $this->getData('nowDate');
 $oldDate = $this->getData('oldDate');
 ?>
