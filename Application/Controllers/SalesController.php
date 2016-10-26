@@ -546,6 +546,20 @@ class SalesController extends DashboardController
             }
         }
 
+        if ($request->getData('u') !== 'sd') {
+            $repsGDF     = $this->select('selectSalesRep', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $repsGDFLast = $this->select('selectSalesRep', $startLast, $endLast, 'gdf', $accounts);
+
+            foreach ($repsGDF as $line) {
+                $repsSales[$line['rep']]['now'] = $line['sales'];
+            }
+
+            foreach ($repsGDFLast as $line) {
+                $repsSales[$line['rep']]['old'] = $line['sales'];
+            }
+        }
+
+        $repsSales = $repsSales ?? [];
         arsort($repsSales);
 
         $view->setData('repsSales', $repsSales);
