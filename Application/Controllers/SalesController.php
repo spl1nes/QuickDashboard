@@ -538,11 +538,19 @@ class SalesController extends DashboardController
             $repsSDLast = $this->select('selectSalesRep', $startLast, $endLast, 'sd', $accounts);
 
             foreach ($repsSD as $line) {
-                $repsSales[$line['rep']]['now'] = $line['sales'];
+                if(!isset($repsSales[$line['rep']]['now'])) {
+                    $repsSales[$line['rep']]['now'] = 0.0;
+                }
+
+                $repsSales[$line['rep']]['now'] += $line['sales'];
             }
 
             foreach ($repsSDLast as $line) {
-                $repsSales[$line['rep']]['old'] = $line['sales'];
+                if(!isset($repsSales[$line['rep']]['old'])) {
+                    $repsSales[$line['rep']]['old'] = 0.0;
+                }
+
+                $repsSales[$line['rep']]['old'] += $line['sales'];
             }
         }
 
@@ -551,11 +559,19 @@ class SalesController extends DashboardController
             $repsGDFLast = $this->select('selectSalesRep', $startLast, $endLast, 'gdf', $accounts);
 
             foreach ($repsGDF as $line) {
-                $repsSales[$line['rep']]['now'] = $line['sales'];
+                if(!isset($repsSales[$line['rep']]['now'])) {
+                    $repsSales[$line['rep']]['now'] = 0.0;
+                }
+
+                $repsSales[$line['rep']]['now'] += $line['sales'];
             }
 
             foreach ($repsGDFLast as $line) {
-                $repsSales[$line['rep']]['old'] = $line['sales'];
+                if(!isset($repsSales[$line['rep']]['now'])) {
+                    $repsSales[$line['rep']]['now'] = 0.0;
+                }
+
+                $repsSales[$line['rep']]['old'] += $line['sales'];
             }
         }
 
