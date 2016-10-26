@@ -829,4 +829,169 @@ class Queries
                         OR FiOffenePosten.Ausgleichsdatum IS NULL
                     )';
     }
+
+    public static function selectSalesRepNames() : string
+    {
+        return 'SELECT DISTINCT Personalstamm.Personalnummer AS id, Personalstamm.Name AS name FROM Personalstamm;';
+    }
+
+    public static function selectRepSalesYearMonth(\DateTime $start, \DateTime $end, array $accounts, array $reps) : string
+    {
+        return 'SELECT 
+                t.account, t.years, t.months, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.Konto as account,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungsArchiv.Konto,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104))
+                UNION ALL
+                    SELECT 
+                        FiBuchungen.Konto as account,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months, 
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungen.Konto,
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104))
+                ) t
+            GROUP BY t.account, t.years, t.months;';
+    }
+
+    public static function selectRepCustomer(\DateTime $start, \DateTime $end, array $accounts, array $reps) : string
+    {
+        return 'SELECT DISTINCT
+                t.customer, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        KUNDENADRESSE.NAME1 AS customer,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        KUNDENADRESSE.NAME1
+                UNION ALL
+                    SELECT 
+                        KUNDENADRESSE.NAME1 AS customer,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        KUNDENADRESSE.NAME1
+                ) t
+            GROUP BY t.customer;';
+    }
+
+    public static function selectRepCustomerCount(\DateTime $start, \DateTime $end, array $accounts, array $reps) : string
+    {
+        return 'SELECT
+                t.years, t.months, COUNT(t.customer) AS customers
+            FROM (
+                    SELECT
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS months,
+                        KUNDENADRESSE.KONTO AS customer
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)),
+                        KUNDENADRESSE.KONTO
+                UNION ALL
+                    SELECT 
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS years, 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS months,
+                        KUNDENADRESSE.KONTO AS customer
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        datepart(yyyy, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)), 
+                        datepart(m, CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)),
+                        KUNDENADRESSE.KONTO
+                ) t
+            GROUP BY t.years, t.months;';
+    }
+
+    public static function selectRepSalesArticleGroups(\DateTime $start, \DateTime $end, array $accounts, array $reps) : string
+    {
+        return 'SELECT
+                t.account, t.costcenter, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.Konto as account,
+                        FiBuchungsArchiv.KST AS costcenter,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungsArchiv.Konto, FiBuchungsArchiv.KST
+                UNION ALL
+                    SELECT 
+                        FiBuchungen.Konto as account,
+                        FiBuchungen.KST AS costcenter,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungen.Konto, FiBuchungen.KST
+                ) t
+            GROUP BY t.account, t.costcenter;';
+    }
 }

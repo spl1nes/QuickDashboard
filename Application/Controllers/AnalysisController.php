@@ -814,4 +814,151 @@ class AnalysisController extends DashboardController
             $totalGroup[$fiscalYear][$fiscalMonth][$department] += $line['sales'];
         }
     }
+
+    public function showAnalysisReps(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-reps');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        $repNames = []; 
+        if ($request->getData('u') !== 'gdf') {
+            $repNames = $this->getSalesReps('sd', $repNames);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $repNames = array_merge($repNames ?? [], $this->getSalesReps('gdf', $repNames));
+        }
+
+        asort($repNames);
+
+        if ($request->getData('rep') !== null && in_array($request->getData('rep'), $repNames)) {
+            $totalSales    = [];
+            $accTotalSales = [];
+
+            $salesCustomers = [];
+            $customerCount  = [];
+
+            $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
+
+            $salesGroups   = [];
+            $segmentGroups = [];
+
+            foreach ($temp as $segment) {
+                $salesGroups['All'][$segment]   = null;
+                $segmentGroups['All'][$segment] = null;
+            }
+
+            $totalGroups = [
+                'All'      => ['now' => 0.0, 'old' => 0.0],
+            ];
+
+            $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
+            if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                $accounts[] = 8591;
+            }
+
+            if ($request->getData('u') !== 'gdf') {
+                $salesSD = $this->selectAddon('selectRepSalesYearMonth', $start, $current, 'sd', $accounts, array ($request->getData('rep')));
+                $customersSD     = $this->selectAddon('selectRepCustomer', $startCurrent, $endCurrent, 'sd', $accounts, array ($request->getData('rep')));
+                $customersSDLast = $this->selectAddon('selectRepCustomer', $startLast, $endLast, 'sd', $accounts, array ($request->getData('rep')));
+                $customerSD = $this->selectAddon('selectRepCustomerCount', $start, $current, 'sd', $accounts, array ($request->getData('rep')));
+                $groupsSD     = $this->selectAddon('selectRepSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts, array ($request->getData('rep')));
+                $groupsSDLast = $this->selectAddon('selectRepSalesArticleGroups', $startLast, $endLast, 'sd', $accounts, array ($request->getData('rep')));
+
+                $this->loopOverview($salesSD, $totalSales);
+                $this->loopCustomer('now', $customersSD, $salesCustomers);
+                $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+                $this->loopCustomerCount($customerSD, $customerCount);
+                $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $salesGDF = $this->selectAddon('selectRepSalesYearMonth', $start, $current, 'gdf', $accounts, array ($request->getData('rep')));
+                $customersGDF     = $this->selectAddon('selectRepCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, array ($request->getData('rep')));
+                $customersGDFLast = $this->selectAddon('selectRepCustomer', $startLast, $endLast, 'gdf', $accounts, array ($request->getData('rep')));
+                $customerGDF = $this->selectAddon('selectRepCustomerCount', $start, $current, 'gdf', $accounts, array ($request->getData('rep')));
+                $groupsGDF     = $this->selectAddon('selectRepSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts, array ($request->getData('rep')));
+                $groupsGDFLast = $this->selectAddon('selectRepSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts, array ($request->getData('rep')));
+
+                $this->loopOverview($salesGDF, $totalSales);
+                $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+                $this->loopCustomerCount($customerGDF, $customerCount);
+                $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
+            }
+
+            $gini = null;
+
+            if(isset($salesCustomers['now'])) {
+                arsort($salesCustomers['now']);
+                $gini['now'] = Lorenzkurve::getGiniCoefficient($salesCustomers['now']);
+            }
+
+            if(isset($salesCustomers['old'])) {
+                arsort($salesCustomers['old']);
+                $gini['old'] = Lorenzkurve::getGiniCoefficient($salesCustomers['old']);
+            }
+
+            foreach ($customerCount as $year => $months) {
+                ksort($customerCount[$year]);
+            }
+
+            foreach ($totalSales as $year => $months) {
+                ksort($totalSales[$year]);
+
+                for ($month = 1; $month < 13; $month++) {
+                    $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                    $accTotalSales[$year][$month] = $prev + ($totalSales[$year][$month] ?? 0);
+                }
+            }
+
+            $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+            $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+            $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            $view->setData('currentFiscalYear', $currentYear);
+            $view->setData('currentMonth', $currentMonth);
+            $view->setData('sales', $totalSales);
+            $view->setData('salesAcc', $accTotalSales);
+            $view->setData('date', $current);
+            $view->setData('customer', $salesCustomers);
+            $view->setData('customerCount', $customerCount);
+            $view->setData('gini', $gini);
+            $view->setData('salesGroups', $salesGroups);
+            $view->setData('segmentGroups', $segmentGroups);
+            $view->setData('totalGroups', $totalGroups);
+        }
+
+        $view->setData('repNames', $repNames);
+
+        return $view;
+    }
+
+    private function getSalesReps(string $company, array &$reps) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::selectSalesRepNames());
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
+
+        foreach($result as $line) {
+            if(!in_array($line['name'], $reps)) {
+                $reps[$line['id']] = $line['name'];
+            }
+        }
+
+        return $reps;
+    }
 }
