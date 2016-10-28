@@ -16,8 +16,8 @@
 </form>
 <?php if(($this->request->getData('department') ?? '') != '') : ?>
 <?php
-$department = $this->getData('department');
-$departmentAcc = $this->getData('departmentAcc');
+$sales = $department = $this->getData('department');
+$salesAcc = $departmentAcc = $this->getData('departmentAcc');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -26,31 +26,7 @@ $departmentGroup = $this->getData('departmentGroups');
 ?>
 <?php if(!empty($departmentAcc)) : ?>
     <h1><?= $this->request->getData('department') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<table>
-    <thead>
-    <tr>
-        <th>Type
-        <th>2 Years Ago
-        <th>Last Year
-        <th>Currently
-        <th>Diff Last Year
-        <th>Diff Last Year %
-    <tbody>
-    <tr>
-        <td>Isolated Month
-        <td><?= '€  ' . number_format($department[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($department[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($department[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($department[$current][$currentMonth] ?? 0) - ($department[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($department[$current_1][$currentMonth]) || $department[$current_1][$currentMonth] == 0 ? 0 : number_format((($department[$current][$currentMonth] ?? 0)/$department[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-    <tr>
-        <td>Accumulated Year
-        <td><?= '€  ' . number_format($departmentAcc[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($departmentAcc[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($departmentAcc[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($departmentAcc[$current][$currentMonth] ?? 0) - ($departmentAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($departmentAcc[$current_1][$currentMonth]) || $departmentAcc[$current_1][$currentMonth] == 0? 0 : number_format((($departmentAcc[$current][$currentMonth] ?? 0)/$departmentAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-</table>
+<?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
 <div style="width: 50%; float: left;">
     <canvas id="overview-consolidated-department" height="270"></canvas>

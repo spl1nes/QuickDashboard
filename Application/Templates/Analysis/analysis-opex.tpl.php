@@ -16,8 +16,8 @@
 </form>
 <?php if(($this->request->getData('opex') ?? '') != '') : ?>
 <?php
-$opex = $this->getData('opex');
-$opexAcc = $this->getData('opexAcc');
+$sales = $opex = $this->getData('opex');
+$salesAcc = $opexAcc = $this->getData('opexAcc');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -26,31 +26,7 @@ $opexGroup = $this->getData('opexGroups');
 ?>
 <?php if(!empty($opexAcc)) : ?>
 <h1><?= $this->request->getData('opex') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<table>
-    <thead>
-    <tr>
-        <th>Type
-        <th>2 Years Ago
-        <th>Last Year
-        <th>Currently
-        <th>Diff Last Year
-        <th>Diff Last Year %
-    <tbody>
-    <tr>
-        <td>Isolated Month
-        <td><?= '€  ' . number_format($opex[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opex[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opex[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($opex[$current][$currentMonth] ?? 0) - ($opex[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($opex[$current_1][$currentMonth]) || $opex[$current_1][$currentMonth] == 0 ? 0 : number_format((($opex[$current][$currentMonth] ?? 0)/$opex[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-    <tr>
-        <td>Accumulated Year
-        <td><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($opexAcc[$current][$currentMonth] ?? 0) - ($opexAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($opexAcc[$current_1][$currentMonth]) || $opexAcc[$current_1][$currentMonth] == 0? 0 : number_format((($opexAcc[$current][$currentMonth] ?? 0)/$opexAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-</table>
+<?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
 <div style="width: 50%; float: left;">
     <canvas id="overview-consolidated-opex" height="270"></canvas>

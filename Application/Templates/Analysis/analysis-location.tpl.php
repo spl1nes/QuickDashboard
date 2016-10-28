@@ -43,31 +43,7 @@ $gini = $this->getData('gini');
 <?php if(!empty($salesAcc)) : ?>
 <h1><?= $this->request->getData('location') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Type
-        <th>2 Years Ago
-        <th>Last Year
-        <th>Currently
-        <th>Diff Last Year
-        <th>Diff Last Year %
-    <tbody>
-    <tr>
-        <td>Isolated Month
-        <td><?= '€  ' . number_format($sales[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($sales[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($sales[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($sales[$current][$currentMonth] ?? 0) - ($sales[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($sales[$current_1][$currentMonth]) || $sales[$current_1][$currentMonth] == 0 ? 0 : number_format((($sales[$current][$currentMonth] ?? 0)/$sales[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-    <tr>
-        <td>Accumulated Year
-        <td><?= '€  ' . number_format($salesAcc[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($salesAcc[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($salesAcc[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($salesAcc[$current][$currentMonth] ?? 0) - ($salesAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($salesAcc[$current_1][$currentMonth]) || $salesAcc[$current_1][$currentMonth] == 0? 0 : number_format((($salesAcc[$current][$currentMonth] ?? 0)/$salesAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-</table>
+<?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
 <div style="width: 50%; float: left;">
     <canvas id="overview-consolidated-sales" height="270"></canvas>
@@ -80,6 +56,11 @@ $gini = $this->getData('gini');
 <div class="box" style="width: 100%; float: left">
     <canvas id="group-sales" height="150"></canvas>
 </div>
+
+<div class="clear"></div>
+<div class="break"></div>
+
+<?php include __DIR__ . '/../Sales/table-segment.tpl.php'; ?>
 
 <div class="clear"></div>
 <div class="break"></div>

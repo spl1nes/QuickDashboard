@@ -34,31 +34,7 @@ $salesCountry = $this->getData('salesCountry');
 <?php if(!empty($salesAcc)) : ?>
 <h1><?= $gId; ?> <?= $gName; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
-<table>
-    <thead>
-    <tr>
-        <th>Type
-        <th>2 Years Ago
-        <th>Last Year
-        <th>Currently
-        <th>Diff Last Year
-        <th>Diff Last Year %
-    <tbody>
-    <tr>
-        <td>Isolated Month
-        <td><?= '€  ' . number_format($sales[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($sales[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($sales[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($sales[$current][$currentMonth] ?? 0) - ($sales[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($sales[$current_1][$currentMonth]) || $sales[$current_1][$currentMonth] == 0 ? 0 : number_format((($sales[$current][$currentMonth] ?? 0)/$sales[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-    <tr>
-        <td>Accumulated Year
-        <td><?= '€  ' . number_format($salesAcc[$current_2][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($salesAcc[$current_1][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($salesAcc[$current][$currentMonth] ?? 0, 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format(($salesAcc[$current][$currentMonth] ?? 0) - ($salesAcc[$current_1][$currentMonth] ?? 0), 0, ',', '.');  ?>
-        <td><?= !isset($salesAcc[$current_1][$currentMonth]) || $salesAcc[$current_1][$currentMonth] == 0? 0 : number_format((($salesAcc[$current][$currentMonth] ?? 0)/$salesAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
-</table>
+<?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
 <div style="width: 50%; float: left;">
     <canvas id="overview-consolidated-sales" height="270"></canvas>
@@ -106,35 +82,7 @@ $salesCountry = $this->getData('salesCountry');
 
 <p>The following tables contain the sales of the current month compared to the same month of the last year. Please be aware that these figures represent the full month and not a comparison on a daily basis. The calculation of developed and undeveloped countires is based on the MANI definition. The region calculation is mostly based on the ISO-3166 definition.</p>
 
-<table style="width: 50%; float: left;">
-    <caption>Sales by Domestic/Export</caption>
-    <thead>
-    <tr>
-        <th>Type
-        <th>Last
-        <th>Current
-        <th>Diff
-        <th>Diff %
-    <tbody>
-    <tr>
-        <td>Export
-        <td><?= number_format($salesExportDomestic['old']['Export'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesExportDomestic['now']['Export'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesExportDomestic['now']['Export'] ?? 0)-($salesExportDomestic['old']['Export'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesExportDomestic['old']['Export']) || $salesExportDomestic['old']['Export'] == 0 ? 0 : (($salesExportDomestic['now']['Export'] ?? 0)/$salesExportDomestic['old']['Export']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Domestic
-        <td><?= number_format($salesExportDomestic['old']['Domestic'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesExportDomestic['now']['Domestic'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesExportDomestic['now']['Domestic'] ?? 0)-($salesExportDomestic['old']['Domestic'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesExportDomestic['old']['Domestic']) || $salesExportDomestic['old']['Domestic'] == 0 ? 0 : (($salesExportDomestic['now']['Domestic'] ?? 0)/$salesExportDomestic['old']['Domestic']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <th>Total
-        <th><?= number_format(array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesExportDomestic['now']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesExportDomestic['now'])-array_sum($salesExportDomestic['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesExportDomestic['old']) || ($sum = array_sum($salesExportDomestic['old'])) == 0 ? 0 : (array_sum($salesExportDomestic['now'])/$sum-1)*100, 0, ',', '.') ?> %
-</table>
+<?php include __DIR__ . '/../Sales/table-domesticexport.tpl.php'; ?>
 
 <div class="box" style="width: 50%; float: left">
     <canvas id="domestic-export-chart" height="110"></canvas>
@@ -142,35 +90,7 @@ $salesCountry = $this->getData('salesCountry');
 
 <div class="clear"></div>
 
-<table style="width: 50%; float: left;">
-    <caption>Sales by Developed/Undeveloped</caption>
-    <thead>
-    <tr>
-        <th>Type
-        <th>Last
-        <th>Current
-        <th>Diff
-        <th>Diff %
-    <tbody>
-    <tr>
-        <td>Developed
-        <td><?= number_format($salesDevUndev['old']['Developed'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Developed'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Developed']-$salesDevUndev['old']['Developed'], 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesDevUndev['old']['Developed']) || $salesDevUndev['old']['Developed'] == 0 ? 0 : (($salesDevUndev['now']['Developed'] ?? 0)/$salesDevUndev['old']['Developed']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Undeveloped
-        <td><?= number_format($salesDevUndev['old']['Undeveloped'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesDevUndev['now']['Undeveloped'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesDevUndev['now']['Undeveloped'] ?? 0)-($salesDevUndev['old']['Undeveloped'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesDevUndev['old']['Undeveloped']) || $salesDevUndev['old']['Undeveloped'] == 0 ? 0 : (($salesDevUndev['now']['Undeveloped'] ?? 0)/$salesDevUndev['old']['Undeveloped']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <th>Total
-        <th><?= number_format(array_sum($salesDevUndev['old'] ?? []), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesDevUndev['now'] ?? []), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesDevUndev['now'] ?? [])-array_sum($salesDevUndev['old'] ?? []), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesDevUndev['old']) || ($sum = array_sum($salesDevUndev['old'] ?? [])) == 0 ? 0 : (array_sum($salesDevUndev['now'] ?? [])/$sum-1)*100, 0, ',', '.') ?> %
-</table>
+<?php include __DIR__ . '/../Sales/table-devundev.tpl.php'; ?>
 
 <div class="box" style="width: 50%; float: left">
     <canvas id="developed-undeveloped-chart" height="110"></canvas>
@@ -178,59 +98,7 @@ $salesCountry = $this->getData('salesCountry');
 
 <div class="clear"></div>
 
-<table style="width: 50%; float: left;">
-    <caption>Sales by Region</caption>
-    <thead>
-    <tr>
-        <th>Type
-        <th>Last
-        <th>Current
-        <th>Diff
-        <th>Diff %
-    <tbody>
-    <tr>
-        <td>Europe
-        <td><?= number_format($salesRegion['old']['Europe'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['Europe'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['Europe'] ?? 0) - ($salesRegion['old']['Europe'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Europe']) || $salesRegion['old']['Europe'] == 0 ? 0 : (($salesRegion['now']['Europe'] ?? 0)/$salesRegion['old']['Europe']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>America
-        <td><?= number_format($salesRegion['old']['America'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['America'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['America'] ?? 0) - ($salesRegion['old']['America'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['America']) || $salesRegion['old']['America'] == 0 ? 0 : (($salesRegion['now']['America'] ?? 0)/$salesRegion['old']['America']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Asia
-        <td><?= number_format($salesRegion['old']['Asia'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['Asia'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['Asia'] ?? 0) - ($salesRegion['old']['Asia'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Asia']) || $salesRegion['old']['Asia'] == 0 ? 0 : (($salesRegion['now']['Asia'] ?? 0)/$salesRegion['old']['Asia']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Africa
-        <td><?= number_format($salesRegion['old']['Africa'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['Africa'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['Africa'] ?? 0) - ($salesRegion['old']['Africa'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Africa']) || $salesRegion['old']['Africa'] == 0 ? 0 : (($salesRegion['now']['Africa'] ?? 0)/$salesRegion['old']['Africa']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Oceania
-        <td><?= number_format($salesRegion['old']['Oceania'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['Oceania'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['Oceania'] ?? 0) - ($salesRegion['old']['Oceania'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Oceania']) || $salesRegion['old']['Oceania'] == 0 ? 0 : (($salesRegion['now']['Oceania'] ?? 0)/$salesRegion['old']['Oceania']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <td>Other
-        <td><?= number_format($salesRegion['old']['Other'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesRegion['now']['Other'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesRegion['now']['Other'] ?? 0) - ($salesRegion['old']['Other'] ?? 0), 0, ',', '.') ?>
-        <td><?= number_format(!isset($salesRegion['old']['Other']) || $salesRegion['old']['Other'] == 0 ? 0 : (($salesRegion['now']['Other'] ?? 0)/$salesRegion['old']['Other']-1)*100, 0, ',', '.') ?> %
-    <tr>
-        <th>Total
-        <th><?= number_format(array_sum($salesRegion['old']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesRegion['now']), 0, ',', '.') ?>
-        <th><?= number_format(array_sum($salesRegion['now']) - array_sum($salesRegion['old']), 0, ',', '.') ?>
-        <th><?= number_format(!isset($salesRegion['old']) || ($sum = array_sum($salesRegion['old'])) == 0 ? 0 : (array_sum($salesRegion['now'])/$sum-1)*100, 0, ',', '.') ?> %
-</table>
+<?php include __DIR__ . '/../Sales/table-devundev.tpl.php'; ?>
 
 <div class="box" style="width: 50%; float: left">
     <canvas id="region-chart" height="200"></canvas>
