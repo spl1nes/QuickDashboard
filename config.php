@@ -29,5 +29,15 @@ $CONFIG = [
         'root'  => '/',
         'https' => false,
     ],
-    'fiscal_year' => 7
+    'fiscal_year' => 7,
+	'cache' => [
+		'file' => [
+			'type' => 'file',
+			'path' => __DIR__ . '/cache',
+		],
+		'http' => [
+			'type' => 'http',
+			'expire' => '+6 hour',
+		]
+	]
 ];
