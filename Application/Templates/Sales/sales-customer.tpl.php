@@ -26,7 +26,7 @@ $current_2 = $this->getData('currentFiscalYear')-2;
         <td><?= $group; ?>
         <td><?= number_format($salesGroups[$group]['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($salesGroups[$group]['now'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format(($salesGroups[$group]['now'] ?? 0)-($salesGroups['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(($salesGroups[$group]['now'] ?? 0)-($salesGroups[$group]['old'] ?? 0), 0, ',', '.') ?>
         <td><?= number_format(!isset($salesGroups[$group]) || $salesGroups[$group]['old'] == 0 ? 0 : (($salesGroups[$group]['now'] ?? 0)/$salesGroups[$group]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
     <!--<tr>
