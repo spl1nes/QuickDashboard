@@ -105,6 +105,15 @@ class WebApplication extends ApplicationAbstract
         $head->addAsset(AssetType::JS, $baseUri . 'Model/Message/DomAction.js');
         $pageView->setData('unit', $request->getData('u') ?? 'consolidated');
         $pageView->setData('head', $head);
+
+        $title = 'QuickDashboard';
+        foreach($dispatched as $view) {
+            if($view->getData('title') !== null) {
+                $title = $view->getData('title');
+            }
+        }
+
+        $pageView->setData('title', $title);
         $pageView->setData('dispatch', $dispatched);
         $pageView->setTemplate('/QuickDashboard/Application/Templates/index');
         $response->set('Content', $pageView);

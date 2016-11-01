@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
 <head>
-	<title>QuickDashboard</title>
+	<title><?= $this->getData('title') ?? 'QuickDashboard'; ?></title>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/jquery.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/Chart.bundle.min.js'); ?>"></script>
 	<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/d3.min.js'); ?>"></script>
