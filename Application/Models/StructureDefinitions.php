@@ -204,7 +204,7 @@ class StructureDefinitions
 
     const NAMING = [
         1  => 'Precious Alloys',
-        2  => 'Analog Consumables',
+        2  => 'Standard Consumables',
         3  => 'Digital Workflow',
         4  => 'IMPLA',
         5  => 'Misc.',
