@@ -642,7 +642,9 @@ class AnalysisController extends DashboardController
             $view->setData('salesGroups', $salesGroups);
             $view->setData('segmentGroups', $segmentGroups);
             $view->setData('totalGroups', $totalGroups);
+            $view->setData('title', 'Analysis ' . $request->getData('location'));
         }
+
 
         return $view;
     }
@@ -960,5 +962,222 @@ class AnalysisController extends DashboardController
         }
 
         return $reps;
+    }
+
+    public function showAnalysisSales(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-sales');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        $repNames = []; 
+        if ($request->getData('u') !== 'gdf') {
+            $repNames = $this->getSalesReps('sd', $repNames);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $repNames = array_merge($repNames ?? [], $this->getSalesReps('gdf', $repNames));
+        }
+
+        asort($repNames);
+
+        $countries = null;
+
+        if ($request->getData('location') !== null) {
+            $totalSales    = [];
+            $accTotalSales = [];
+
+            $salesCustomers = [];
+            $customerCount  = [];
+
+            $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
+
+            $salesGroups   = [];
+            $segmentGroups = [];
+
+            foreach ($temp as $segment) {
+                $salesGroups['All'][$segment]   = null;
+                $segmentGroups['All'][$segment] = null;
+            }
+
+            $totalGroups = [
+                'All'      => ['now' => 0.0, 'old' => 0.0],
+            ];
+
+            $accounts = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
+
+            if($request->getData('location') !== 'Domestic' && $request->getData('location') !== 'DE' && $request->getData('location') !== 'Export') {
+                $countries = StructureDefinitions::getLocations($request->getData('location'));
+            }
+
+            if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                $countries = array_diff($countries, ['DE']);
+            }
+
+            if ($request->getData('u') !== 'gdf') {
+                if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
+                    $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
+
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts[] = 8591;
+                    }
+                }
+
+                if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                    $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts_DOMESTIC[] = 8591;
+                    }
+
+                    $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts_DOMESTIC);
+                    $this->loopOverview($salesSD, $totalSales);
+
+                    $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts_DOMESTIC);
+                    $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts_DOMESTIC);
+                    $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts_DOMESTIC);
+                    $this->loopCustomer('now', $customersSD, $salesCustomers);
+                    $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+                    $this->loopCustomerCount($customerSD, $customerCount);
+
+                    $groupsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
+                    $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+                    $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
+                }
+
+                if (!isset($countries)) {
+                    $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
+                    $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
+                    $customerSD = $this->select('selectCustomerCount', $start, $current, 'sd', $accounts);
+                    $groupsSD     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts);
+                    $groupsSDLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'sd', $accounts);
+                } else {
+                    $salesSD = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'sd', $accounts, $countries);
+                    $customersSD     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
+                    $customersSDLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'sd', $accounts, $countries);
+                    $customerSD = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'sd', $accounts, $countries);
+                    $groupsSD     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
+                    $groupsSDLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'sd', $accounts, $countries);
+                }
+
+                $this->loopOverview($salesSD, $totalSales);
+                $this->loopCustomer('now', $customersSD, $salesCustomers);
+                $this->loopCustomer('old', $customersSDLast, $salesCustomers);
+                $this->loopCustomerCount($customerSD, $customerCount);
+                $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
+                    $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
+
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts[] = 8591;
+                    }
+                }
+
+                if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
+                    $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+                    if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                        $accounts_DOMESTIC[] = 8591;
+                    }
+
+                    $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts_DOMESTIC);
+                    $this->loopOverview($salesGDF, $totalSales);
+
+                    $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts_DOMESTIC);
+                    $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts_DOMESTIC);
+                    $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts_DOMESTIC);
+                    $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                    $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+                    $this->loopCustomerCount($customerGDF, $customerCount);
+
+                    $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
+                    $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+                    $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
+                }
+
+                if (!isset($countries)) {
+                    $salesGDF = $this->select('selectSalesYearMonth', $start, $current, 'gdf', $accounts);
+                    $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
+                    $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts);
+                    $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
+                    $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
+
+                } else {
+                    $salesGDF = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'gdf', $accounts, $countries);
+                    $customersGDF     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
+                    $customersGDFLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'gdf', $accounts, $countries);
+                    $customerGDF = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'gdf', $accounts, $countries);
+                    $groupsGDF     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
+                    $groupsGDFLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'gdf', $accounts, $countries);
+                }
+
+                $this->loopOverview($salesGDF, $totalSales);
+                $this->loopCustomer('now', $customersGDF, $salesCustomers);
+                $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
+                $this->loopCustomerCount($customerGDF, $customerCount);
+                $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
+            }
+
+            $gini = null;
+
+            if(isset($salesCustomers['now'])) {
+                arsort($salesCustomers['now']);
+                $gini['now'] = Lorenzkurve::getGiniCoefficient($salesCustomers['now']);
+            }
+
+            if(isset($salesCustomers['old'])) {
+                arsort($salesCustomers['old']);
+                $gini['old'] = Lorenzkurve::getGiniCoefficient($salesCustomers['old']);
+            }
+
+            foreach ($customerCount as $year => $months) {
+                ksort($customerCount[$year]);
+            }
+
+            foreach ($totalSales as $year => $months) {
+                ksort($totalSales[$year]);
+
+                for ($month = 1; $month < 13; $month++) {
+                    $prev                         = $accTotalSales[$year][$month - 1] ?? 0.0;
+                    $accTotalSales[$year][$month] = $prev + ($totalSales[$year][$month] ?? 0);
+                }
+            }
+
+            $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+            $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+            $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            $view->setData('currentFiscalYear', $currentYear);
+            $view->setData('currentMonth', $currentMonth);
+            $view->setData('sales', $totalSales);
+            $view->setData('salesAcc', $accTotalSales);
+            $view->setData('date', $current);
+            $view->setData('customer', $salesCustomers);
+            $view->setData('customerCount', $customerCount);
+            $view->setData('gini', $gini);
+            $view->setData('salesGroups', $salesGroups);
+            $view->setData('segmentGroups', $segmentGroups);
+            $view->setData('totalGroups', $totalGroups);
+        }
+
+        $view->setData('repNames', $repNames);
+
+        return $view;
     }
 }

@@ -95,6 +95,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/sales.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisSales',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^analysis/opex.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisOPEX',

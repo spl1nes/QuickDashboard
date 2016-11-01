@@ -54,6 +54,7 @@
                     </ul>-->
                 <li><i class="fa fa-search"></i> Analysis
                     <ul>
+                        <!--<li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/sales?{?}'); ?>">Sales Manual</a>-->
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/location?{?}'); ?>">Location</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/segmentation?{?}'); ?>">Segmentation</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps?{?}'); ?>">Sales Reps</a>
