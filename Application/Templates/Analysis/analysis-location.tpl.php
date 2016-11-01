@@ -6,13 +6,6 @@
                 <optgroup label="Domestic/Export">
                     <option value="Domestic"<?= $this->request->getData('location') == 'Domestic' ? ' selected' : ''; ?>>Domestic
                     <option value="Export"<?= $this->request->getData('location') == 'Export' ? ' selected' : ''; ?>>Export
-                <!--<optgroup label="Developed/Undeveloped">
-                    <option value="Developed">Developed
-                    <option value="Undeveloped">Undeveloped
-                <optgroup label="Region">
-                <?php foreach(\QuickDashboard\Application\Models\StructureDefinitions::REGIONS as $id => $countries) : ?>
-                    <option value="<?= $id; ?>"><?= $id; ?>
-                <?php endforeach; ?>-->
                 <optgroup label="Country">
             <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); asort($countries); foreach($countries as $id => $name) : ?>
                 <option value="<?= $name; ?>"<?= $this->request->getData('location') == $name ? ' selected' : ''; ?>><?= $name; ?>
