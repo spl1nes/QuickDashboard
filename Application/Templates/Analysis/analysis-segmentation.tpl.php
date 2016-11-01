@@ -98,7 +98,7 @@ $salesCountry = $this->getData('salesCountry');
 
 <div class="clear"></div>
 
-<?php include __DIR__ . '/../Sales/table-devundev.tpl.php'; ?>
+<?php include __DIR__ . '/../Sales/table-region.tpl.php'; ?>
 
 <div class="box" style="width: 50%; float: left">
     <canvas id="region-chart" height="200"></canvas>
