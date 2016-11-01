@@ -83,6 +83,7 @@ class SalesController extends DashboardController
         $view->setData('type', 'isolated');
         $view->setData('nowDate', $startCurrent);
         $view->setData('oldDate', $startLast);
+        $view->setData('title', 'Sales Month Isolated');
 
         return $view;
     }
@@ -173,6 +174,7 @@ class SalesController extends DashboardController
         $view->setData('currentMonth', $currentMonth);
         $view->setData('date', $current);
         $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Year Isolated');
 
         return $view;
     }
@@ -213,6 +215,7 @@ class SalesController extends DashboardController
 
         $view = $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'isolated');
+        $view->setData('title', 'Sales Location Isolated');
 
         return $view;
     }
@@ -233,6 +236,7 @@ class SalesController extends DashboardController
 
         $view = $this->showLocation($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Location Accumulated');
 
         return $view;
     }
@@ -364,6 +368,7 @@ class SalesController extends DashboardController
 
         $view = $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'isolated');
+        $view->setData('title', 'Sales Segments Isolated');
 
         return $view;
     }
@@ -384,6 +389,7 @@ class SalesController extends DashboardController
 
         $view = $this->showArticle($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Segments Accumulated');
 
         return $view;
     }
@@ -499,6 +505,7 @@ class SalesController extends DashboardController
 
         $view = $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'isolated');
+        $view->setData('title', 'Sales Reps Isolated');
 
         return $view;
     }
@@ -519,6 +526,7 @@ class SalesController extends DashboardController
 
         $view = $this->showReps($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Reps Accumulated');
 
         return $view;
     }
@@ -600,6 +608,7 @@ class SalesController extends DashboardController
 
         $view = $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'isolated');
+        $view->setData('title', 'Sales Customers Isolated');
 
         return $view;
     }
@@ -620,6 +629,7 @@ class SalesController extends DashboardController
 
         $view = $this->showCustomers($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
         $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Customers Accumulated');
 
         return $view;
     }
