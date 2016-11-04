@@ -32,7 +32,7 @@ $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 ?>
 <?php if(!empty($salesAcc)) : ?>
-<h1><?= $gId; ?> <?= $gName; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1><?= $gId ?? ''; ?> <?= $gName ?? ''; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <h2>Sales</h2>
 <?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
