@@ -68,6 +68,7 @@ class WebApplication extends ApplicationAbstract
             $this->cachePool->get('file')->set($request->getUri()->__toString(), $body = $response->getBody(), 60*60*6);
         }
 
+        $this->sessionManager->save();
         $response->getHeader()->push();
 
         echo $body;
