@@ -98,7 +98,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: "Current Year",
-                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current][$i] ?? '0'; } echo implode(',', $data ?? []); ?>],
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = ($i <= $currentMonth) ? $sales[$current][$i] ?? '0' : ''; } echo implode(',', $data ?? []); ?>],
                 fill: false,
                 borderColor: 'rgba(255,99,132,1)',
                 backgroundColor: 'rgba(255,99,132,1)',
