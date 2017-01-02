@@ -137,7 +137,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -159,7 +159,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }
@@ -211,7 +211,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -233,7 +233,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }
@@ -276,7 +276,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -292,7 +292,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         beginAtZero: true,
                         min: 0
                     }
@@ -337,7 +337,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -353,7 +353,7 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         beginAtZero: true,
                         min: 0
                     }

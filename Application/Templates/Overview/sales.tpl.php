@@ -86,7 +86,7 @@ $currentMonth = $this->getData('currentMonth');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -108,7 +108,7 @@ $currentMonth = $this->getData('currentMonth');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }
@@ -160,7 +160,7 @@ $currentMonth = $this->getData('currentMonth');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -182,7 +182,7 @@ $currentMonth = $this->getData('currentMonth');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }

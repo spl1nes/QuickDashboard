@@ -165,7 +165,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -187,7 +187,7 @@ $salesCountry = $this->getData('salesCountry');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }
@@ -239,7 +239,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                             let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                            return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                           }
                 }
             },
@@ -261,7 +261,7 @@ $salesCountry = $this->getData('salesCountry');
                         labelString: 'Sales'
                     },
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }]
             }
@@ -299,7 +299,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -315,7 +315,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }],
             }
@@ -353,7 +353,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -369,7 +369,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }],
             }
@@ -469,7 +469,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -480,7 +480,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         beginAtZero: true
                     }
                 }],
@@ -519,7 +519,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -530,7 +530,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); },
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); },
                         beginAtZero: true
                     }
                 }],
@@ -569,7 +569,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -580,7 +580,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }],
             }
@@ -603,7 +603,7 @@ $salesCountry = $this->getData('salesCountry');
         },
         geographyConfig: {
             popupTemplate: function(geo, data) {
-                return "<div class='hoverinfo'>Sales " + data.country + ": € " + Math.round(data.value).toString().split(/(?=(?:...)*$)/).join('.'); + "</div>";
+                return "<div class='hoverinfo'>Sales " + data.country + ": € " + Math.round(data.value).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); + "</div>";
             }
         }
     });
@@ -628,7 +628,7 @@ $salesCountry = $this->getData('salesCountry');
         {name: 'Oceania', latitude: -25.2744, longitude: 133.7751, radius: <?= max(log($salesRegion['now']['Oceania'] ?? 1), 0); ?>, fillKey: 'gt50'},
     ], {
         popupTemplate: function(geo, data) {
-            return "<div class='hoverinfo'>Sales " + data.name + ": € " + Math.round(Math.exp(data.radius)).toString().split(/(?=(?:...)*$)/).join('.'); + "</div>";
+            return "<div class='hoverinfo'>Sales " + data.name + ": € " + Math.round(Math.exp(data.radius)).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); + "</div>";
         }
     });
 
@@ -663,7 +663,7 @@ $salesCountry = $this->getData('salesCountry');
                     label: function(tooltipItem, data) {
                         let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
 
-                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.');
+                        return ' ' + datasetLabel + ': ' + '€ ' + Math.round(tooltipItem.yLabel).toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-');
                     }
                 }
             },
@@ -674,7 +674,7 @@ $salesCountry = $this->getData('salesCountry');
                     position: "left",
                     id: "y-axis-1",
                     ticks: {
-                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.'); }
+                        userCallback: function(value, index, values) { return '€ ' + value.toString().split(/(?=(?:...)*$)/).join('.').replace('-.', '-'); }
                     }
                 }],
             }
