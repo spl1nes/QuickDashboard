@@ -283,6 +283,52 @@ select.plain {
     display: none;
 }
 
+.bar.total rect {
+  fill: rgba(86,104,226,0.8);
+}
+
+.bar.total:hover rect {
+  fill: rgba(86,104,226,1);
+}
+
+.bar.positive rect {
+  fill: rgba(104,226,86,0.8);
+}
+
+.bar.positive:hover rect {
+  fill: rgba(104,226,86,1);
+}
+
+.bar.negative rect {
+  fill: rgba(255,61,103,0.8);
+}
+
+.bar.negative:hover rect {
+  fill: rgba(255,61,103,1);
+}
+
+.bar line.connector {
+  stroke: grey;
+  stroke-dasharray: 3;
+}
+
+.bar text {
+  fill: black;
+  font: 12px sans-serif;
+  text-anchor: middle;
+}
+
+.axis text {
+  font: 10px sans-serif;
+}
+
+.axis path,
+.axis line {
+  fill: none;
+  stroke: #000;
+  shape-rendering: crispEdges;
+}
+
 @media print {
     nav, footer, .info, blockquote, form {
         display: none;
@@ -305,3 +351,4 @@ select.plain {
         display: block;
     }
 }
+
