@@ -34,6 +34,18 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^sales/countries.*?i=month.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\SalesController:showCountriesMonth',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^sales/countries.*?i=year.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\SalesController:showCountriesYear',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^sales/segmentation.*?i=month.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\SalesController:showArticleMonth',

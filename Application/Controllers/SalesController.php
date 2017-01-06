@@ -352,6 +352,129 @@ class SalesController extends DashboardController
         }
     }
 
+    public function showCountriesMonth(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $current->getStartOfMonth();
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $startLast->getEndOfMonth();
+
+        $view = $this->showCountry($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'isolated');
+        $view->setData('title', 'Sales Country Isolated');
+
+        return $view;
+    }
+
+    public function showCountriesYear(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $endCurrent   = $current->getEndOfMonth();
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        $endLast      = $endCurrent->createModify(-1);
+
+        $view = $this->showCountry($request, $response, $startCurrent, $endCurrent, $startLast, $endLast);
+        $view->setData('type', 'accumulated');
+        $view->setData('title', 'Sales Country Accumulated');
+
+        return $view;
+    }
+
+    public function showCountry(RequestAbstract $request, ResponseAbstract $response, \DateTime $startCurrent, \DateTime $endCurrent, \DateTime $startLast, \DateTime $endLast)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Sales/sales-country');
+
+        $salesCountry        = [];
+
+        $domesticSD      = [];
+        $domesticGDF     = [];
+        $domesticSDLast  = [];
+        $domesticGDFLast = [];
+        $allGDF          = [];
+        $allSD           = [];
+        $allGDFLast      = [];
+        $allSDLast       = [];
+
+        $sum = ['old' => 0, 'now' => 0];
+
+        $accounts          = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
+        $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
+        if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+            $accounts_DOMESTIC[] = 8591;
+        }
+
+        if ($request->getData('u') !== 'gdf') {
+            $countrySD     = $this->select('selectSalesByCountry', $startCurrent, $endCurrent, 'sd', $accounts);
+            $countrySDLast = $this->select('selectSalesByCountry', $startLast, $endLast, 'sd', $accounts);
+
+            $this->loopCountry('now', $countrySD, $salesCountry, $sum);
+            $this->loopCountry('old', $countrySDLast, $salesCountry, $sum);
+
+            $domesticSDLast = $this->select('selectAccounts', $startLast, $endLast, 'sd', $accounts_DOMESTIC);
+            $domesticSD     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'sd', $accounts_DOMESTIC);
+
+            $allSD     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'sd', $accounts);
+            $allSDLast = $this->select('selectAccounts', $startLast, $endLast, 'sd', $accounts);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $countryGDF     = $this->select('selectSalesByCountry', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $countryGDFLast = $this->select('selectSalesByCountry', $startLast, $endLast, 'gdf', $accounts);
+
+            $this->loopCountry('now', $countryGDF, $salesCountry, $sum);
+            $this->loopCountry('old', $countryGDFLast, $salesCountry, $sum);
+
+            $domesticGDFLast = $this->select('selectAccounts', $startLast, $endLast, 'gdf', $accounts_DOMESTIC);
+            $domesticGDF     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'gdf', $accounts_DOMESTIC);
+
+            $allGDF     = $this->select('selectAccounts', $startCurrent, $endCurrent, 'gdf', $accounts);
+            $allGDFLast = $this->select('selectAccounts', $startLast, $endLast, 'gdf', $accounts);
+        }
+
+        $salesCountry['DEU']['now'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
+        $salesCountry['DEU']['old'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
+
+        $salesCountry['???']['now'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $sum['now'];
+        $salesCountry['???']['old'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $sum['old'];
+
+        $view->setData('salesCountry', $salesCountry);
+        $view->setData('date', $endCurrent);
+
+        return $view;
+    }
+
+    private function loopCountry(string $period, array $resultset, array &$salesCountry, array &$sum)
+    {
+        foreach ($resultset as $line) {
+            if (!isset($line['countryChar'])) {
+                continue;
+            }
+
+            $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+            if (!isset($salesCountry[$iso3166Char3][$period])) {
+                $salesCountry[$iso3166Char3][$period] = 0.0;
+            }
+
+            $salesCountry[$iso3166Char3][$period] += $line['sales'];
+            $sum[$period] += $line['sales'];
+        }
+    }
+
     public function showArticleMonth(RequestAbstract $request, ResponseAbstract $response)
     {
         $current = new SmartDateTime($request->getData('t') ?? 'now');

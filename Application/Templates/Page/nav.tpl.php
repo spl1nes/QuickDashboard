@@ -14,6 +14,11 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/location?{?}&i=year'); ?>">Year</a>
                         </ul>
+                    <li>Countries
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/countries?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/countries?{?}&i=year'); ?>">Year</a>
+                        </ul>
                     <li>Segmentation
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/segmentation?{?}&i=month'); ?>">Month</a>
