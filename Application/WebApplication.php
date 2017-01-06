@@ -60,7 +60,7 @@ class WebApplication extends ApplicationAbstract
         $request->getL11n()->setLanguage('en');
         $request->init();
 
-        if (($cached = $this->cachePool->get('file')->get($request->getUri()->__toString())) !== null) {
+        if (/*($cached = $this->cachePool->get('file')->get($request->getUri()->__toString()))*/ null !== null) {
             $response->set('Content', $cached);
             $body = $cached;
         } else {

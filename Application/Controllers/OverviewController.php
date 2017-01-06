@@ -53,6 +53,7 @@ class OverviewController extends DashboardController
 
         unset($totalSales[$currentYear][$currentMonth]);
         unset($accTotalSales[$currentYear][$currentMonth]);
+        ksort($totalSales);
 
         $fcData = [];
         foreach($totalSales as $year => $months) {
