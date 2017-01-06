@@ -7,6 +7,7 @@ use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
 use QuickDashboard\Application\Models\StructureDefinitions;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\Brown;
 
 class OverviewController extends DashboardController
 {
@@ -53,10 +54,28 @@ class OverviewController extends DashboardController
         unset($totalSales[$currentYear][$currentMonth]);
         unset($accTotalSales[$currentYear][$currentMonth]);
 
+        $fcData = [];
+        foreach($totalSales as $year => $months) {
+            foreach($months as $month => $value) {
+                $fcData[] = $value;
+            }
+        }
+
+        $fc = new Brown($fcData, 4);
+        $totalSalesFC = $fc->getForecast(12 - $currentMonth + 1);
+        $totalSalesFC = array_merge(array_slice($totalSales[$currentYear], -1), array_slice($totalSalesFC, $currentMonth - 12 - 1));
+
+        $accTotalSalesFC[$currentMonth] = $accTotalSales[$currentYear][$currentMonth-1];
+        for($i = $currentMonth + 1; $i < 12 + 2; $i++) {
+            $accTotalSalesFC[$i] = $accTotalSalesFC[$i-1] + $totalSalesFC[$i - $currentMonth - 1];
+        }
+
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
         $view->setData('sales', $totalSales);
         $view->setData('salesAcc', $accTotalSales);
+        $view->setData('salesFC', $totalSalesFC);
+        $view->setData('salesAccFC', $accTotalSalesFC);
         $view->setData('date', $current->smartModify(0, -1));
 
         return $view;
