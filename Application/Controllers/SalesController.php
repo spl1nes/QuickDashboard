@@ -449,8 +449,8 @@ class SalesController extends DashboardController
         $salesCountry['DEU']['now'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesCountry['DEU']['old'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
 
-        $salesCountry['???']['now'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $sum['now'];
-        $salesCountry['???']['old'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $sum['old'];
+        $salesCountry['???']['now'] = ($salesCountry['???']['now'] ?? 0) + ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $sum['now'];
+        $salesCountry['???']['old'] = ($salesCountry['???']['old'] ?? 0) + ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $sum['old'];
 
         $view->setData('salesCountry', $salesCountry);
         $view->setData('date', $endCurrent);
@@ -466,6 +466,7 @@ class SalesController extends DashboardController
             }
 
             $iso3166Char3 = ltrim(ISO3166TwoEnum::getName(trim(strtoupper($line['countryChar']))), '_');
+            $iso3166Char3 = trim($iso3166Char3) === '' ? '???' : $iso3166Char3;
             if (!isset($salesCountry[$iso3166Char3][$period])) {
                 $salesCountry[$iso3166Char3][$period] = 0.0;
             }
