@@ -7,7 +7,9 @@ use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
 use QuickDashboard\Application\Models\StructureDefinitions;
-use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\Brown;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\ExponentialSmoothing;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\TrendType;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\SeasonalType;
 
 class OverviewController extends DashboardController
 {
@@ -62,8 +64,8 @@ class OverviewController extends DashboardController
             }
         }
 
-        $fc = new Brown($fcData, 4);
-        $totalSalesFC = $fc->getForecast(12 - $currentMonth + 1);
+        $fc = new ExponentialSmoothing($fcData);
+        $totalSalesFC = $fc->getForecast(12 - $currentMonth + 1, TrendType::NONE, SeasonalType::NONE, 12, 1);
         $totalSalesFC = array_merge(array_slice($totalSales[$currentYear], -1), array_slice($totalSalesFC, $currentMonth - 12 - 1));
 
         $accTotalSalesFC[$currentMonth] = $accTotalSales[$currentYear][$currentMonth-1];

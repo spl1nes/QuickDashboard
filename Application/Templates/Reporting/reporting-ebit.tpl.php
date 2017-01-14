@@ -1,6 +1,8 @@
 <?php
 $ebit = $this->getData('ebit');
 $ebitAcc = $this->getData('ebitAcc');
+$ebitFC = $this->getData('ebitFC');
+$ebitAccFC = $this->getData('ebitAccFC');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -48,6 +50,17 @@ $currentMonth = $this->getData('currentMonth');
         data: {
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
+                label: "Forecast",
+                data: [<?php echo str_repeat(',', (12 - $currentMonth)) , implode(',', $ebitFC); ?>],
+                hidden: true,
+                fill: false,
+                borderDash: [5, 5],
+                borderColor: 'rgba(0,0,0,1)',
+                backgroundColor: 'rgba(0,0,0,1)',
+                pointBorderColor: 'rgba(0,0,0,1)',
+                pointBackgroundColor: 'rgba(0,0,0,1)',
+                pointBorderWidth: 0
+            }, {
                 label: "Current Year",
                 data: [<?php echo implode(',', $ebit[$current]); ?>],
                 fill: false,
@@ -122,6 +135,17 @@ $currentMonth = $this->getData('currentMonth');
         data: {
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
+                label: "Forecast",
+                data: [<?php echo str_repeat(',', (12 - $currentMonth)) , implode(',', $ebitAccFC); ?>],
+                hidden: true,
+                fill: false,
+                borderDash: [5, 5],
+                borderColor: 'rgba(0,0,0,1)',
+                backgroundColor: 'rgba(0,0,0,1)',
+                pointBorderColor: 'rgba(0,0,0,1)',
+                pointBackgroundColor: 'rgba(0,0,0,1)',
+                pointBorderWidth: 0
+            }, {
                 label: "Current Year",
                 data: [<?php echo implode(',', $ebitAcc[$current]); ?>],
                 fill: false,

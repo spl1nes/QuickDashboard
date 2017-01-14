@@ -8,6 +8,9 @@ use phpOMS\Message\ResponseAbstract;
 use phpOMS\Utils\ArrayUtils;
 use phpOMS\Views\View;
 use QuickDashboard\Application\Models\StructureDefinitions;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\ExponentialSmoothing;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\TrendType;
+use phpOMS\Math\Finance\Forecasting\ExponentialSmoothing\SeasonalType;
 
 class ReportingController extends DashboardController
 {
@@ -315,11 +318,30 @@ class ReportingController extends DashboardController
 
         unset($totalSales[$currentYear][$currentMonth]);
         unset($accTotalSales[$currentYear][$currentMonth]);
+        ksort($totalSales);
+
+        $fcData = [];
+        foreach($totalSales as $year => $months) {
+            foreach($months as $month => $value) {
+                $fcData[] = $value;
+            }
+        }
+
+        $fc = new ExponentialSmoothing($fcData);
+        $totalSalesFC = $fc->getForecast(12 - $currentMonth + 1, TrendType::NONE, SeasonalType::NONE, 12, 1);
+        $totalSalesFC = array_merge(array_slice($totalSales[$currentYear], -1), array_slice($totalSalesFC, $currentMonth - 12 - 1));
+
+        $accTotalSalesFC[$currentMonth] = $accTotalSales[$currentYear][$currentMonth-1];
+        for($i = $currentMonth + 1; $i < 12 + 2; $i++) {
+            $accTotalSalesFC[$i] = $accTotalSalesFC[$i-1] + $totalSalesFC[$i - $currentMonth - 1];
+        }
 
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
         $view->setData('ebit', $totalSales);
         $view->setData('ebitAcc', $accTotalSales);
+        $view->setData('ebitFC', $totalSalesFC);
+        $view->setData('ebitAccFC', $accTotalSalesFC);
         $view->setData('date', $current->smartModify(0, -1));
 
         return $view;
