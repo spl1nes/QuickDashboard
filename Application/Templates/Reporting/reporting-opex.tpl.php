@@ -8,7 +8,6 @@ $currentMonth = $this->getData('currentMonth');
 $opexGroup = $this->getData('opexGroups');
 ?>
 <h1>OPEX - <?= $this->getData('date')->format('Y/m'); ?></h1>
-<p>Please be aware that the following EBIT figures are always unconsolidated. The EBIT doesn't include the interim profit resulting from different stock evaluations.</p>
 <p class="info">The following table compares the values based on the last month. The currently ongoing month is not considered for easier comparison purpose.</p>
 <table>
     <thead>
@@ -35,11 +34,11 @@ $opexGroup = $this->getData('opexGroups');
         <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1]-$opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
         <td><?= number_format(($opexAcc[$current][$currentMonth-1]/$opexAcc[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
 </table>
-<p>The following chart shows the consolidated EBIT on a monthly basis for the last 3 years.</p>
+<p>The following chart shows the consolidated OPEX on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
     <canvas id="overview-consolidated-opex" height="90"></canvas>
 </div>
-<p>The following chart shows the accumlated EBIT on a monthly basis for the last 3 years.</p>
+<p>The following chart shows the accumlated OPEX on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
     <canvas id="overview-acc-consolidated-opex" height="90"></canvas>
 </div>
