@@ -26,10 +26,10 @@ class StructureDefinitions
         'Provisions'               => [4760, 4765, 4767, 4768],
         'External Seminars'        => [4460, 4480, 4480, 4482, 4483, 4484, 4485, 4490],
         'Other Revenue'            => [2511, 2515, 2500, 2501, 2503, 2510, 2519, 2520, 2520, 2521, 2525, 2530, 2531, 2618, 2660, 2666, 2700, 2709, 2742, 2749, 2750, 3122, 4120, 8400, 8640, 8940, 8955, 2315, 8920, 8925, 8930, 22830, 2730, 2731, 2732, 2733, 27350, 2735, 2705, 2706, 2707, 2710, 2715, 2719, 2756],
-        'Wages & Salaries'         => [2895, 4110, 4112, 4113, 4114, 4123, 4124, 4125, 4126, 4127, 4128, 4135, 4140, 4145, 4160, 4165, 4170, 4175, 4180, 4190, 4195, 4199, 4199, 8614, 8905, 8921, 8921, 8922, 8980, 8981, 8985, 8987, 8988, 8989],
+        'Wages & Salaries'         => [2895, 4110, 4112, 4113, 4114, 4123, 4124, 4125, 4126, 4127, 4128, 4135, 4140, 4145, 4160, 4165, 4170, 4175, 4180, 4190, 4195, 4199, 8614, 8905, 8921, 8922, 8980, 8981, 8985, 8987, 8988, 8989],
         'Welfare Expenses'         => [4130, 4138, 4139, 4191, 4192],
         'Marketing'                => [4600, 4605, 4610, 4611, 4613, 4614, 4615, 4450, 4620, 4625, 4626, 4455, 4618, 4619, 4617, 4616, 4601, 4602, 4623, 4456],
-        'Trade Fair'               => [4410, 4411, 4412, 4413, 4414, 4415, 4418, 4419, 4420, 4421, 4424, 4425, 4426, 4400, 4423, 4404, 4427, 4401, 4402, 4422, 4416, 4417, 4428, 4430, 4405],
+        'Trade Fair'               => [4410, 4411, 4412, 4413, 4414, 4415, 4418, 4419, 4420, 4421, 4424, 4425, 4426, 4423, 4404, 4427, 4401, 4402, 4422, 4416, 4417, 4428, 4430, 4405],
         'Rental & Leasing'         => [42100, 4210, 4211, 4220, 4228, 4815, 4960, 4961],
         'Utilities'                => [4230, 4240, 4241, 4250, 4251],
         'Repair/Maintenance'       => [4260, 4261, 4262, 4800, 4805, 4806, 4809, 4810, 4985],
@@ -42,12 +42,12 @@ class StructureDefinitions
         'R&D'                      => [3102, 3120, 3121, 3130, 3140, 3160, 3190, 3199],
         'Patents'                  => [3450, 3550, 3560],
         'Other Personnel Expenses' => [4100, 4101, 4105, 4106, 4107, 4155],
-        'Other OPEX'               => [2001, 2002, 2020, 2025, 2150, 2155, 2165, 2300, 2380, 2385, 2600, 4150, 4396, 4398, 46550, 4738, 4780, 4790, 49000, 4900, 4905, 4908, 4909, 4947, 49490, 4949, 4970, 4975, 4360, 4380, 4385, 4390, 43960],
+        'Other OPEX'               => [2001, 2002, 2020, 2025, 2150, 2155, 2165, 2300, 2380, 2385, 2600, 4150, 4396, 4398, 46550, 4738, 4780, 4790, 49000, 4900, 4905, 4908, 4909, 4947, 49490, 4949, 4970, 4975, 4360, 4380, 4390, 43960],
         'Intercompany Expenses'    => [4400, 4990, 4991, 4992, 4993, 4994, 4995, 4996, 4997],
-        'Intercompany Revenue'     => [80000, 8000, 80010, 8001, 80020, 80030, 80040, 8004, 80050, 8006, 8007, 80080, 8009, 8010, 8011, 80120, 8012, 80130, 80140, 8015, 2708, 2990, 2991, 2992, 2993, 2994, 2995, 2995, 2997, 4185],
+        'Intercompany Revenue'     => [80000, 80010, 8001, 80020, 80030, 80040, 8004, 80050, 8007, 80080, 8009, 8011, 80120, 8012, 80130, 80140, 8015, 2708, 2990, 2991, 2992, 2993, 2994, 2995, 2997, 4185],
         'Doubtful Accounts'        => [2400, 2401, 2403, 2405, 2406, 2409, 2414, 2430, 2450, 2451],
         'Depreciation'             => [2893, 4822, 4830, 4832, 4835, 4855],
-        'Interest Revenue'         => [26500, 2650, 2650, 2650, 2652, 2652, 2653, 2655, 26570, 2657, 2657, 26501, 2651, 2659, 2659],
+        'Interest Revenue'         => [26500, 2650, 2652, 2652, 2653, 2655, 26570, 2657, 26501, 2651, 2659],
         'Interest Expenses'        => [2100, 2105, 2107, 2110, 2120, 2121, 2121, 2140, 2215, 2218, 4321, 2128, 21201, 21290, 2129, 2129, 26590],
         'Taxes'                    => [2104, 21070, 2108, 2200, 2203, 2204, 2205, 2208, 2209, 2210, 2221, 22800, 2280, 22810, 2281, 22820, 2282, 2285, 2287, 43200, 4320, 4330, 43400, 4397, 4350],
         'Transfer Of Profits'      => [864, 24900, 2490, 2490, 2492, 2616, 27940, 2794],
@@ -400,14 +400,33 @@ class StructureDefinitions
 
     public static function getOPEXAccounts() : array
     {
-        $accounts = [];
-        $positions = self::getOPEXPositions();
-
-        foreach($positions as $position) {
-            $accounts = array_merge($accounts, self::PL_ACCOUNTS[$position]);
-        }
-
-        return $accounts;
+        return array_merge(
+            self::PL_ACCOUNTS['Freight'],
+            self::PL_ACCOUNTS['Provisions'],
+            self::PL_ACCOUNTS['External Seminars'],
+            self::PL_ACCOUNTS['Other Revenue'],
+            self::PL_ACCOUNTS['Wages & Salaries'],
+            self::PL_ACCOUNTS['Welfare Expenses'],
+            self::PL_ACCOUNTS['Marketing'],
+            self::PL_ACCOUNTS['Trade Fair'],
+            self::PL_ACCOUNTS['Rental & Leasing'],
+            self::PL_ACCOUNTS['Utilities'],
+            self::PL_ACCOUNTS['Carpool'],
+            self::PL_ACCOUNTS['Repair/Maintenance'],
+            self::PL_ACCOUNTS['Stationary Expenses'],
+            self::PL_ACCOUNTS['Communication'],
+            self::PL_ACCOUNTS['Travel Expenses'],
+            self::PL_ACCOUNTS['Entertainment'],
+            self::PL_ACCOUNTS['External Consultants'],
+            self::PL_ACCOUNTS['R&D'],
+            self::PL_ACCOUNTS['Patents'],
+            self::PL_ACCOUNTS['Other Personnel Expenses'],
+            self::PL_ACCOUNTS['Other OPEX'],
+            self::PL_ACCOUNTS['Intercompany Expenses'],
+            self::PL_ACCOUNTS['Intercompany Revenue'],
+            self::PL_ACCOUNTS['Doubtful Accounts'],
+            self::PL_ACCOUNTS['Depreciation']
+        );
     }
 
     public static function getEBITAccounts() : array
