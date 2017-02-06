@@ -446,11 +446,14 @@ class SalesController extends DashboardController
             $allGDFLast = $this->select('selectAccounts', $startLast, $endLast, 'gdf', $accounts);
         }
 
+        $deu_wrong_now = $salesCountry['DEU']['now'] ?? 0;
+        $deu_wrong_old = $salesCountry['DEU']['old'] ?? 0;
+
         $salesCountry['DEU']['now'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesCountry['DEU']['old'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
 
-        $salesCountry['???']['now'] = ($salesCountry['???']['now'] ?? 0) + ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - $sum['now'];
-        $salesCountry['???']['old'] = ($salesCountry['???']['old'] ?? 0) + ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - $sum['old'];
+        $salesCountry['???']['now'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - ($sum['now'] - $deu_wrong_now - $salesCountry['???']['now']);
+        $salesCountry['???']['old'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - ($sum['old'] - $deu_wrong_old - $salesCountry['???']['old']);
 
         $view->setData('salesCountry', $salesCountry);
         $view->setData('date', $endCurrent);
