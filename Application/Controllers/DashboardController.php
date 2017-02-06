@@ -20,9 +20,9 @@ class DashboardController
 
     protected function calcCurrentMonth(\DateTime $date) : int
     {
-        $mod = ((int) $date->format('m') - $this->app->config['fiscal_year'] - 1);
+        $mod = ((int) $date->format('m') - $this->app->config['fiscal_year']);
 
-        return abs(($mod < 0 ? 12 + $mod : $mod) % 12 + 1);
+        return abs(($mod < 0 ? 12 + $mod : $mod) % 12);
     }
 
     protected function getFiscalYearStart(SmartDateTime $date) : SmartDateTime
