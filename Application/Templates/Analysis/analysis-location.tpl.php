@@ -8,7 +8,7 @@
                     <option value="Export"<?= $this->request->getData('location') == 'Export' ? ' selected' : ''; ?>>Export
                 <optgroup label="Country">
             <?php $countries = \QuickDashboard\Application\Models\StructureDefinitions::getCountries(); asort($countries); foreach($countries as $id => $name) : ?>
-                <option value="<?= $name; ?>"<?= $this->request->getData('location') == $name ? ' selected' : ''; ?>><?= $name; ?>
+                <option value="<?= $name; ?>"<?= $this->request->getData('location') == $name ? ' selected' : ''; ?>><?= empty($fullName = \phpOMS\Localization\ISO3166TwoEnum::getName($name)) ? $name : \phpOMS\Localization\ISO3166NameEnum::getByName(\phpOMS\Localization\ISO3166TwoEnum::getName($name)); ?>
             <?php endforeach; ?>
             </select>
             <td style="width: 100%">
