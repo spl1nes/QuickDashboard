@@ -34,14 +34,17 @@ class WebApplication extends ApplicationAbstract
         mb_internal_encoding('UTF-8');
         date_default_timezone_set('Europe/Berlin');
 
-        $uri = new Http(Http::getCurrent());
-        $uri->setRootPath($this->config['page']['root']);
-
         $this->cachePool = new CachePool();
         $this->cachePool->create('file', $this->config['cache']['file']);
 
-        $request  = new Request(new Localization(), $uri);
+        $request  = new Request(new Localization());
         $response = new Response(new Localization());
+        $response->getL11n()->setLanguage('en');
+        $request->getL11n()->setLanguage('en');
+        $request->init();
+        $request->getUri()->setRootPath($this->config['page']['root']);
+
+        UriFactory::setupUriBuilder($request->getUri());
 
         $expire = new \DateTime('now');
         $expire->modify($this->config['cache']['http']['expire']);
@@ -55,10 +58,6 @@ class WebApplication extends ApplicationAbstract
         if ($this->config['page']['https']) {
             $response->getHeader()->set('strict-transport-security', 'max-age=31536000');
         }
-
-        $response->getL11n()->setLanguage('en');
-        $request->getL11n()->setLanguage('en');
-        $request->init();
 
         if (/*($cached = $this->cachePool->get('file')->get($request->getUri()->__toString()))*/ null !== null) {
             $response->set('Content', $cached);
