@@ -15,6 +15,7 @@ use phpOMS\Model\Html\Head;
 use phpOMS\Router\Router;
 use phpOMS\Uri\Http;
 use phpOMS\Views\View;
+use phpOMS\Uri\UriFactory;
 
 class WebApplication extends ApplicationAbstract
 {
