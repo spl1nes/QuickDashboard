@@ -994,4 +994,36 @@ class Queries
                 ) t
             GROUP BY t.account, t.costcenter;';
     }
+
+    public static function selectBalanceAccounts(int $start, int $end, array $accounts) : string
+    {
+        return 'SELECT Konto, Geschaeftsjahr, 
+            SollMonat01 - HabenMonat01 as M1, 
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 as M2,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 as M3,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 as M4,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 as M5,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 as M6,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 as M7,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 as M8,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 as M9,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 as M10,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 + SollMonat11 - HabenMonat11 as M11,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 + SollMonat11 - HabenMonat11 + SollMonat12 - HabenMonat12 as M12,
+            SollMonat01 - HabenMonat01 as S1, 
+            SollMonat02 - HabenMonat02 as S2,
+            SollMonat03 - HabenMonat03 as S3,
+            SollMonat04 - HabenMonat04 as S4,
+            SollMonat05 - HabenMonat05 as S5,
+            SollMonat06 - HabenMonat06 as S6,
+            SollMonat07 - HabenMonat07 as S7,
+            SollMonat08 - HabenMonat08 as S8,
+            SollMonat09 - HabenMonat09 as S9,
+            SollMonat10 - HabenMonat10 as S10,
+            SollMonat11 - HabenMonat11 as S11,
+            SollMonat12 - HabenMonat12 as S12
+            FROM FiKontensalden 
+            WHERE Konto IN (' . implode(',', $accounts) . ') 
+            AND Geschaeftsjahr >= ' . $start . ' AND Geschaeftsjahr <= ' . $end;
+    }
 }

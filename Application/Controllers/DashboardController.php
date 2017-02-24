@@ -33,6 +33,17 @@ class DashboardController
         return $newDate;
     }
 
+    protected function getFiscalYearId(\DateTime $date) : int
+    {
+        $year = $date->format('Y');
+
+        if((int) $date->format('m') >= $this->app->config['fiscal_year']) {
+            return (int) $year + 1;
+        }
+
+        return $year;
+    }
+
     protected function select(string $selectQuery, \DateTime $start, \DateTime $end, string $company, array $accounts) : array
     {
         $query = new Builder($this->app->dbPool->get($company));

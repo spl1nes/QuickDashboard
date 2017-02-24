@@ -55,24 +55,24 @@ class StructureDefinitions
 
     const BALANCE = [
         'Intangible Assets'                  => [25, 26, 27, 39],
-        'Tangible Assets'                    => [165, 200, 201, 205, 210, 210, 211, 215, 220, 220, 225, 230, 232, 235, 240, 241, 245, 250, 255, 260, 280, 270, 320, 400, 401, 402, 403, 404, 405, 410, 411, 419, 420, 421, 421, 422, 422, 423, 424, 431, 440, 460, 461, 462, 464, 480, 481, 485, 490, 992, 299, 1722],
-        'Financial Assets'                   => [500, 502, 519, 505, 506, 507, 550, 551, 555, 556, 5060, 595],
+        'Tangible Assets'                    => [165, 200, 201, 205, 210, 210, 211, 215, 220, 220, 225, 230, 232, 235, 240, 241, 245, 250, 255, 260, 280, 270, 320, 400, 401, 402, 403, 404, 405, 410, 411, 419, 420, 421, 421, 422, 423, 424, 431, 440, 460, 461, 462, 464, 480, 481, 485, 490, 992, 299],
+        'Financial Assets'                   => [500, 502, 519, 505, 506, 507, 550, 551, 555, 556, 595],
         'Stocks'                             => [3970, 3985, 3975, 3980, 3981, 3982, 3983, 3984, 1519],
-        'Doubtful Accounts'                  => [1400, 1402, 1406, 994, 998, 996, 999, 995, 1405, 1405, 1407, 1436, 15950, 1595, 1596, 505, 5060, 1401, 14700, 1545, 1550, 1594, 1403, 1539, 1540, 1549, 1435, 1545, 1548, 1567, 1570, 1575, 15760, 1576, 1577, 1580, 1587, 1780, 17910, 1410, 1415, 1440, 1450, 1500, 1520, 1520, 1525, 1527, 15450, 1545, 1550, 1590, 1591, 17920],
-        'Cash Assets'                        => [1000, 1020, 1050, 1100, 1120, 1200, 1200, 12100, 1210, 1210, 1215, 1220, 1220, 1220, 1240, 1242, 1250, 1260, 1270, 1280, 1320, 1330, 1340, 1360, 1361, 1362, 1363, 1364, 1365, 1366, 1415],
-        'Prepayments and Accured Income'     => [980, 981, 982, 982],
-        'Subscribed Capital'                 => [800, 900, 901, 902, 903, 904, 9000, 9010, 9020, 9030, 9040],
-        'Capital Reserve'                    => [840, 910, 911, 912, 913, 914, 914, 9100, 9110, 9120, 9130, 9140, 9842, 9843],
+        'Doubtful Accounts'                  => [1400, 1402, 1406, 994, 998, 996, 999, 995, 1405, 1407, 1436, 15950, 1595, 1596, 505, 5060, 1401, 14700, 1550, 1594, 1403, 1539, 1540, 1549, 1548, 1567, 1570, 1575, 15760, 1580, 1587, 17910, 1410, 1440, 1450, 1500, 1520, 1525, 1527, 15450, 1545, 1590, 1591, 17920],
+        'Cash Assets'                        => [1000, 1020, 1050, 1100, 1120, 1200, 12100, 1210, 1215, 1220, 1240, 1242, 1250, 1260, 1270, 1280, 1320, 1330, 1340, 1360, 1361, 1362, 1363, 1364, 1365, 1366, 1415],
+        'Prepayments and Accured Income'     => [980, 981, 982],
+        'Subscribed Capital'                 => [800, 900, 901, 902, 903, 904, 9010, 9020, 9030, 9040],
+        'Capital Reserve'                    => [840, 910, 911, 912, 913, 914, 9100, 9110, 9120, 9130, 9140, 9842, 9843],
         'Profit Brought Forward'             => [860, 868, 890, 905, 906, 907, 908, 909, 915, 916, 917, 918, 919, 8600, 9150, 9160, 9170, 9180, 9190, 9790],
-        'Net Income'                         => [9000, 9000, 9000, 9008, 9009, 9009],
+        'Net Income'                         => [9000, 9008, 9009, 9009],
         'Adjustment item for own shares'     => [850, 8500, 9880],
-        'Reserve'                            => [950, 955, 956, 963, 963, 964, 964, 9570, 9500, 965, 969, 970, 971, 971, 972, 972, 973, 974, 974, 975, 977, 978, 979, 9770],
-        'Liabilities to Credit Institutions' => [631, 6500, 6500, 6501, 650, 6900, 690, 731, 1255, 6500],
+        'Reserve'                            => [950, 955, 956, 963, 964, 9570, 9500, 965, 969, 970, 971, 971, 972, 973, 974, 975, 977, 978, 979, 9770],
+        'Liabilities to Credit Institutions' => [631, 6501, 650, 6900, 690, 731, 1255, 6500],
         'Advanced received'                  => [1722],
         'Accounts payable'                   => [1600, 1602, 1605, 1605, 1607],
-        'Liabilitie to Affiliates'           => [17050, 7000, 7000, 7053, 7051, 7051, 7050, 1601, 1721, 1630, 1636, 705, 701, 704, 1635],
-        'Liabilities to Shareholders'        => [700, 700, 751, 920, 923, 924, 925, 1636, 1701, 17010, 1630, 1603, 702, 1701, 1435, 1635, 1635, 1635],
-        'Other Liabilities'                  => [752, 1610, 1700, 1730, 1740, 1755, 1741, 1556, 1561, 1566, 1571, 1576, 1577, 1586, 1588, 1756, 1761, 1762, 1764, 1766, 1767, 1772, 1773, 1774, 1775, 1775, 1776, 1776, 1777, 1779, 1779, 1780, 1781, 1786, 1787, 17890, 1789, 1790, 1795, 1795, 1740, 1742, 1744, 1745, 1746, 1755, 990, 991],
+        'Liabilitie to Affiliates'           => [17050, 7000, 7053, 7051, 7051, 7050, 1601, 1721, 705, 701, 704],
+        'Liabilities to Shareholders'        => [700, 751, 920, 923, 924, 925, 1636, 17010, 1630, 1603, 702, 1701, 1435, 1635],
+        'Other Liabilities'                  => [752, 1610, 1700, 1730, 1741, 1556, 1561, 1566, 1571, 1576, 1577, 1586, 1588, 1756, 1761, 1762, 1764, 1766, 1767, 1772, 1773, 1774, 1775, 1776, 1777, 1779, 1780, 1781, 1786, 1787, 17890, 1789, 1790, 1795, 1740, 1742, 1744, 1745, 1746, 1755, 990, 991],
     ];
 
     const REGIONS = [
@@ -240,6 +240,60 @@ class StructureDefinitions
         61 => 'Surgical Needles',
         62 => 'Burs & Instruments',
         63 => 'Endodontics',
+        101 => 'Precious Alloys',
+        102 => 'Solder',
+        103 => 'Galvano',
+        104 => 'Insurance',
+        105 => 'Scheidgut',
+        106 => 'Milling',
+        111 => 'Non-precious Alloys',
+        121 => 'Futura',
+        122 => 'KFO',
+        123 => 'Misc. Acrylics',
+        131 => 'Ceramics',
+        141 => 'Composites',
+        151 => 'Titanium',
+        161 => 'Impla',
+        162 => 'Impla 3D',
+        171 => 'Laser',
+        172 => 'Welder',
+        181 => 'Attachements',
+        201 => 'Misc. Machines',
+        211 => 'Casting',
+        212 => 'Misc Consumables',
+        213 => 'Plaster Cast',
+        214 => 'Rotating Instruments',
+        221 => 'Courses',
+        222 => 'Furniture',
+        223 => 'Service',
+        224 => 'Misc',
+        225 => 'Shipping & Packaging',
+        8000 => 'Misc',
+        231 => 'Digital Consumables',
+        232 => 'Zirconia',
+        233 => 'CAD/CAM',
+        234 => 'Misc',
+        235 => 'Insurance',
+        236 => 'Maintenance',
+        241 => 'Zebris',
+        301 => 'Laser and Parts',
+        311 => 'Dental Machines',
+        321 => 'Misc Consumables',
+        322 => 'Temp. Material',
+        323 => 'Investment Mat',
+        331 => 'Composites Dentist',
+        341 => 'Bleaching',
+        351 => 'Service Work Time',
+        354 => 'Packaging',
+        611 => 'Sutures',
+        612 => 'Eyed Needles',
+        613 => 'Sutures Micro Use',
+        621 => 'Burs & Instr. Lab',
+        622 => 'Burs & Instr. Dentist',
+        631 => 'Endodontic Instruments',
+        632 => 'Endodontic Rotary Instruments',
+        633 => 'Endodontic Micro Accessoires',
+        634 => 'Endodontic Accessoires',
     ];
 
     const CUSTOMER_GROUP = [
@@ -396,6 +450,28 @@ class StructureDefinitions
             'Stationary Expenses', 'Communication', 'Travel Expenses', 'Entertainment', 'External Consultants', 'R&D',
             'Patents', 'Other Personnel Expenses', 'Other OPEX', 'Intercompany Expenses', 'Intercompany Revenue',
             'Doubtful Accounts', 'Depreciation'];
+    }
+
+    public static function getBalanceAccounts() : array
+    {
+        $balanceAccounts = [];
+
+        foreach(self::BALANCE as $accounts) {
+            $balanceAccounts = array_merge($balanceAccounts, $accounts);
+        }
+
+        return $balanceAccounts;
+    }
+
+    public static function getPLAccounts() : array
+    {
+        $plAccounts = [];
+
+        foreach(self::PL_ACCOUNTS as $accounts) {
+            $plAccounts = array_merge($plAccounts, $accounts);
+        }
+
+        return $plAccounts;
     }
 
     public static function getOPEXAccounts() : array

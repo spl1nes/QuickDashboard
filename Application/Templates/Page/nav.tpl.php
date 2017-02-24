@@ -50,16 +50,29 @@
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/opex?{?}'); ?>">OPEX</a>
                     <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}reporting/ebit?{?}'); ?>">EBIT</a>
                 </ul>
-                <!--<li><i class="fa fa-search"></i> KPI
+            <li><i class="fa fa-money"></i> MANI
+                <ul>
+                    <li>Package
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/balance?{?}'); ?>">Balance</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/pl?{?}'); ?>">P&L</a>
+                        </ul>
+                    
+                </ul>
+                    <li><i class="fa fa-search"></i> KPI
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/finance?{?}'); ?>">Finance</a>
+                        <!--
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/sales?{?}'); ?>">Sales</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/sales?{?}'); ?>">R&D</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/marketing?{?}'); ?>">Marketing</a>
-                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/personnel?{?}'); ?>">Personnel</a>
-                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/quality?{?}'); ?>">Quality</a>
-                    </ul>-->
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/marketing?{?}'); ?>">Production</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/marketing?{?}'); ?>">Service</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}kpi/quality?{?}'); ?>">Quality</a>-->
+                    </ul>
                 <li><i class="fa fa-search"></i> Analysis
                     <ul>
-                        <!--<li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/sales?{?}'); ?>">Sales Manual</a>-->
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/sales?{?}'); ?>">Sales Manual</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/location?{?}'); ?>">Location</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/segmentation?{?}'); ?>">Segmentation</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps?{?}'); ?>">Sales Reps</a>

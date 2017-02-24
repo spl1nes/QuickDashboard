@@ -187,4 +187,11 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+
+    '^mani/package/balance.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showPackageBalance',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 ];
