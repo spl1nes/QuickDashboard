@@ -323,6 +323,68 @@ class Queries
             GROUP BY t.rep;';
     }
 
+    public static function selectNewCustomers(\DateTime $start, \DateTime $end, array $accounts, array $costcenters) : string
+    {
+        return 'SELECT DISTINCT
+                t.account, t.first
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.GegenKonto AS account,
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                    GROUP BY
+                    	FiBuchungsArchiv.GegenKonto
+                UNION ALL
+                    SELECT 
+                    	FiBuchungen.GegenKonto AS account,
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                    GROUP BY
+                    	FiBuchungen.GegenKonto
+                ) t
+         	WHERE 
+					CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+					AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+            GROUP BY t.account, t.first;';
+    }
+
+    public static function selectLostCustomers(\DateTime $start, \DateTime $end, array $accounts, array $costcenters) : string
+    {
+        return 'SELECT DISTINCT
+                t.account, t.first
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.GegenKonto AS account,
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                    FROM FiBuchungsArchiv
+                    WHERE 
+                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                    GROUP BY
+                    	FiBuchungsArchiv.GegenKonto
+                UNION ALL
+                    SELECT 
+                    	FiBuchungen.GegenKonto AS account,
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                    FROM FiBuchungen
+                    WHERE 
+                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                    GROUP BY
+                    	FiBuchungen.GegenKonto
+                ) t
+         	WHERE 
+					CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+					AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+            GROUP BY t.account, t.first;';
+    }
+
     public static function selectGroupsByCustomer(\DateTime $start, \DateTime $end, array $accounts, int $customer) : string
     {
         return 'SELECT DISTINCT
