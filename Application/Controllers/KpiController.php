@@ -32,8 +32,8 @@ class KpiController extends DashboardController
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-        $balance = $this->getBalance($request->getData('u'), $startLast, $startCurrent);
-        $pl = $this->getPL($request->getData('u'), $startLast, $startCurrent);
+        $balance = $this->getBalance($request->getData('u') ?? 'sdg', $startLast, $startCurrent);
+        $pl = $this->getPL($request->getData('u') ?? 'sdg', $startLast, $startCurrent);
 
         $view->setData('current', $this->getFiscalYearId($startCurrent));
         $view->setData('currentMonth', $currentMonth);

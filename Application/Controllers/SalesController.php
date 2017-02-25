@@ -778,6 +778,9 @@ class SalesController extends DashboardController
         $salesCustomers = [];
         $customerCount  = [];
 
+        $newCustomers = 0;
+        $lostCustomers = 0;
+
         $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
         if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
             $accounts[] = 8591;
@@ -788,6 +791,12 @@ class SalesController extends DashboardController
             $groupsSDLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
             $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
             $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
+
+            $newCustomersSD = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
+            $lostCustomersSD = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
+
+            $newCustomers += count($newCustomersSD);
+            $lostCustomers += count($lostCustomersSD);
 
             $this->loopCustomerGroups('now', $groupsSD, 'sd', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersSD, $salesCustomers);
@@ -803,6 +812,12 @@ class SalesController extends DashboardController
             $groupsGDFLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'gdf', $accounts);
             $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
             $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
+
+            $newCustomersGDF = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
+            $lostCustomersGDF = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
+
+            $newCustomers += count($newCustomersGDF);
+            $lostCustomers += count($lostCustomersGDF);
 
             $this->loopCustomerGroups('now', $groupsGDF, 'gdf', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersGDF, $salesCustomers);
@@ -832,6 +847,8 @@ class SalesController extends DashboardController
         $view->setData('customerCount', $customerCount);
         $view->setData('gini', $gini);
         $view->setData('date', $endCurrent);
+        $view->setData('newCustomers', $newCustomers);
+        $view->setData('lostCustomers', $lostCustomers);
 
         return $view;
     }

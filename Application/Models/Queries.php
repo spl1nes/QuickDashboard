@@ -357,11 +357,11 @@ class Queries
     public static function selectLostCustomers(\DateTime $start, \DateTime $end, array $accounts, array $costcenters) : string
     {
         return 'SELECT DISTINCT
-                t.account, t.first
+                t.account, t.last
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
                     FROM FiBuchungsArchiv
                     WHERE 
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
@@ -371,7 +371,7 @@ class Queries
                 UNION ALL
                     SELECT 
                     	FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
                     FROM FiBuchungen
                     WHERE 
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
@@ -380,9 +380,9 @@ class Queries
                     	FiBuchungen.GegenKonto
                 ) t
          	WHERE 
-					CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-					AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
-            GROUP BY t.account, t.first;';
+					CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+					AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+            GROUP BY t.account, t.last;';
     }
 
     public static function selectGroupsByCustomer(\DateTime $start, \DateTime $end, array $accounts, int $customer) : string

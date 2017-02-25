@@ -324,15 +324,24 @@ class AnalysisController extends DashboardController
             $salesCustomers = [];
             $customerCount  = [];
 
+            $newCustomers = 0;
+            $lostCustomers = 0;
+
             if ($request->getData('u') !== 'gdf') {
-                $customersSD     = $this->selectAddon('selectGroupCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
-                $customersSDLast = $this->selectAddon('selectGroupCustomer', $startLast, $endLast, 'sd', $accounts, $groups);
+                $customersSD     = $this->selectAddon('selectGroupCustomer', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, $groups);
+                $customersSDLast = $this->selectAddon('selectGroupCustomer', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, $groups);
 
                 $this->loopCustomer('now', $customersSD, $salesCustomers);
                 $this->loopCustomer('old', $customersSDLast, $salesCustomers);
 
                 $customerSD = $this->selectAddon('selectGroupCustomerCount', $start, $current, 'sd', $accounts, $groups);
                 $this->loopCustomerCount($customerSD, $customerCount);
+
+                $newCustomersSD = $this->selectAddon('selectNewCustomers', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
+                $lostCustomersSD = $this->selectAddon('selectLostCustomers', $startLast, $startCurrent, 'sd', $accounts, $groups);
+
+                $newCustomers += count($newCustomersSD);
+                $lostCustomers += count($lostCustomersSD);
             }
 
             if ($request->getData('u') !== 'sd') {
@@ -344,6 +353,12 @@ class AnalysisController extends DashboardController
 
                 $customerGDF = $this->selectAddon('selectGroupCustomerCount', $start, $current, 'gdf', $accounts, $groups);
                 $this->loopCustomerCount($customerGDF, $customerCount);
+
+                $newCustomersGDF = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, $groups);
+                $lostCustomersGDF = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, $groups);
+
+                $newCustomers += count($newCustomersGDF);
+                $lostCustomers += count($lostCustomersGDF);
             }
 
             $gini = [];
@@ -438,6 +453,8 @@ class AnalysisController extends DashboardController
             $view->setData('customerCount', $customerCount);
             $view->setData('gini', $gini);
             $view->setData('date', $current);
+            $view->setData('newCustomers', $newCustomers);
+            $view->setData('lostCustomers', $lostCustomers);
         }
 
         return $view;
@@ -466,6 +483,9 @@ class AnalysisController extends DashboardController
 
             $salesCustomers = [];
             $customerCount  = [];
+
+            $newCustomers = 0;
+            $lostCustomers = 0;
 
             $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
 
@@ -499,6 +519,12 @@ class AnalysisController extends DashboardController
                         $accounts[] = 8591;
                     }
                 }
+
+                $newCustomersSD = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
+                $lostCustomersSD = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
+
+                $newCustomers += count($newCustomersSD);
+                $lostCustomers += count($lostCustomersSD);
 
                 if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
                     $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
@@ -555,6 +581,12 @@ class AnalysisController extends DashboardController
                     }
                 }
 
+                $newCustomersGDF = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
+                $lostCustomersGDF = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
+
+                $newCustomers += count($newCustomersGDF);
+                $lostCustomers += count($lostCustomersGDF);
+
                 if($request->getData('location') === 'Developed' || $request->getData('location') === 'Europe') {
                     $accounts_DOMESTIC = StructureDefinitions::ACCOUNTS_DOMESTIC;
                     if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
@@ -584,7 +616,6 @@ class AnalysisController extends DashboardController
                     $customerGDF = $this->select('selectCustomerCount', $start, $current, 'gdf', $accounts);
                     $groupsGDF     = $this->select('selectSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts);
                     $groupsGDFLast = $this->select('selectSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts);
-
                 } else {
                     $salesGDF = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'gdf', $accounts, $countries);
                     $customersGDF     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
@@ -643,8 +674,9 @@ class AnalysisController extends DashboardController
             $view->setData('segmentGroups', $segmentGroups);
             $view->setData('totalGroups', $totalGroups);
             $view->setData('title', 'Analysis ' . $request->getData('location'));
+            $view->setData('newCustomers', $newCustomers);
+            $view->setData('lostCustomers', $lostCustomers);
         }
-
 
         return $view;
     }

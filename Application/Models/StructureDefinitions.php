@@ -334,6 +334,18 @@ class StructureDefinitions
         return 0;
     }
 
+    public static function getSalesGroupsAll() : array
+    {
+        $groups = [];
+        foreach (self::GROUPING as $segment) {
+            foreach ($segment as $gKey => $group) {
+                $groups = array_merge($groups, $group);
+            }
+        }
+
+        return $groups;
+    }
+
     public static function getGroupOfArticle(int $id) : int
     {
         foreach (self::GROUPING as $segment) {

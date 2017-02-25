@@ -69,6 +69,8 @@ $salesCountry = $this->getData('salesCountry');
 
 <div class="clear"></div>
 
+<p>There are <?= $this->getData('newCustomers'); ?> new customers during the last 12 month and <?= $this->getData('lostCustomers'); ?> customers where lost compared to the previous 12 month.</p>
+
 <p>The follwoing chart shows the amount of active customers (have sales impact) per month.</p>
 
 <div class="box" style="width: 100%; float: left">
@@ -126,7 +128,7 @@ $salesCountry = $this->getData('salesCountry');
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: "Current Year",
-                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current][$i] ?? ''; } echo implode(',', $data ?? []); ?>],
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current][$i] ?? 0; } echo implode(',', $data ?? []); ?>],
                 fill: false,
                 borderColor: 'rgba(255,99,132,1)',
                 backgroundColor: 'rgba(255,99,132,1)',
@@ -135,7 +137,7 @@ $salesCountry = $this->getData('salesCountry');
                 pointBorderWidth: 0
             }, {
                 label: "Last Year",
-                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_1][$i] ?? ''; } echo implode(',', $data ?? []); ?>],
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_1][$i] ?? 0; } echo implode(',', $data ?? []); ?>],
                 fill: false,
                 borderColor: 'rgba(54, 162, 235, 1)',
                 backgroundColor: 'rgba(54, 162, 235, 1)',
@@ -144,7 +146,7 @@ $salesCountry = $this->getData('salesCountry');
                 pointBorderWidth: 0
             }, {
                 label: "Two Years Ago",
-                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_2][$i] ?? ''; } echo implode(',', $data ?? []); ?>],
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_2][$i] ?? 0; } echo implode(',', $data ?? []); ?>],
                 fill: false,
                 borderColor: 'rgba(255, 206, 86, 1)',
                 backgroundColor: 'rgba(255, 206, 86, 1)',
