@@ -60,6 +60,8 @@
                     <li>Balance
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/balance?{?}'); ?>">Balance</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/assets?{?}'); ?>">Assets</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/assets?{?}'); ?>">Cash</a>
                         </ul>
                     <li>P&L
                         <ul>
@@ -103,6 +105,14 @@
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/department?{?}'); ?>">Department</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/product?{?}'); ?>">Product</a>
                     </ul>
-                <li><li><li>
+                <li>Controlling
+                    <ul>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Invoice Margin</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Article Margin</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Bonus</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Accounts Receivable</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Scrapping</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Inventory Turnover</a>
+                    </ul>
     </nav>
 </div>
