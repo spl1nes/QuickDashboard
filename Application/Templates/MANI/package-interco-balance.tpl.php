@@ -20,9 +20,9 @@ function getAccountSum(array $accounts, int $year, int $month, array $total)
         <th>ID
         <th>科目
         <th>Title
-        <th>PY
-        <th>PY Month
-        <th>Current Year
+        <th>SD
+        <th>GDF
+        <th>MANI
     <tbody>
     <tr><td>111<td>現          金<td>Cash on hand
         <td><?= number_format(getAccountSum([1000], $year-1, 12, $balance), 2, '.', ','); ?>

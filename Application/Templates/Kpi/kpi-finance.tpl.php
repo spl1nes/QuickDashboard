@@ -60,19 +60,19 @@ function getAccountSumSingle(array $accounts, int $year, int $month, array $tota
     	<td><?= number_format(getAccountSumSingle(\QuickDashboard\Application\Models\StructureDefinitions::PL_ACCOUNTS['Sales'], $year, 12, $pl)/-1000, 0, ',', '.'); ?>
     <tr>
     	<th>Cash
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year-1, 12, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 1, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 2, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 3, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 4, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 5, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 6, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 7, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 8, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 9, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 10, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 11, $balance)/1000, 0, ',', '.'); ?>
-    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240], $year, 12, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year-1, 12, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 1, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 2, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 3, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 4, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 5, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 6, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 7, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 8, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 9, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 10, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 11, $balance)/1000, 0, ',', '.'); ?>
+    	<td><?= number_format(getAccountSum([1000, 1100, 1200, 1240, 1280, 1360, 1361, 1362], $year, 12, $balance)/1000, 0, ',', '.'); ?>
     <tr>
     	<th>Accounts Receivable
     	<td><?= number_format(getAccountSum([1400, 1402, 1406, 994, 998, 996, 999, 995, 1405, 1407], $year-1, 12, $balance)/1000, 0, ',', '.'); ?>

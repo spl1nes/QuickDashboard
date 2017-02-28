@@ -194,4 +194,64 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^mani/package/pl/1.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showPackagePL',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/pl/2.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showPackagePL2',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/pl/3.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showPackagePL3',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/production.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showProduction',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/rnd.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showRnD',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/interco/balance.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showIntercoBalance',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/interco/pl.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showIntercoPL',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/interco/production.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showIntercoProduction',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/cv/customer.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showCVCustomer',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/cv/vendor.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showCVVendor',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
 ];

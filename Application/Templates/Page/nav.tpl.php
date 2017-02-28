@@ -34,6 +34,11 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}&i=year'); ?>">Year</a>
                         </ul>
+                    <li>Products
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/products?{?}&i=month'); ?>">Month</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/products?{?}&i=year'); ?>">Year</a>
+                        </ul>
                 </ul>
             <li><i class="fa fa-bar-chart"></i> Reporting
                 <ul>
@@ -52,12 +57,29 @@
                 </ul>
             <li><i class="fa fa-money"></i> MANI
                 <ul>
-                    <li>Package
+                    <li>Balance
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/balance?{?}'); ?>">Balance</a>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/pl?{?}'); ?>">P&L</a>
                         </ul>
-                    
+                    <li>P&L
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/pl/1?{?}'); ?>">P&L 1</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/pl/2?{?}'); ?>">P&L 2</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/pl/3?{?}'); ?>">P&L 3</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/production?{?}'); ?>">Production</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/rnd?{?}'); ?>">R&D</a>
+                        </ul>
+                    <li>Interco
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/interco/balance?{?}'); ?>">Balance</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/interco/pl?{?}'); ?>">P&L</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/interco/production?{?}'); ?>">Production</a>
+                        </ul>
+                    <li>Customer/Vendor
+                        <ul>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/cv/customer?{?}'); ?>">Customer</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/cv/vendor?{?}'); ?>">Vendor</a>
+                        </ul>
                 </ul>
                     <li><i class="fa fa-search"></i> KPI
                     <ul>
@@ -79,6 +101,7 @@
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/customer?{?}'); ?>">Customer</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/opex?{?}'); ?>">OPEX</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/department?{?}'); ?>">Department</a>
+                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/product?{?}'); ?>">Product</a>
                     </ul>
                 <li><li><li>
     </nav>

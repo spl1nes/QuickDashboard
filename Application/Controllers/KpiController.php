@@ -102,7 +102,9 @@ class KpiController extends DashboardController
             }
 
             if(!isset($sum[$result['Konto']][$result['Geschaeftsjahr']])) {
-                $sum[$result['Konto']][$result['Geschaeftsjahr']] = ['M1' => 0, 'M2' => 0, 'M3' => 0, 'M4' => 0, 'M5' => 0, 'M6' => 0, 'M7' => 0, 'M8' => 0, 'M9' => 0, 'M10' => 0, 'M11' => 0, 'M12' => 0, 'S1' => 0, 'S2' => 0, 'S3' => 0, 'S4' => 0, 'S5' => 0, 'S6' => 0, 'S7' => 0, 'S8' => 0, 'S9' => 0, 'S10' => 0, 'S11' => 0, 'S12' => 0];
+                $sum[$result['Konto']][$result['Geschaeftsjahr']] = [
+                'M1' => 0, 'M2' => 0, 'M3' => 0, 'M4' => 0, 'M5' => 0, 'M6' => 0, 'M7' => 0, 'M8' => 0, 'M9' => 0, 'M10' => 0, 'M11' => 0, 'M12' => 0, 
+                'S1' => 0, 'S2' => 0, 'S3' => 0, 'S4' => 0, 'S5' => 0, 'S6' => 0, 'S7' => 0, 'S8' => 0, 'S9' => 0, 'S10' => 0, 'S11' => 0, 'S12' => 0];
             }
 
             $sum[$result['Konto']][$result['Geschaeftsjahr']]['M1'] += $result['M1'];

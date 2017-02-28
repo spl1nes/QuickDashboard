@@ -16,6 +16,153 @@ use QuickDashboard\Application\Models\Queries;
 
 class ManiController extends DashboardController
 {
+    public function showPackagePL(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-pl');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showPackagePL2(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-pl-2');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showPackagePL3(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-pl-3');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
 	public function showPackageBalance(RequestAbstract $request, ResponseAbstract $response)
     {
     	$view = new View($this->app, $request, $response);
@@ -91,5 +238,348 @@ class ManiController extends DashboardController
     	}
 
     	return $sum;
+    }
+
+    public function showProduction(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-production');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showRnD(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-rnd');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showIntercoBalance(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-interco-balance');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showIntercoPL(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-interco-pl');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showIntercoProduction(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-interco-production');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showCVCustomer(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-customer');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
+    }
+
+    public function showCVVendor(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/MANI/package-vendor');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        if ($current->format('d') < self::MAX_PAST) {
+            $current->modify('-' . self::MAX_PAST . ' day');
+            $current = $current->getEndOfMonth();
+        }
+
+        $startCurrent = $this->getFiscalYearStart($current);
+        $startLast    = clone $startCurrent;
+        $startLast    = $startLast->modify('-1 year');
+        
+        $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+        $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+        $accounts = StructureDefinitions::getBalanceAccounts();
+        $balance = [];
+
+        $accountsPL = StructureDefinitions::getPLAccounts();
+        $pl = [];
+
+        if ($request->getData('u') !== 'gdf') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        if ($request->getData('u') !== 'sd') {
+            $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
+            $this->loobBalanceStatement($balanceResult, $balance);
+
+            $plResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accountsPL);
+            $this->loobBalanceStatement($plResult, $pl);
+        }
+
+        $view->setData('current', $this->getFiscalYearId($startCurrent));
+        $view->setData('currentMonth', $currentMonth);
+        $view->setData('balance', $balance);
+        $view->setData('pl', $pl);
+
+        return $view;
     }
 }
