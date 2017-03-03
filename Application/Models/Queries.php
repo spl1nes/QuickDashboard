@@ -222,9 +222,10 @@ class Queries
     public static function selectCustomer(\DateTime $start, \DateTime $end, array $accounts) : string
     {
         return 'SELECT DISTINCT
-                t.customer, SUM(t.sales) AS sales
+                t.customer, t.id, SUM(t.sales) AS sales
             FROM (
                     SELECT 
+                        FiBuchungsArchiv.GegenKonto AS id,
                         KUNDENADRESSE.NAME1 AS customer,
                         SUM(-FiBuchungsArchiv.Betrag) AS sales
                     FROM FiBuchungsArchiv, KUNDENADRESSE
@@ -234,9 +235,11 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
+                        FiBuchungsArchiv.GegenKonto,
                         KUNDENADRESSE.NAME1
                 UNION ALL
                     SELECT 
+                        FiBuchungen.GegenKonto AS id,
                         KUNDENADRESSE.NAME1 AS customer,
                         SUM(-FiBuchungen.Betrag) AS sales
                     FROM FiBuchungen, KUNDENADRESSE
@@ -246,9 +249,47 @@ class Queries
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
+                        FiBuchungen.GegenKonto,
                         KUNDENADRESSE.NAME1
                 ) t
-            GROUP BY t.customer;';
+            GROUP BY t.id, t.customer;';
+    }
+
+
+    public static function selectVendor(\DateTime $start, \DateTime $end, array $accounts) : string
+    {
+        return 'SELECT DISTINCT
+                t.customer, t.id, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        FiBuchungsArchiv.GegenKonto AS id,
+                        LieferantenAdresse.NAME1 AS customer,
+                        SUM(FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, LieferantenAdresse
+                    WHERE 
+                        LieferantenAdresse.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungsArchiv.GegenKonto,
+                        LieferantenAdresse.NAME1
+                UNION ALL
+                    SELECT 
+                        FiBuchungen.GegenKonto AS id,
+                        LieferantenAdresse.NAME1 AS customer,
+                        SUM(FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, LieferantenAdresse
+                    WHERE 
+                        LieferantenAdresse.KONTO = FiBuchungen.GegenKonto
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        FiBuchungen.GegenKonto,
+                        LieferantenAdresse.NAME1
+                ) t
+            GROUP BY t.id, t.customer;';
     }
 
     public static function selectCustomerCount(\DateTime $start, \DateTime $end, array $accounts) : string
@@ -1086,6 +1127,39 @@ class Queries
             SollMonat12 - HabenMonat12 as S12
             FROM FiKontensalden 
             WHERE Konto IN (' . implode(',', $accounts) . ') 
+            AND Geschaeftsjahr >= ' . $start . ' AND Geschaeftsjahr <= ' . $end;
+    }
+
+    public static function selectBalanceAccountsRange(int $start, int $end, array $accounts) : string
+    {
+        return 'SELECT Konto, Geschaeftsjahr, 
+            SollMonat01 - HabenMonat01 as M1, 
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 as M2,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 as M3,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 as M4,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 as M5,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 as M6,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 as M7,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 as M8,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 as M9,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 as M10,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 + SollMonat11 - HabenMonat11 as M11,
+            SollMonat01 - HabenMonat01 + SollMonat02 - HabenMonat02 + SollMonat03 - HabenMonat03 + SollMonat04 - HabenMonat04 + SollMonat05 - HabenMonat05 + SollMonat06 - HabenMonat06 + SollMonat07 - HabenMonat07 + SollMonat08 - HabenMonat08 + SollMonat09 - HabenMonat09 + SollMonat10 - HabenMonat10 + SollMonat11 - HabenMonat11 + SollMonat12 - HabenMonat12 as M12,
+            SollMonat01 - HabenMonat01 as S1, 
+            SollMonat02 - HabenMonat02 as S2,
+            SollMonat03 - HabenMonat03 as S3,
+            SollMonat04 - HabenMonat04 as S4,
+            SollMonat05 - HabenMonat05 as S5,
+            SollMonat06 - HabenMonat06 as S6,
+            SollMonat07 - HabenMonat07 as S7,
+            SollMonat08 - HabenMonat08 as S8,
+            SollMonat09 - HabenMonat09 as S9,
+            SollMonat10 - HabenMonat10 as S10,
+            SollMonat11 - HabenMonat11 as S11,
+            SollMonat12 - HabenMonat12 as S12
+            FROM FiKontensalden 
+            WHERE Konto >= ' . ((int) $accounts[0]) . '
+            AND Konto <= ' . ((int) $accounts[1]) . '
             AND Geschaeftsjahr >= ' . $start . ' AND Geschaeftsjahr <= ' . $end;
     }
 }

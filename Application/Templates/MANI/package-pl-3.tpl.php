@@ -216,4 +216,12 @@
         <td>仕掛品他勘定振替高
         <td>Transfer to other accounts 
         <td>
+    <tr>
+        <th>製造原価
+        <th>Cost of products manufactured
+        <th>
+    <tr>
+        <th>製造原平単価
+        <th>Unit cost of products manufactured
+        <th>
 </table>
