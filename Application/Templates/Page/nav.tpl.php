@@ -61,7 +61,7 @@
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/balance?{?}'); ?>">Balance</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/assets?{?}'); ?>">Assets</a>
-                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/assets?{?}'); ?>">Cash</a>
+                            <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}mani/package/cash?{?}'); ?>">Cash</a>
                         </ul>
                     <li>P&L
                         <ul>

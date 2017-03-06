@@ -224,6 +224,18 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^mani/package/cash.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showCash',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
+    '^mani/package/assets.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\ManiController:showAssets',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^mani/package/interco/balance.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\ManiController:showIntercoBalance',
