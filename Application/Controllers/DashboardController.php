@@ -44,6 +44,16 @@ class DashboardController
         return $year;
     }
 
+    protected function selectSimple(string $selectQuery, \DateTime $start, \DateTime $end, string $company) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::{$selectQuery}($start, $end));
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
+
+        return $result;
+    }
+
     protected function select(string $selectQuery, \DateTime $start, \DateTime $end, string $company, array $accounts) : array
     {
         $query = new Builder($this->app->dbPool->get($company));

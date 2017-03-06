@@ -738,24 +738,84 @@ class ManiController extends DashboardController
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
         $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
 
-        $accounts = StructureDefinitions::getBalanceAccounts();
+        $accounts = [25, 26, 27, 200, 201, 205, 210, 211, 215, 220, 225, 230, 232, 235, 240, 241, 245, 250, 255, 260, 280, 270, 320, 400, 401, 402, 403, 404, 405, 410, 411, 419, 420, 421, 422, 423, 424, 431, 440, 460, 461, 462, 464, 480, 481, 485];
         $balance = [];
+        $ahkBeginning = [];
+        $ahkAddition = [];
+        $ahkSubtraction = [];
+        $entries = [];
 
         if ($request->getData('u') !== 'gdf') {
             $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'sd', $accounts);
             $this->loobBalanceStatement($balanceResult, $balance);
+
+            $ahk = $this->selectSimple('selectAHKBeginning', $startCurrent, $endCurrent, 'sd');
+            $this->loopAhk($ahk, $ahkBeginning);
+
+            $ahk = $this->selectSimple('selectAHKAdditions', $startCurrent, $endCurrent, 'sd');
+            $this->loopAhk($ahk, $ahkAddition);
+
+            $ahk = $this->selectSimple('selectAHKSubtractions', $startCurrent, $endCurrent, 'sd');
+            $this->loopAhk($ahk, $ahkSubtraction);
+
+            $accountsSD = $this->select('selectEntries2', $startCurrent, $endCurrent, 'sd', $accounts);
+            $this->loopEntry('now', $accountsSD, $entries);
         }
 
         if ($request->getData('u') !== 'sd') {
             $balanceResult = $this->selectBalanceAccounts($this->getFiscalYearId($startLast), $this->getFiscalYearId($startCurrent), 'gdf', $accounts);
             $this->loobBalanceStatement($balanceResult, $balance);
+
+            $ahk = $this->selectSimple('selectAHKBeginning', $startCurrent, $endCurrent, 'gdf');
+            $this->loopAhk($ahk, $ahkBeginning);
+
+            $ahk = $this->selectSimple('selectAHKAdditions', $startCurrent, $endCurrent, 'gdf');
+            $this->loopAhk($ahk, $ahkAddition);
+
+            $ahk = $this->selectSimple('selectAHKSubtractions', $startCurrent, $endCurrent, 'gdf');
+            $this->loopAhk($ahk, $ahkSubtraction);
+
+            $accountsGDF = $this->select('selectEntries2', $startCurrent, $endCurrent, 'sd', $accounts);
+            $this->loopEntry('now', $accountsGDF, $entries);
         }
 
         $view->setData('current', $this->getFiscalYearId($startCurrent));
         $view->setData('currentMonth', $currentMonth);
         $view->setData('balance', $balance);
+        $view->setData('ahkBeginning', $ahkBeginning);
+        $view->setData('ahkAddition', $ahkAddition);
+        $view->setData('ahkSubtraction', $ahkSubtraction);
+        $view->setData('entries', $entries);
         $view->setData('date', $endCurrent);
 
         return $view;
+    }
+
+    private function loopAhk(array $results, array &$sum)
+    {
+        foreach($results as $result) {
+            if(!isset($sum[$result['account']])) {
+                $sum[$result['account']] = 0.0;
+            }
+
+            $sum[$result['account']] += $result['ahk'];
+        }
+
+        return $sum;
+    }
+
+    private function loopEntry(string $period, array $resultset, array &$accountPositions)
+    {
+        foreach ($resultset as $line) {
+            if (!isset($accountPositions[$line['Konto']])) {
+                $accountPositions[$line['Konto']] = [];
+            }
+
+            if (!isset($accountPositions[$line['Konto']][$line['GegenKonto']])) {
+                $accountPositions[$line['Konto']][$line['GegenKonto']] = 0.0;
+            }
+
+            $accountPositions[$line['Konto']][$line['GegenKonto']] += $line['entries'];
+        }
     }
 }

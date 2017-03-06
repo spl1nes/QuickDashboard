@@ -155,6 +155,30 @@ class Queries
                     GROUP BY t.Konto;';
     }
 
+    public static function selectEntries2(\DateTime $start, \DateTime $end, array $accounts) : string
+    {
+        return 'SELECT DISTINCT 
+                t.Konto, t.GegenKonto, SUM(t.entries) AS entries
+            FROM (
+                SELECT FiBuchungsArchiv.Konto, FiBuchungsArchiv.GegenKonto, SUM(-FiBuchungsArchiv.Betrag) as entries
+                FROM FiBuchungsArchiv
+                WHERE 
+                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                    AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                    AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                GROUP BY FiBuchungsArchiv.Konto, FiBuchungsArchiv.GegenKonto
+            UNION ALL
+                SELECT FiBuchungen.Konto, FiBuchungen.GegenKonto, SUM(-FiBuchungen.Betrag) as entries
+                FROM FiBuchungen
+                WHERE 
+                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                    AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                    AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                GROUP BY FiBuchungen.Konto, FiBuchungen.GegenKonto
+            ) t 
+            GROUP BY t.Konto, t.GegenKonto;';
+    }
+
     public static function selectSalesArticleGroups(\DateTime $start, \DateTime $end, array $accounts) : string
     {
         return 'SELECT DISTINCT
@@ -1161,5 +1185,46 @@ class Queries
             WHERE Konto >= ' . ((int) $accounts[0]) . '
             AND Konto <= ' . ((int) $accounts[1]) . '
             AND Geschaeftsjahr >= ' . $start . ' AND Geschaeftsjahr <= ' . $end;
+    }
+
+    public static function selectAHKBeginning(\DateTime $start, \DateTime $end) : string
+    {
+            return 'SELECT Konto AS account, SUM(AKHK) AS ahk 
+                FROM AnBuchungen 
+                WHERE 
+                    CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                    AND CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    AND BuchArt = 90 
+                GROUP BY Konto';
+    }
+
+    public static function selectAHKAdditions(\DateTime $start, \DateTime $end) : string
+    {
+            return 'SELECT HRBILANZKTO AS account, SUM(HRAKHK) AS ahk
+                FROM AnObjektLLAkten 
+                WHERE Objekt IN (
+                    SELECT ObjektNr 
+                    FROM AnBuchungen 
+                    WHERE 
+                        CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                        AND BuchArt = 20
+                ) 
+                GROUP BY HRBILANZKTO';
+    }
+
+    public static function selectAHKSubtractions(\DateTime $start, \DateTime $end) : string
+    {
+            return 'SELECT HRBILANZKTO AS account, SUM(HRAKHK) AS ahk
+                FROM AnObjektLLAkten 
+                WHERE Objekt IN (
+                    SELECT ObjektNr 
+                    FROM AnBuchungen 
+                    WHERE 
+                        CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), AnBuchungen.BuchDatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                        AND BuchArt = 30
+                ) 
+                GROUP BY HRBILANZKTO';
     }
 }
