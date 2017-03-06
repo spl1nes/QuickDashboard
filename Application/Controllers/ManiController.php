@@ -528,8 +528,8 @@ class ManiController extends DashboardController
             $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
             $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
 
-            $this->loopVendor('now', $customersSD, $salesCustomer);
-            $this->loopVendor('old', $customersSDLast, $salesCustomer);
+            $this->loopVendor('now', $customersSD, $salesCustomer, 'SD');
+            $this->loopVendor('old', $customersSDLast, $salesCustomer, 'SD');
 
             $accountsSD     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);
             $accountsSDLast = $this->select('selectEntries', $startLast, $endLast, 'sd', $accounts);
@@ -548,8 +548,8 @@ class ManiController extends DashboardController
             $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
             $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
 
-            $this->loopVendor('now', $customersGDF, $salesCustomer);
-            $this->loopVendor('old', $customersGDFLast, $salesCustomer);
+            $this->loopVendor('now', $customersGDF, $salesCustomer, 'GDF');
+            $this->loopVendor('old', $customersGDFLast, $salesCustomer, 'GDF');
 
             $accountsGDF     = $this->select('selectEntries', $startCurrent, $endCurrent, 'gdf', $accounts);
             $accountsGDFLast = $this->select('selectEntries', $startLast, $endLast, 'gdf', $accounts);
@@ -605,8 +605,8 @@ class ManiController extends DashboardController
             $customersSD     = $this->select('selectVendor', $startCurrent, $endCurrent, 'sd', $accounts);
             $customersSDLast = $this->select('selectVendor', $startLast, $endLast, 'sd', $accounts);
 
-            $this->loopVendor('now', $customersSD, $salesVendors);
-            $this->loopVendor('old', $customersSDLast, $salesVendors);
+            $this->loopVendor('now', $customersSD, $salesVendors, 'SD');
+            $this->loopVendor('old', $customersSDLast, $salesVendors, 'SD');
 
             $accountsSD     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);
             $accountsSDLast = $this->select('selectEntries', $startLast, $endLast, 'sd', $accounts);
@@ -625,8 +625,8 @@ class ManiController extends DashboardController
             $customersGDF     = $this->select('selectVendor', $startCurrent, $endCurrent, 'gdf', $accounts);
             $customersGDFLast = $this->select('selectVendor', $startLast, $endLast, 'gdf', $accounts);
 
-            $this->loopVendor('now', $customersGDF, $salesVendors);
-            $this->loopVendor('old', $customersGDFLast, $salesVendors);
+            $this->loopVendor('now', $customersGDF, $salesVendors, 'GDF');
+            $this->loopVendor('old', $customersGDFLast, $salesVendors, 'GDF');
 
             $accountsGDF     = $this->select('selectEntries', $startCurrent, $endCurrent, 'gdf', $accounts);
             $accountsGDFLast = $this->select('selectEntries', $startLast, $endLast, 'gdf', $accounts);
@@ -664,10 +664,10 @@ class ManiController extends DashboardController
         }
     }
 
-    private function loopVendor(string $period, array $resultset, array &$salesCustomers)
+    private function loopVendor(string $period, array $resultset, array &$salesCustomers, string $unit)
     {
         foreach ($resultset as $line) {
-            $customer = trim($line['id']);
+            $customer = $unit . ' ' . trim($line['id']);
             if (!isset($salesCustomers[$period][$customer])) {
                 $salesCustomers[$period][$customer]['value'] = 0.0;
                 $salesCustomers[$period][$customer]['name'] = trim($line['customer']);
