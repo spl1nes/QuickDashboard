@@ -24,6 +24,10 @@ function getAccountSumSingle(array $accounts, int $year, int $month, array $tota
     return $sum;
 }
 ?>
+<h1>Financial KPI</h1>
+
+<p>The KPIs are not recognizing creditors with debit balance as debitors and vice versa.</p>
+
 <table>
     <caption>KPI by Month</caption>
     <thead>
