@@ -711,7 +711,7 @@ class SalesController extends DashboardController
         }
 
         $repsSales = $repsSales ?? [];
-        arsort($repsSales);
+        uasort($repsSales, function($a, $b) { return -1*($a['now'] <=> $b['now']); });
 
         $view->setData('repsSales', $repsSales);
         $view->setData('date', $endCurrent);

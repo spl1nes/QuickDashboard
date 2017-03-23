@@ -1006,6 +1006,42 @@ class Queries
             GROUP BY t.account, t.years, t.months;';
     }
 
+    public static function selectRepGroupSales(\DateTime $start, \DateTime $end, array $accounts, array $groups) : string
+    {
+        return 'SELECT DISTINCT
+                t.rep, SUM(t.sales) AS sales
+            FROM (
+                    SELECT 
+                        Personalstamm.Name AS rep,
+                        SUM(-FiBuchungsArchiv.Betrag) AS sales
+                    FROM FiBuchungsArchiv, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungsArchiv.KST IN (' . implode(',', $groups) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        Personalstamm.Name
+                UNION ALL
+                    SELECT 
+                        Personalstamm.Name AS rep,
+                        SUM(-FiBuchungen.Betrag) AS sales
+                    FROM FiBuchungen, KUNDENADRESSE, Personalstamm
+                    WHERE 
+                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                        AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
+                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
+                        AND FiBuchungen.KST IN (' . implode(',', $groups) . ')
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
+                        AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
+                    GROUP BY
+                        Personalstamm.Name
+                ) t
+            GROUP BY t.rep;';
+    }
+
     public static function selectRepCustomer(\DateTime $start, \DateTime $end, array $accounts, array $reps) : string
     {
         return 'SELECT DISTINCT
@@ -1226,5 +1262,110 @@ class Queries
                         AND BuchArt = 30
                 ) 
                 GROUP BY HRBILANZKTO';
+    }
+
+    public static function selectCustomSalesAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $groups = null, array $regions = null) : string
+    {
+        if(!isset($countries) && !isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($countries) && !isset($groups)) {
+
+        } elseif(!isset($countries) && !isset($regions)) {
+                
+        } elseif(!isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($groups)) {
+
+        } elseif(!isset($countries)) {
+
+        } elseif(!isset($regions)) {
+
+        }
+
+        return '';
+    }
+
+    public static function selectCustomGroupsAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $groups = null, array $regions = null) : string
+    {
+        if(!isset($countries) && !isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($countries) && !isset($groups)) {
+
+        } elseif(!isset($countries) && !isset($regions)) {
+                
+        } elseif(!isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($groups)) {
+
+        } elseif(!isset($countries)) {
+
+        } elseif(!isset($regions)) {
+
+        }
+
+        return '';
+    }
+
+    public static function selectCustomCustomerAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $groups = null, array $regions = null) : string
+    {
+        if(!isset($countries) && !isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($countries) && !isset($groups)) {
+
+        } elseif(!isset($countries) && !isset($regions)) {
+                
+        } elseif(!isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($groups)) {
+
+        } elseif(!isset($countries)) {
+
+        } elseif(!isset($regions)) {
+
+        }
+
+        return '';
+    }
+
+    public static function selectCustomLocationAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $groups = null, array $regions = null) : string
+    {
+        if(!isset($countries) && !isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($countries) && !isset($groups)) {
+
+        } elseif(!isset($countries) && !isset($regions)) {
+                
+        } elseif(!isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($groups)) {
+
+        } elseif(!isset($countries)) {
+
+        } elseif(!isset($regions)) {
+
+        }
+
+        return '';
+    }
+
+    public static function selectCustomEmployeesAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $groups = null, array $regions = null) : string
+    {
+        if(!isset($countries) && !isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($countries) && !isset($groups)) {
+
+        } elseif(!isset($countries) && !isset($regions)) {
+                
+        } elseif(!isset($groups) && !isset($regions)) {
+
+        } elseif(!isset($groups)) {
+
+        } elseif(!isset($countries)) {
+
+        } elseif(!isset($regions)) {
+
+        }
+
+        return '';
     }
 }

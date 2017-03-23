@@ -441,6 +441,58 @@ class AnalysisController extends DashboardController
             $salesRegion['now']['Europe'] = ($salesRegion['now']['Europe'] ?? 0) + array_sum($salesExportDomestic['now'] ?? []) - array_sum($salesRegion['now'] ?? []);
             $salesRegion['old']['Europe'] = ($salesRegion['old']['Europe'] ?? 0) + array_sum($salesExportDomestic['old'] ?? []) - array_sum($salesRegion['old'] ?? []);
 
+            // Ranking
+            $accounts = StructureDefinitions::PL_ACCOUNTS['Sales'];
+            if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
+                $accounts[] = 8591;
+            }
+
+            if ($request->getData('u') !== 'gdf') {
+                $repsSD     = $this->selectAddon('selectRepGroupSales', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
+                $repsSDLast = $this->selectAddon('selectRepGroupSales', $startLast, $endLast, 'sd', $accounts, $groups);
+
+                foreach ($repsSD as $line) {
+                    if(!isset($repsSales[$line['rep']]['now'])) {
+                        $repsSales[$line['rep']]['now'] = 0.0;
+                    }
+
+                    $repsSales[$line['rep']]['now'] += $line['sales'];
+                }
+
+                foreach ($repsSDLast as $line) {
+                    if(!isset($repsSales[$line['rep']]['old'])) {
+                        $repsSales[$line['rep']]['old'] = 0.0;
+                    }
+
+                    $repsSales[$line['rep']]['old'] += $line['sales'];
+                }
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $repsGDF     = $this->selectAddon('selectRepGroupSales', $startCurrent, $endCurrent, 'gdf', $accounts, $groups);
+                $repsGDFLast = $this->selectAddon('selectRepGroupSales', $startLast, $endLast, 'gdf', $accounts, $groups);
+
+                foreach ($repsGDF as $line) {
+                    if(!isset($repsSales[$line['rep']]['now'])) {
+                        $repsSales[$line['rep']]['now'] = 0.0;
+                    }
+
+                    $repsSales[$line['rep']]['now'] += $line['sales'];
+                }
+
+                foreach ($repsGDFLast as $line) {
+                    if(!isset($repsSales[$line['rep']]['old'])) {
+                        $repsSales[$line['rep']]['old'] = 0.0;
+                    }
+
+                    $repsSales[$line['rep']]['old'] += $line['sales'];
+                }
+            }
+
+            $repsSales = $repsSales ?? [];
+            uasort($repsSales, function($a, $b) { return -1*($a['now'] <=> $b['now']); });
+
+
             $view->setData('salesCountry', $salesCountry);
             $view->setData('salesRegion', $salesRegion);
             $view->setData('salesDevUndev', $salesDevUndev);
@@ -455,6 +507,7 @@ class AnalysisController extends DashboardController
             $view->setData('date', $current);
             $view->setData('newCustomers', $newCustomers);
             $view->setData('lostCustomers', $lostCustomers);
+            $view->setData('repsSales', $repsSales);
         }
 
         return $view;
