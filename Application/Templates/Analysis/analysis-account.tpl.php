@@ -1,12 +1,8 @@
-<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/opex?{?}'); ?>">
+<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/account?{?}'); ?>">
     <table>
         <tr>
-            <td><label for="opex">OPEX:</label>
-            <td><select id="opex" name="opex">
-                <?php $opex = \QuickDashboard\Application\Models\StructureDefinitions::getOPEXPositions(); foreach($opex as $id => $name) : ?>
-                    <option value="<?= $name; ?>"<?= $this->request->getData('opex') == $name ? ' selected' : ''; ?>><?= $name; ?>
-                <?php endforeach; ?>
-            </select>
+            <td><label for="account">Account:</label>
+            <td><input id="account" name="account"></input>
             <td style="width: 100%">
                 <input type="hidden" name="u" value="<?= $this->request->getData('u') ?? ''; ?>">
                 <input type="hidden" name="t" value="<?= $this->request->getData('t') ?? ''; ?>">
@@ -14,10 +10,10 @@
             <td colspan="3"><input type="submit" value="Analyse">
     </table>
 </form>
-<?php if(($this->request->getData('opex') ?? '') != '') : ?>
+<?php if(($this->request->getData('account') ?? '') != '') : ?>
 <?php
-$sales = $opex = $this->getData('opex');
-$salesAcc = $opexAcc = $this->getData('opexAcc');
+$opex = $this->getData('opex');
+$opexAcc = $this->getData('opexAcc');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
@@ -25,7 +21,7 @@ $currentMonth = $this->getData('currentMonth');
 $opexGroup = $this->getData('opexGroups');
 ?>
 <?php if(!empty($opexAcc)) : ?>
-<h1><?= $this->request->getData('opex') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
+<h1><?= $this->request->getData('account') ?? '' ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
 <?php include __DIR__ . '/../Sales/table-overview.tpl.php'; ?>
 
 <div style="width: 50%; float: left;">

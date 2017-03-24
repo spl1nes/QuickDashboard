@@ -796,6 +796,68 @@ class AnalysisController extends DashboardController
         return $view;
     }
 
+    public function showAnalysisAccount(RequestAbstract $request, ResponseAbstract $response)
+    {
+        $view = new View($this->app, $request, $response);
+        $view->setTemplate('/QuickDashboard/Application/Templates/Analysis/analysis-account');
+
+        $current = new SmartDateTime($request->getData('t') ?? 'now');
+        $start   = $this->getFiscalYearStart($current);
+        $start->modify('-2 year');
+
+        if ($request->getData('account') !== null) {
+            $accounts   = [(int) $request->getData('account')];
+
+            $opexCosts      = [];
+            $accOpexCosts   = [];
+
+            $groupOpex         = [];
+            $accGroupOpex      = [];
+
+            if ($request->getData('u') !== 'gdf') {
+                $costs = $this->select('selectGroupsByDay', $start, $current, 'sd', $accounts);
+                $this->loopOPEX($costs, 'sd', $opexCosts, $groupOpex);
+            }
+
+            if ($request->getData('u') !== 'sd') {
+                $costs = $this->select('selectGroupsByDay', $start, $current, 'gdf', $accounts);
+                $this->loopOPEX($costs, 'gdf', $opexCosts, $groupOpex);
+            }
+
+            $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
+            $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
+            $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+
+            foreach ($opexCosts as $year => $months) {
+                ksort($opexCosts[$year]);
+
+                for ($month = 1; $month < 13; $month++) {
+                    $prev                        = $accOpexCosts[$year][$month - 1] ?? 0.0;
+                    $accOpexCosts[$year][$month] = $prev + ($opexCosts[$year][$month] ?? 0);
+
+                    foreach ($groupOpex[$year][$month] ?? [] as $group => $value2) {
+                        if (!isset($accGroupOpex[$year][$group])) {
+                            $accGroupOpex[$year][$group]      = 0.0;
+                        }
+
+                        if ($month <= $currentMonth) {
+                            $accGroupOpex[$year][$group] += $value2;
+                        }
+                    }
+                }
+            }
+
+            $view->setData('currentFiscalYear', $currentYear);
+            $view->setData('currentMonth', $currentMonth);
+            $view->setData('opex', $opexCosts);
+            $view->setData('opexAcc', $accOpexCosts);
+            $view->setData('opexGroups', $accGroupOpex);
+            $view->setData('date', $current);
+        }
+
+        return $view;
+    }
+
     private function loopOPEX(array $resultset, string $company, array &$totalSales, array &$totalGroup)
     {
         foreach ($resultset as $line) {

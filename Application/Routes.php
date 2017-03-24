@@ -119,6 +119,12 @@ return [
             'verb' => RouteVerb::GET,
         ],
     ],
+    '^analysis/account.*$' => [
+        [
+            'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisAccount',
+            'verb' => RouteVerb::GET,
+        ],
+    ],
     '^analysis/department.*$' => [
         [
             'dest' => 'QuickDashboard\Application\Controllers\AnalysisController:showAnalysisDepartment',
