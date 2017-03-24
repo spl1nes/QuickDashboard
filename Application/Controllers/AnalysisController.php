@@ -754,11 +754,7 @@ class AnalysisController extends DashboardController
 
             if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
                 unset($accounts[array_search(4992, $accounts)]);
-                unset($accounts[array_search(2991, $accounts)]);
                 unset($accounts[array_search(2992, $accounts)]);
-                unset($accounts[array_search(2993, $accounts)]);
-                unset($accounts[array_search(2994, $accounts)]);
-                unset($accounts[array_search(2995, $accounts)]);
             }
 
             if ($request->getData('u') !== 'gdf') {
@@ -902,11 +898,7 @@ class AnalysisController extends DashboardController
 
             if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
                 unset($accounts[array_search(4992, $accounts)]);
-                unset($accounts[array_search(2991, $accounts)]);
                 unset($accounts[array_search(2992, $accounts)]);
-                unset($accounts[array_search(2993, $accounts)]);
-                unset($accounts[array_search(2994, $accounts)]);
-                unset($accounts[array_search(2995, $accounts)]);
             }
 
             $opexCosts      = [];
