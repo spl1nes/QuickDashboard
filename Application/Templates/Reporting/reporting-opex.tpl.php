@@ -93,7 +93,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php echo implode(',', $opex[$current_1]); ?>],
@@ -102,7 +103,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php echo implode(',', $opex[$current_2]); ?>],
@@ -111,7 +113,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {
@@ -169,7 +172,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php echo implode(',', $opexAcc[$current_1]); ?>],
@@ -178,7 +182,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php echo implode(',', $opexAcc[$current_2]); ?>],
@@ -187,7 +192,8 @@ $opexGroup = $this->getData('opexGroups');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {

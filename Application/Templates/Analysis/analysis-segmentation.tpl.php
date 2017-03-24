@@ -158,7 +158,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_1][$i] ?? 0; } echo implode(',', $data ?? []); ?>],
@@ -167,7 +168,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $sales[$current_2][$i] ?? 0; } echo implode(',', $data ?? []); ?>],
@@ -176,7 +178,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {
@@ -232,7 +235,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $salesAcc[$current_1][$i] ?? ''; } echo implode(',', $data ?? []); ?>],
@@ -241,7 +245,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $salesAcc[$current_2][$i] ?? ''; } echo implode(',', $data ?? []); ?>],
@@ -250,7 +255,8 @@ $reps = $this->getData('repsSales');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {

@@ -57,7 +57,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(0,0,0,1)',
                 pointBorderColor: 'rgba(0,0,0,1)',
                 pointBackgroundColor: 'rgba(0,0,0,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Current Year",
                 data: [<?php echo implode(',', $sales[$current]); ?>],
@@ -66,7 +67,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php echo implode(',', $sales[$current_1]); ?>],
@@ -75,7 +77,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php echo implode(',', $sales[$current_2]); ?>],
@@ -84,7 +87,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {
@@ -142,7 +146,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(0,0,0,1)',
                 pointBorderColor: 'rgba(0,0,0,1)',
                 pointBackgroundColor: 'rgba(0,0,0,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Current Year",
                 data: [<?php echo implode(',', $salesAcc[$current]); ?>],
@@ -151,7 +156,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(255,99,132,1)',
                 pointBorderColor: 'rgba(255,99,132,1)',
                 pointBackgroundColor: 'rgba(255,99,132,1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Last Year",
                 data: [<?php echo implode(',', $salesAcc[$current_1]); ?>],
@@ -160,7 +166,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(54, 162, 235, 1)',
                 pointBorderColor: 'rgba(54, 162, 235, 1)',
                 pointBackgroundColor: 'rgba(54, 162, 235, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }, {
                 label: "Two Years Ago",
                 data: [<?php echo implode(',', $salesAcc[$current_2]); ?>],
@@ -169,7 +176,8 @@ $currentMonth = $this->getData('currentMonth');
                 backgroundColor: 'rgba(255, 206, 86, 1)',
                 pointBorderColor: 'rgba(255, 206, 86, 1)',
                 pointBackgroundColor: 'rgba(255, 206, 86, 1)',
-                pointBorderWidth: 0
+                pointBorderWidth: 0,
+                cubicInterpolationMode: 'monotone'
             }]
         },
         options: {
