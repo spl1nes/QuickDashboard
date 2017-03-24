@@ -200,6 +200,15 @@ class ReportingController extends DashboardController
             $accounts[] = 3491;
         }
 
+        if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
+            unset($accounts[array_search(4992, $accounts)]);
+            unset($accounts[array_search(2991, $accounts)]);
+            unset($accounts[array_search(2992, $accounts)]);
+            unset($accounts[array_search(2993, $accounts)]);
+            unset($accounts[array_search(2994, $accounts)]);
+            unset($accounts[array_search(2995, $accounts)]);
+        }
+
         if ($request->getData('u') !== 'gdf') {
             $accountsSD     = $this->select('selectEntries', $startCurrent, $endCurrent, 'sd', $accounts);
             $accountsSDLast = $this->select('selectEntries', $startLast, $endLast, 'sd', $accounts);
@@ -293,6 +302,15 @@ class ReportingController extends DashboardController
             $accounts[] = 3491;
         }
 
+        if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
+            unset($accounts[array_search(4992, $accounts)]);
+            unset($accounts[array_search(2991, $accounts)]);
+            unset($accounts[array_search(2992, $accounts)]);
+            unset($accounts[array_search(2993, $accounts)]);
+            unset($accounts[array_search(2994, $accounts)]);
+            unset($accounts[array_search(2995, $accounts)]);
+        }
+
         if ($request->getData('u') !== 'gdf') {
             $salesSD = $this->select('selectSalesYearMonth', $start, $current, 'sd', $accounts);
             $this->loopEBIT($salesSD, $totalSales);
@@ -378,6 +396,15 @@ class ReportingController extends DashboardController
         $accGroupOpex      = [];
 
         $accounts = StructureDefinitions::getOPEXAccounts();
+
+        if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
+            unset($accounts[array_search(4992, $accounts)]);
+            unset($accounts[array_search(2991, $accounts)]);
+            unset($accounts[array_search(2992, $accounts)]);
+            unset($accounts[array_search(2993, $accounts)]);
+            unset($accounts[array_search(2994, $accounts)]);
+            unset($accounts[array_search(2995, $accounts)]);
+        }
 
         if ($request->getData('u') !== 'gdf') {
             $costs = $this->select('selectGroupsByDay', $start, $current, 'sd', $accounts);

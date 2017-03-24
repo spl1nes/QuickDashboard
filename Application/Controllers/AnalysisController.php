@@ -752,6 +752,15 @@ class AnalysisController extends DashboardController
             $groupOpex         = [];
             $accGroupOpex      = [];
 
+            if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
+                unset($accounts[array_search(4992, $accounts)]);
+                unset($accounts[array_search(2991, $accounts)]);
+                unset($accounts[array_search(2992, $accounts)]);
+                unset($accounts[array_search(2993, $accounts)]);
+                unset($accounts[array_search(2994, $accounts)]);
+                unset($accounts[array_search(2995, $accounts)]);
+            }
+
             if ($request->getData('u') !== 'gdf') {
                 $costs = $this->select('selectGroupsByDay', $start, $current, 'sd', $accounts);
                 $this->loopOPEX($costs, 'sd', $opexCosts, $groupOpex);
@@ -890,6 +899,15 @@ class AnalysisController extends DashboardController
 
         if (isset(StructureDefinitions::DEPARTMENTS_SD[$request->getData('department')])) {
             $accounts   = StructureDefinitions::getOPEXAccounts();
+
+            if($request->getData('u') !== 'sd' && $request->getData('u') !== 'gdf') {
+                unset($accounts[array_search(4992, $accounts)]);
+                unset($accounts[array_search(2991, $accounts)]);
+                unset($accounts[array_search(2992, $accounts)]);
+                unset($accounts[array_search(2993, $accounts)]);
+                unset($accounts[array_search(2994, $accounts)]);
+                unset($accounts[array_search(2995, $accounts)]);
+            }
 
             $opexCosts      = [];
             $accOpexCosts   = [];
