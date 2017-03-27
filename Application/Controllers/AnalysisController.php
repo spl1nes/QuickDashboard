@@ -490,7 +490,7 @@ class AnalysisController extends DashboardController
             }
 
             $repsSales = $repsSales ?? [];
-            uasort($repsSales, function($a, $b) { return -1*($a['now'] <=> $b['now']); });
+            uasort($repsSales, function($a, $b) { return -1*(($a['now'] ?? 0) <=> ($b['now'] ?? 0)); });
 
 
             $view->setData('salesCountry', $salesCountry);
