@@ -74,6 +74,16 @@ class DashboardController
         return $result;
     }
 
+    protected function selectSalesAnalysis(string $selectQuery, \DateTime $start, \DateTime $end, string $company, array $accounts, array $countries = null, array $groups = null, array $reps = null) : array
+    {
+        $query = new Builder($this->app->dbPool->get($company));
+        $query->raw(Queries::{$selectQuery}($start, $end, $accounts, $countries, $groups, $reps));
+        $result = $query->execute()->fetchAll();
+        $result = empty($result) ? [] : $result;
+
+        return $result;
+    }
+
     protected function selectCustomerInformation(string $company, int $customer)
     {
         $query = new Builder($this->app->dbPool->get($company));

@@ -792,8 +792,8 @@ class SalesController extends DashboardController
             $customersSD     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'sd', $accounts);
             $customersSDLast = $this->select('selectCustomer', $startLast, $endLast, 'sd', $accounts);
 
-            $newCustomersSD = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
-            $lostCustomersSD = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, StructureDefinitions::getSalesGroupsAll());
+            $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, null, null, null);
+            $lostCustomersSD = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, null, null, null);
 
             $newCustomers += count($newCustomersSD);
             $lostCustomers += count($lostCustomersSD);
@@ -813,8 +813,8 @@ class SalesController extends DashboardController
             $customersGDF     = $this->select('selectCustomer', $startCurrent, $endCurrent, 'gdf', $accounts);
             $customersGDFLast = $this->select('selectCustomer', $startLast, $endLast, 'gdf', $accounts);
 
-            $newCustomersGDF = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
-            $lostCustomersGDF = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, StructureDefinitions::getSalesGroupsAll());
+            $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, null, null, null);
+            $lostCustomersGDF = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, null, null, null);
 
             $newCustomers += count($newCustomersGDF);
             $lostCustomers += count($lostCustomersGDF);
