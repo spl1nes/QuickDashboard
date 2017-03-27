@@ -16,8 +16,8 @@
 </form>
 <?php if(($this->request->getData('opex') ?? '') != '') : ?>
 <?php
-$opex = $this->getData('opex');
-$opexAcc = $this->getData('opexAcc');
+$sales = $opex = $this->getData('opex');
+$salesAcc = $opexAcc = $this->getData('opexAcc');
 $current = $this->getData('currentFiscalYear');
 $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
