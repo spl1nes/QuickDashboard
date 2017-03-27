@@ -328,8 +328,8 @@ class AnalysisController extends DashboardController
             $lostCustomers = 0;
 
             if ($request->getData('u') !== 'gdf') {
-                $customersSD     = $this->selectAddon('selectGroupCustomer', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, $groups);
-                $customersSDLast = $this->selectAddon('selectGroupCustomer', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, $groups);
+                $customersSD     = $this->selectAddon('selectGroupCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
+                $customersSDLast = $this->selectAddon('selectGroupCustomer', $startLast, $endLast, 'sd', $accounts, $groups);
 
                 $this->loopCustomer('now', $customersSD, $salesCustomers);
                 $this->loopCustomer('old', $customersSDLast, $salesCustomers);
@@ -337,8 +337,8 @@ class AnalysisController extends DashboardController
                 $customerSD = $this->selectAddon('selectGroupCustomerCount', $start, $current, 'sd', $accounts, $groups);
                 $this->loopCustomerCount($customerSD, $customerCount);
 
-                $newCustomersSD = $this->selectAddon('selectNewCustomers', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
-                $lostCustomersSD = $this->selectAddon('selectLostCustomers', $startLast, $startCurrent, 'sd', $accounts, $groups);
+                $newCustomersSD = $this->selectAddon('selectNewCustomers', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, $groups);
+                $lostCustomersSD = $this->selectAddon('selectLostCustomers', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, $groups);
 
                 $newCustomers += count($newCustomersSD);
                 $lostCustomers += count($lostCustomersSD);
@@ -491,7 +491,6 @@ class AnalysisController extends DashboardController
 
             $repsSales = $repsSales ?? [];
             uasort($repsSales, function($a, $b) { return -1*(($a['now'] ?? 0) <=> ($b['now'] ?? 0)); });
-
 
             $view->setData('salesCountry', $salesCountry);
             $view->setData('salesRegion', $salesRegion);
