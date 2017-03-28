@@ -1172,43 +1172,44 @@ class AnalysisController extends DashboardController
             $newCustomers = 0;
             $lostCustomers = 0;
 
+            $countries = null;
+
             // Set accounts
             $accounts = array_diff(StructureDefinitions::PL_ACCOUNTS['Sales'], StructureDefinitions::ACCOUNTS_DOMESTIC);
-            if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE') {
-                $accounts = array_merge($accounts, StructureDefinitions::ACCOUNTS_DOMESTIC);
+            if($request->getData('location') === 'Domestic' || $request->getData('location') === 'DE' || $request->getData('location')  === 'All') {
+                if($request->getData('location')  === 'All') {
+                    $accounts = array_merge($accounts, StructureDefinitions::ACCOUNTS_DOMESTIC);
+                } else {
+                    $accounts = StructureDefinitions::ACCOUNTS_DOMESTIC;
+                }
 
                 if ($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') {
                     $accounts[] = 8591;
                 }
-            } elseif($request->getData('location') !== 'Domestic' && $request->getData('location') !== 'DE' && $request->getData('location') !== 'Export') {
+            } elseif($request->getData('location') !== 'Domestic' && $request->getData('location') !== 'DE' && $request->getData('location') !== 'Export' && $request->getData('location') !== 'All' &&$request->getData('location') !== null) {
                 $countries = StructureDefinitions::getLocations($request->getData('location'));
             }
 
-            if (($request->getData('u') === 'sd' || $request->getData('u') === 'gdf') && $request->getData('location') === 'All') {
-                $accounts[] = 8591;
-            }
-
             // Set groups
-            if($request->getData('group') === null || $request->getData('group') === 'All') {
+            if($request->getData('segment') === null || $request->getData('segment') === 'All') {
                 $groups = null;
             } else {
-                $groups = StructureDefinitions::getSalesGroups((int) $request->getData('group'));
+                $groups = StructureDefinitions::getSalesGroups((int) $request->getData('segment'));
             }
 
             // Set sales reps
-            $rep = ($request->getData('group') ?? null);
-            $rep = $rep === null ? null : (int) $rep;
+            $reps = $request->getData('rep') === null || $request->getData('rep') === 'All' ? null : [$request->getData('rep')];
 
             if ($request->getData('u') !== 'gdf') {
-                $salesSD = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'sd', $accounts, $countries);
-                $customersSD     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
-                $customersSDLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'sd', $accounts, $countries);
-                $customerSD = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'sd', $accounts, $countries);
-                $groupsSD     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts, $countries);
-                $groupsSDLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'sd', $accounts, $countries);
+                $salesSD = $this->selectSalesAnalysis('showCustomOverviewAnalysis', $start, $current, 'sd', $accounts, $countries, $groups, $reps);
+                $customersSD     = $this->selectSalesAnalysis('showCustomCustomerAnalysis', $startCurrent, $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
+                $customersSDLast = $this->selectSalesAnalysis('showCustomCustomerAnalysis', $startLast, $endLast, 'sd', $accounts, $countries, $groups, $reps);
+                $customerSD = $this->selectSalesAnalysis('showCustomCustomerCountAnalysis', $start, $current, 'sd', $accounts, $countries, $groups, $reps);
+                $groupsSD     = $this->selectSalesAnalysis('showCustomGroupsAnalysis', $startCurrent, $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
+                $groupsSDLast = $this->selectSalesAnalysis('showCustomGroupsAnalysis', $startLast, $endLast, 'sd', $accounts, $countries, $groups, $reps);
 
                 $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
-                $lostCustomersSD = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
+                $lostCustomersSD = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'sd', $accounts, $countries, $groups, $reps);
 
                 $newCustomers += count($newCustomersSD);
                 $lostCustomers += count($lostCustomersSD);
@@ -1222,15 +1223,15 @@ class AnalysisController extends DashboardController
             }
 
             if ($request->getData('u') !== 'sd') {
-                $salesGDF = $this->selectAddon('selectCountrySalesYearMonth', $start, $current, 'gdf', $accounts, $countries);
-                $customersGDF     = $this->selectAddon('selectCountryCustomer', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
-                $customersGDFLast = $this->selectAddon('selectCountryCustomer', $startLast, $endLast, 'gdf', $accounts, $countries);
-                $customerGDF = $this->selectAddon('selectCountryCustomerCount', $start, $current, 'gdf', $accounts, $countries);
-                $groupsGDF     = $this->selectAddon('selectCountrySalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts, $countries);
-                $groupsGDFLast = $this->selectAddon('selectCountrySalesArticleGroups', $startLast, $endLast, 'gdf', $accounts, $countries);
+                $salesGDF = $this->selectSalesAnalysis('showCustomOverviewAnalysis', $start, $current, 'gdf', $accounts, $countries, $groups, $reps);
+                $customersGDF     = $this->selectSalesAnalysis('showCustomCustomerAnalysis', $startCurrent, $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
+                $customersGDFLast = $this->selectSalesAnalysis('showCustomCustomerAnalysis', $startLast, $endLast, 'gdf', $accounts, $countries, $groups, $reps);
+                $customerGDF = $this->selectSalesAnalysis('showCustomCustomerCountAnalysis', $start, $current, 'gdf', $accounts, $countries, $groups, $reps);
+                $groupsGDF     = $this->selectSalesAnalysis('showCustomGroupsAnalysis', $startCurrent, $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
+                $groupsGDFLast = $this->selectSalesAnalysis('showCustomGroupsAnalysis', $startLast, $endLast, 'gdf', $accounts, $countries, $groups, $reps);
 
                 $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
-                $lostCustomersGDF = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-1), $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
+                $lostCustomersGDF = $this->selectSalesAnalysis('selectCustomLostCustomerAnalysis', $endCurrent->createModify(-2), $endCurrent->createModify(-1), 'gdf', $accounts, $countries, $groups, $reps);
 
                 $newCustomers += count($newCustomersGDF);
                 $lostCustomers += count($lostCustomersGDF);
@@ -1283,6 +1284,8 @@ class AnalysisController extends DashboardController
             $view->setData('salesGroups', $salesGroups);
             $view->setData('segmentGroups', $segmentGroups);
             $view->setData('totalGroups', $totalGroups);
+            $view->setData('newCustomers', $newCustomers);
+            $view->setData('lostCustomers', $lostCustomers);
         }
 
         $view->setData('repNames', $repNames);
