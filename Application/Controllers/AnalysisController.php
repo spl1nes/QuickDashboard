@@ -286,7 +286,7 @@ class AnalysisController extends DashboardController
         $startLast    = $startLast->modify('-1 year');
         $endLast      = $endCurrent->createModify(-1);
 
-        if ($request->getData('segment') !== null) {
+        if ($request->getData('segment') !== null && $request->getData('segment') !== 'All') {
             $totalSales    = [];
             $accTotalSales = [];
 
@@ -529,7 +529,7 @@ class AnalysisController extends DashboardController
 
         $countries = null;
 
-        if ($request->getData('location') !== null) {
+        if ($request->getData('location') !== null && $request->getData('location') !== 'All') {
             $totalSales    = [];
             $accTotalSales = [];
 
