@@ -34,11 +34,11 @@
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/reps?{?}&i=year'); ?>">Year</a>
                         </ul>
-                    <li>Products
+                    <!--<li>Products
                         <ul>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/products?{?}&i=month'); ?>">Month</a>
                             <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}sales/products?{?}&i=year'); ?>">Year</a>
-                        </ul>
+                        </ul>-->
                 </ul>
             <li><i class="fa fa-bar-chart"></i> Reporting
                 <ul>
@@ -104,9 +104,9 @@
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/opex?{?}'); ?>">OPEX</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/account?{?}'); ?>">Account</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/department?{?}'); ?>">Department</a>
-                        <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/product?{?}'); ?>">Product</a>
+                        <!--<li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/product?{?}'); ?>">Product</a>-->
                     </ul>
-                <li>Controlling
+                <!--<li>Controlling
                     <ul>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Invoice Margin</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Article Margin</a>
@@ -114,6 +114,6 @@
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Accounts Receivable</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Scrapping</a>
                         <li><a href="<?= \phpOMS\Uri\UriFactory::build('{/base}?{?}'); ?>">Inventory Turnover</a>
-                    </ul>
+                    </ul>-->
     </nav>
 </div>

@@ -51,7 +51,7 @@ $currentMonth = $this->getData('currentMonth');
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: "Forecast",
-                data: [<?php echo str_repeat(',', (12 - $currentMonth)) , implode(',', $ebitFC); ?>],
+                data: [<?php echo str_repeat(',', ($currentMonth-2)) , implode(',', $ebitFC); ?>],
                 hidden: true,
                 fill: false,
                 borderDash: [5, 5],
@@ -140,7 +140,7 @@ $currentMonth = $this->getData('currentMonth');
             labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
             datasets: [{
                 label: "Forecast",
-                data: [<?php echo str_repeat(',', (12 - $currentMonth)) , implode(',', $ebitAccFC); ?>],
+                data: [<?php echo str_repeat(',', ($currentMonth-2)) , implode(',', $ebitAccFC); ?>],
                 hidden: true,
                 fill: false,
                 borderDash: [5, 5],
