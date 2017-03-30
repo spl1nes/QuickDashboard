@@ -25,7 +25,7 @@
             <td><select id="rep" name="rep">
                 <option value="All"<?= $this->request->getData('rep') == 'All' ? ' selected' : ''; ?>>All
             <?php $repNames = $this->getData('repNames'); foreach($repNames as $id => $name) : if(preg_match('/^[0-9]*$/', trim($id)) === 1) : ?>
-                <option value="<?= trim($id); ?>"<?= $this->request->getData('rep') == trim($name) ? ' selected' : ''; ?>><?= trim($name); ?>
+                <option value="<?= trim($id); ?>"<?= $this->request->getData('rep') == trim($id) ? ' selected' : ''; ?>><?= trim($name); ?>
             <?php endif; endforeach; ?>
             </select>
             <td style="width: 100%">
