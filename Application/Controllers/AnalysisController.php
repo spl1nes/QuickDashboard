@@ -1113,7 +1113,7 @@ class AnalysisController extends DashboardController
 
         foreach($result as $line) {
             if(!in_array($line['name'], $reps)) {
-                $reps[$line['id']] = $line['name'];
+                $reps[$line['id']] = trim($line['name']);
             }
         }
 
