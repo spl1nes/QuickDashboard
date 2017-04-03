@@ -1210,7 +1210,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv
                     WHERE 
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
@@ -1220,7 +1220,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen
                     WHERE 
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
@@ -1229,8 +1229,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1238,7 +1238,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1250,7 +1250,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1261,8 +1261,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1270,7 +1270,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv
                     WHERE 
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
@@ -1281,7 +1281,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen
                     WHERE 
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
@@ -1291,8 +1291,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1300,7 +1300,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1312,7 +1312,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1323,8 +1323,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1332,7 +1332,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1345,7 +1345,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1357,8 +1357,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1366,7 +1366,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1379,7 +1379,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1391,8 +1391,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1400,7 +1400,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1413,7 +1413,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1425,8 +1425,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1434,7 +1434,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1448,7 +1448,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS first
+                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1461,8 +1461,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.first, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.first, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.first >= \'' . $start->format('Y.m.d') . '\' 
+                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.first;';
         }
 
@@ -1477,7 +1477,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1488,7 +1488,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1498,8 +1498,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1507,7 +1507,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1519,7 +1519,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1530,8 +1530,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1539,7 +1539,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv
                     WHERE 
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
@@ -1550,7 +1550,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen
                     WHERE 
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
@@ -1560,8 +1560,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1569,7 +1569,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1581,7 +1581,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1592,8 +1592,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1601,7 +1601,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1614,7 +1614,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1626,8 +1626,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1635,7 +1635,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1648,7 +1648,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1660,8 +1660,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1669,7 +1669,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1682,7 +1682,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1694,8 +1694,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1703,7 +1703,7 @@ class Queries
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
                     FROM FiBuchungsArchiv, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
@@ -1717,7 +1717,7 @@ class Queries
                 UNION ALL
                     SELECT 
                         FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104)) AS last
+                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
                     FROM FiBuchungen, KUNDENADRESSE
                     WHERE 
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
@@ -1730,8 +1730,8 @@ class Queries
                         FiBuchungen.GegenKonto
                 ) t
             WHERE 
-                    CONVERT(VARCHAR(30), t.last, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
-                    AND CONVERT(VARCHAR(30), t.last, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102) 
+                    t.last >= \'' . $start->format('Y.m.d') . '\'
+                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
             GROUP BY t.account, t.last;';
         }
 
