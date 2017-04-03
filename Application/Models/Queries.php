@@ -1231,6 +1231,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1263,6 +1264,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1293,6 +1295,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1325,6 +1328,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1359,6 +1363,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1393,6 +1398,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1427,6 +1433,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1463,6 +1470,7 @@ class Queries
             WHERE 
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.first;';
         }
 
@@ -1500,6 +1508,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1532,6 +1541,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1562,6 +1572,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1594,6 +1605,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1628,6 +1640,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1662,6 +1675,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT DISTINCT
@@ -1696,6 +1710,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT DISTINCT
@@ -1732,6 +1747,7 @@ class Queries
             WHERE 
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
+                    AND t.account > 100000
             GROUP BY t.account, t.last;';
         }
 
