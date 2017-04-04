@@ -1205,273 +1205,461 @@ class Queries
     public static function selectCustomNewCustomerAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $costcenters = null, array $reps = null) : string
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv
-                    WHERE 
-                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen
-                    WHERE 
-                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv
-                    WHERE 
-                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen
-                    WHERE 
-                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.first >= \'' . $start->format('Y.m.d') . '\' 
-                    AND t.first <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.first 
+                    From (
+                        SELECT t.account, t.first FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.first
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MIN(s.first) MinPoint 
+                        From ( 
+                            SELECT t.account, t.first FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MIN(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS first 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.first
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.first
+                    AND tbl.first >= \'' . $start->format('Y.m.d') . '\' AND tbl.first <= \'' . $end->format('Y.m.d') . '\';';
         }
 
         return '';
@@ -1480,275 +1668,461 @@ class Queries
     public static function selectCustomLostCustomerAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $costcenters = null, array $reps = null) : string
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv
-                    WHERE 
-                        FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen
-                    WHERE 
-                        FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT 
-                t.account
-            FROM (
-                    SELECT 
-                        FiBuchungsArchiv.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungsArchiv, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                        AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungsArchiv.Betrag < 0
-                        AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungsArchiv.GegenKonto
-                UNION ALL
-                    SELECT 
-                        FiBuchungen.GegenKonto AS account,
-                        MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last
-                    FROM FiBuchungen, KUNDENADRESSE
-                    WHERE 
-                        KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
-                        AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
-                        AND FiBuchungen.Betrag < 0
-                        AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
-                        AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
-                        AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
-                    GROUP BY
-                        FiBuchungen.GegenKonto
-                ) t
-            WHERE 
-                    t.last >= \'' . $start->format('Y.m.d') . '\'
-                    AND t.last <= \'' . $end->format('Y.m.d') . '\' 
-                    AND t.account > 100000
-            GROUP BY t.account;';
+            return 'Select tbl.account, tbl.last 
+                    From (
+                        SELECT t.account, t.last FROM (
+                            SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungsArchiv, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungsArchiv.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungsArchiv.GegenKonto 
+                        UNION ALL 
+                            SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                            FROM FiBuchungen, KUNDENADRESSE
+                            WHERE 
+                                FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                AND FiBuchungen.Betrag < 0 
+                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                            GROUP BY FiBuchungen.GegenKonto 
+                        ) t 
+                        WHERE t.account > 100000 
+                        GROUP BY t.account, t.last
+                    ) tbl
+                    Inner Join (
+                        Select s.account, MAX(s.last) MinPoint 
+                        From ( 
+                            SELECT t.account, t.last FROM (
+                                SELECT FiBuchungsArchiv.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungsArchiv, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungsArchiv.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungsArchiv.GegenKonto 
+                            UNION ALL 
+                                SELECT FiBuchungen.GegenKonto AS account, MAX(CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 102)) AS last 
+                                FROM FiBuchungen, KUNDENADRESSE
+                                WHERE 
+                                    FiBuchungen.Konto IN (' . implode(',', $accounts) . ') 
+                                    AND FiBuchungen.Betrag < 0 
+                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
+                                    AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                                GROUP BY FiBuchungen.GegenKonto 
+                            ) t 
+                            WHERE t.account > 100000 
+                            GROUP BY t.account, t.last
+                        ) s 
+                        Group By s.account
+                    ) tbl1
+                    On tbl1.account = tbl.account
+                    WHERE
+                    tbl1.MinPoint = tbl.last
+                    AND tbl.last >= \'' . $start->format('Y.m.d') . '\' AND tbl.last <= \'' . $end->format('Y.m.d') . '\';';
         }
 
         return '';
