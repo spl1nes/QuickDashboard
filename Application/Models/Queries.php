@@ -1206,7 +1206,7 @@ class Queries
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1232,10 +1232,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1265,10 +1265,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1296,10 +1296,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1329,10 +1329,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1364,10 +1364,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1399,10 +1399,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1434,10 +1434,10 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.first
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1471,7 +1471,7 @@ class Queries
                     t.first >= \'' . $start->format('Y.m.d') . '\' 
                     AND t.first <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.first;';
+            GROUP BY t.account;';
         }
 
         return '';
@@ -1481,7 +1481,7 @@ class Queries
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1509,10 +1509,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1542,10 +1542,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1573,10 +1573,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1606,10 +1606,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1641,10 +1641,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1676,10 +1676,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1711,10 +1711,10 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
             return 'SELECT 
-                t.account, t.last
+                t.account
             FROM (
                     SELECT 
                         FiBuchungsArchiv.GegenKonto AS account,
@@ -1748,7 +1748,7 @@ class Queries
                     t.last >= \'' . $start->format('Y.m.d') . '\'
                     AND t.last <= \'' . $end->format('Y.m.d') . '\' 
                     AND t.account > 100000
-            GROUP BY t.account, t.last;';
+            GROUP BY t.account;';
         }
 
         return '';
