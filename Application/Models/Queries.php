@@ -1205,7 +1205,7 @@ class Queries
     public static function selectCustomNewCustomerAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $costcenters = null, array $reps = null) : string
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1234,7 +1234,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1267,7 +1267,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1298,7 +1298,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1331,7 +1331,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1366,7 +1366,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1401,7 +1401,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1436,7 +1436,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.first;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.first
             FROM (
                     SELECT 
@@ -1480,7 +1480,7 @@ class Queries
     public static function selectCustomLostCustomerAnalysis(\DateTime $start, \DateTime $end, array $accounts, array $countries = null, array $costcenters = null, array $reps = null) : string
     {
         if(!isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1511,7 +1511,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1544,7 +1544,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1575,7 +1575,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1608,7 +1608,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && !isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1643,7 +1643,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(!isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1678,7 +1678,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && !isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
@@ -1713,7 +1713,7 @@ class Queries
                     AND t.account > 100000
             GROUP BY t.account, t.last;';
         } elseif(isset($countries) && isset($costcenters) && isset($reps)) {
-            return 'SELECT DISTINCT
+            return 'SELECT 
                 t.account, t.last
             FROM (
                     SELECT 
