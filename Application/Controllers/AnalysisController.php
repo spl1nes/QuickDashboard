@@ -198,6 +198,14 @@ class AnalysisController extends DashboardController
                     }
                 }
 
+                $gTemp = [];
+                $sTemp = [];
+                $tTemp = [];
+
+                $gTemp = [];
+                $sTemp = [];
+                $tTemp = [];
+
                 $dso = $this->selectDSO('selectOPByAccountDebit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $customerDSO['now'] = (int) round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
@@ -222,6 +230,9 @@ class AnalysisController extends DashboardController
                 $view->setData('salesAcc', $accSalesCustomer);
                 $view->setData('salesGroups', $accGroupSales);
                 $view->setData('salesGroupsTotal', $accGroupSalesTotal);
+                $view->setData('gTemp', $gTemp);
+                $view->setData('sTemp', $sTemp);
+                $view->setData('tTemp', $tTemp);
                 $view->setData('date', $current);
                 $view->setData('dso', $customerDSO);
                 $view->setData('op', $customerOP);

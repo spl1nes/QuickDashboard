@@ -26,6 +26,10 @@ $current_1 = $this->getData('currentFiscalYear')-1;
 $current_2 = $this->getData('currentFiscalYear')-2;
 $currentMonth = $this->getData('currentMonth');
 
+$gTemp = $this->getData('gTemp');
+$sTemp = $this->getData('sTemp');
+$tTemp = $this->getData('tTemp');
+
 $salesGroup = $this->getData('salesGroups');
 $salesGroupTotal = $this->getData('salesGroupsTotal');
 ?>
@@ -76,6 +80,42 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
 <div class="box" style="width: 50%; float: left">
     <canvas id="sales-month-acc" height="270"></canvas>
 </div>
+<!--
+<table style="width: 100%; float: left;">
+    <caption>Sales Segmentation</caption>
+    <thead>
+    <tr>
+        <th>Segment
+        <th>Group
+        <th>Last
+        <th>Current
+        <th>Diff
+        <th>Diff %
+    <tbody>
+    <?php foreach($gTemp['All'] as $segment => $groups) : if(!is_array($groups)) { continue; } foreach($groups as $group => $temp) : ?>
+    <tr>
+        <td><?= $segment; ?>
+        <td><?= $group; ?>
+        <td><?= number_format($gTemp['All'][$segment][$group]['old'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($gTemp['All'][$segment][$group]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format(($gTemp['All'][$segment][$group]['now'] ?? 0)-($gTemp['All'][$segment][$group]['old'] ?? 0), 0, ',', '.') ?>
+        <td><?= number_format(!isset($gTemp['All'][$segment][$group]['old']) || $gTemp['All'][$segment][$group]['old'] == 0 ? 0 : (($gTemp['All'][$segment][$group]['now'] ?? 0)/$salesGroups['All'][$segment][$group]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th><?= $segment; ?>
+        <th>Total
+        <th><?= number_format($sTemp['All'][$segment]['old'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($sTemp['All'][$segment]['now'] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($sTemp['All'][$segment]['now'] ?? 0)-($sTemp['All'][$segment]['old'] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($sTemp['All'][$segment]['old']) || $sTemp['All'][$segment]['old'] == 0 ? 0 : (($sTemp['All'][$segment]['now'] ?? 0)/$sTemp['All'][$segment]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+    <tr>
+        <th colspan="2">Total
+        <th><?= number_format($tTemp['All']['old'], 0, ',', '.') ?>
+        <th><?= number_format($tTemp['All']['now'], 0, ',', '.') ?>
+        <th><?= number_format($tTemp['All']['now']-$tTemp['All']['old'], 0, ',', '.') ?>
+        <th><?= number_format(!is_numeric($tTemp['All']['old']) || $tTemp['All']['old'] == 0 ? 0 : (($tTemp['All']['now'] ?? 0)/$tTemp['All']['old']-1)*100, 0, ',', '.') ?> %
+</table>-->
 
 <div class="clear"></div>
 
