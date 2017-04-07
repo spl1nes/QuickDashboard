@@ -452,8 +452,12 @@ class SalesController extends DashboardController
         $salesCountry['DEU']['now'] = ($domesticSD[0]['sales'] ?? 0) + ($domesticGDF[0]['sales'] ?? 0);
         $salesCountry['DEU']['old'] = ($domesticSDLast[0]['sales'] ?? 0) + ($domesticGDFLast[0]['sales'] ?? 0);
 
-        $salesCountry['???']['now'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - ($sum['now'] - $deu_wrong_now - $salesCountry['???']['now']);
-        $salesCountry['???']['old'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - ($sum['old'] - $deu_wrong_old - $salesCountry['???']['old']);
+        if(!isset($salesCountry['???'])) {
+            $salesCountry['???'] = [];
+        }
+
+        $salesCountry['???']['now'] = ($allGDF[0]['sales'] ?? 0) + ($allSD[0]['sales'] ?? 0) - ($sum['now'] - $deu_wrong_now - ($salesCountry['???']['now'] ?? 0));
+        $salesCountry['???']['old'] = ($allGDFLast[0]['sales'] ?? 0) + ($allSDLast[0]['sales'] ?? 0) - ($sum['old'] - $deu_wrong_old - ($salesCountry['???']['old'] ?? 0));
 
         $view->setData('salesCountry', $salesCountry);
         $view->setData('date', $endCurrent);
