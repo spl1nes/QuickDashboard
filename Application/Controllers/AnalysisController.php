@@ -34,7 +34,7 @@ class AnalysisController extends DashboardController
     private function loopCustomer(string $period, array $resultset, array &$salesCustomers)
     {
         foreach ($resultset as $line) {
-            $customer = trim($line['customer']);
+            $customer = substr(trim($line['customer']), 0, 20);
             if (!isset($salesCustomers[$period][$customer])) {
                 $salesCustomers[$period][$customer] = 0.0;
             }

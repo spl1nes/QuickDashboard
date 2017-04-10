@@ -71,7 +71,7 @@ $reps = $this->getData('repsSales');
 
 <div class="clear"></div>
 
-<p>There are <?= $this->getData('newCustomers'); ?> new customers during the last 12 month and <?= $this->getData('lostCustomers'); ?> customers where lost compared to the previous 12 month.</p>
+<p>There are <?= $this->getData('newCustomers'); ?> new customers during the last 12 month and <?= $this->getData('lostCustomers'); ?> customers are lost compared to the previous 12 month.</p>
 
 <p>The follwoing chart shows the amount of active customers (have sales impact) per month.</p>
 
