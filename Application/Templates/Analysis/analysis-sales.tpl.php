@@ -77,6 +77,7 @@ $reps = $this->getData('repsSales');
 <?php include __DIR__ . '/../Sales/table-segment.tpl.php'; ?>
 
 <div class="clear"></div>
+<div class="break"></div>
 
 <h2>Customers</h2>
 
@@ -108,6 +109,9 @@ $reps = $this->getData('repsSales');
     <canvas id="customers-count" height="100"></canvas>
 </div>
 
+<div class="clear"></div>
+<div class="break"></div>
+
 <h2>Sales Reps</h2>
 <p>The sales by sales reps are based on all customers assigned to that sales rep. This also includes sales that are usually not recognized in other reportings as part of the sales rep sales. The total sales by sales rep can be different from the actual total sales due to cut-off tests and the resulting different sales recognition in the correct period.</p>
 <table>
@@ -129,8 +133,6 @@ $reps = $this->getData('repsSales');
             <td><?= number_format(!isset($reps[$name]['old']) || $reps[$name]['old'] == 0 ? 0 : (($reps[$name]['now'] ?? 0)/$reps[$name]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
 </table>
-
-<div class="clear"></div>
 <script>
     let configConsolidated = {
         type: 'line',

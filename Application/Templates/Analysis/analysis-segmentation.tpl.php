@@ -124,6 +124,8 @@ $reps = $this->getData('repsSales');
     <canvas id="top-countries-chart" height="100"></canvas>
 </div>
 
+<div class="break"></div>
+
 <h2>Sales Reps</h2>
 <p>The sales by sales reps are based on all customers assigned to that sales rep. This also includes sales that are usually not recognized in other reportings as part of the sales rep sales. The total sales by sales rep can be different from the actual total sales due to cut-off tests and the resulting different sales recognition in the correct period.</p>
 <table>
