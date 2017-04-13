@@ -51,6 +51,8 @@ $totalGroups = $this->getData('totalGroups');
 $topCustomers = $this->getData('customer');
 $customerCount = $this->getData('customerCount');
 $gini = $this->getData('gini');
+
+$reps = $this->getData('repsSales');
 ?>
 <?php if(!empty($salesAcc)) : ?>
 <h1>S: <?= $this->request->getData('segment') ?? 'All'; ?> / L: <?= $this->request->getData('location') ?? 'All'; ?> / R: <?= $this->request->getData('rep') ?? 'All'; ?> Analysis - <?= $this->getData('date')->format('Y/m'); ?></h1>
@@ -105,6 +107,28 @@ $gini = $this->getData('gini');
 <div class="box" style="width: 100%; float: left">
     <canvas id="customers-count" height="100"></canvas>
 </div>
+
+<h2>Sales Reps</h2>
+<p>The sales by sales reps are based on all customers assigned to that sales rep. This also includes sales that are usually not recognized in other reportings as part of the sales rep sales. The total sales by sales rep can be different from the actual total sales due to cut-off tests and the resulting different sales recognition in the correct period.</p>
+<table>
+    <caption>Sales by Sales Rep</caption>
+    <thead>
+        <tr>
+            <th>Name
+            <th>Prev. Year
+            <th>Current
+            <th>Diff.
+            <th>Diff. %
+    <tbody>
+        <?php foreach($reps as $name => $value) : ?>
+        <tr>
+            <td><?= $name; ?>
+            <td><?= number_format($reps[$name]['old'] ?? 0, 0, ',', '.') ?>
+            <td><?= number_format($reps[$name]['now'] ?? 0, 0, ',', '.') ?>
+            <td><?= number_format(($reps[$name]['now'] ?? 0)-($reps[$name]['old'] ?? 0), 0, ',', '.') ?>
+            <td><?= number_format(!isset($reps[$name]['old']) || $reps[$name]['old'] == 0 ? 0 : (($reps[$name]['now'] ?? 0)/$reps[$name]['old']-1)*100, 0, ',', '.') ?> %
+    <?php endforeach; ?>
+</table>
 
 <div class="clear"></div>
 <script>

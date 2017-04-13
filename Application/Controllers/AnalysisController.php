@@ -521,46 +521,22 @@ class AnalysisController extends DashboardController
                 $accounts[] = 8591;
             }
 
+            $repsSales = [];
+
             if ($request->getData('u') !== 'gdf') {
                 $repsSD     = $this->selectAddon('selectRepGroupSales', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
                 $repsSDLast = $this->selectAddon('selectRepGroupSales', $startLast, $endLast, 'sd', $accounts, $groups);
 
-                foreach ($repsSD as $line) {
-                    if(!isset($repsSales[$line['rep']]['now'])) {
-                        $repsSales[$line['rep']]['now'] = 0.0;
-                    }
-
-                    $repsSales[$line['rep']]['now'] += $line['sales'];
-                }
-
-                foreach ($repsSDLast as $line) {
-                    if(!isset($repsSales[$line['rep']]['old'])) {
-                        $repsSales[$line['rep']]['old'] = 0.0;
-                    }
-
-                    $repsSales[$line['rep']]['old'] += $line['sales'];
-                }
+                $this->loopReps('now', $repsSD, $repsSales);
+                $this->loopReps('old', $repsSDLast, $repsSales);
             }
 
             if ($request->getData('u') !== 'sd') {
                 $repsGDF     = $this->selectAddon('selectRepGroupSales', $startCurrent, $endCurrent, 'gdf', $accounts, $groups);
                 $repsGDFLast = $this->selectAddon('selectRepGroupSales', $startLast, $endLast, 'gdf', $accounts, $groups);
 
-                foreach ($repsGDF as $line) {
-                    if(!isset($repsSales[$line['rep']]['now'])) {
-                        $repsSales[$line['rep']]['now'] = 0.0;
-                    }
-
-                    $repsSales[$line['rep']]['now'] += $line['sales'];
-                }
-
-                foreach ($repsGDFLast as $line) {
-                    if(!isset($repsSales[$line['rep']]['old'])) {
-                        $repsSales[$line['rep']]['old'] = 0.0;
-                    }
-
-                    $repsSales[$line['rep']]['old'] += $line['sales'];
-                }
+                $this->loopReps('now', $repsGDF, $repsSales);
+                $this->loopReps('old', $repsGDFLast, $repsSales);
             }
 
             $repsSales = $repsSales ?? [];
@@ -584,6 +560,17 @@ class AnalysisController extends DashboardController
         }
 
         return $view;
+    }
+
+    private function loopReps($period, array $reps, &$repsSales)
+    {
+        foreach ($reps as $line) {
+            if(!isset($repsSales[$line['rep']][$period])) {
+                $repsSales[$line['rep']][$period] = 0.0;
+            }
+
+            $repsSales[$line['rep']][$period] += $line['sales'];
+        }
     }
 
     public function showAnalysisLocation(RequestAbstract $request, ResponseAbstract $response)
@@ -1273,6 +1260,7 @@ class AnalysisController extends DashboardController
 
             // Set sales reps
             $reps = $request->getData('rep') === null || $request->getData('rep') === 'All' ? null : [$request->getData('rep')];
+            $repsSales = [];
 
             if ($request->getData('u') !== 'gdf') {
                 $salesSD = $this->selectSalesAnalysis('showCustomOverviewAnalysis', $start, $current, 'sd', $accounts, $countries, $groups, $reps);
@@ -1288,12 +1276,17 @@ class AnalysisController extends DashboardController
                 $newCustomers += count($newCustomersSD);
                 $lostCustomers += count($lostCustomersSD);
 
+                $repsSD = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startCurrent, $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
+                $repsSDLast = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startLast, $endLast, 'sd', $accounts, $countries, $groups, $reps);
+
                 $this->loopOverview($salesSD, $totalSales);
                 $this->loopCustomer('now', $customersSD, $salesCustomers);
                 $this->loopCustomer('old', $customersSDLast, $salesCustomers);
                 $this->loopCustomerCount($customerSD, $customerCount);
                 $this->loopArticleGroups('now', $groupsSD, $salesGroups, $segmentGroups, $totalGroups);
                 $this->loopArticleGroups('old', $groupsSDLast, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopReps('now', $repsSD, $repsSales);
+                $this->loopReps('old', $repsSDLast, $repsSales);
             }
 
             if ($request->getData('u') !== 'sd') {
@@ -1310,13 +1303,20 @@ class AnalysisController extends DashboardController
                 $newCustomers += count($newCustomersGDF);
                 $lostCustomers += count($lostCustomersGDF);
 
+                $repsGDF = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startCurrent, $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
+                $repsGDFLast = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startLast, $endLast, 'gdf', $accounts, $countries, $groups, $reps);
+
                 $this->loopOverview($salesGDF, $totalSales);
                 $this->loopCustomer('now', $customersGDF, $salesCustomers);
                 $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
                 $this->loopCustomerCount($customerGDF, $customerCount);
                 $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
                 $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
+                $this->loopReps('now', $repsGDF, $repsSales);
+                $this->loopReps('old', $repsGDFLast, $repsSales);
             }
+
+            uasort($repsSales, function($a, $b) { return -1*(($a['now'] ?? 0) <=> ($b['now'] ?? 0)); });
 
             $gini = null;
 
@@ -1360,6 +1360,7 @@ class AnalysisController extends DashboardController
             $view->setData('totalGroups', $totalGroups);
             $view->setData('newCustomers', $newCustomers);
             $view->setData('lostCustomers', $lostCustomers);
+            $view->setData('repsSales', $repsSales);
         }
 
         $view->setData('repNames', $repNames);
