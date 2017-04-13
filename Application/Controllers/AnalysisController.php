@@ -198,13 +198,30 @@ class AnalysisController extends DashboardController
                     }
                 }
 
-                $gTemp = [];
-                $sTemp = [];
-                $tTemp = [];
+                $salesGroups   = [];
+                $segmentGroups = [];
+                $temp = array_slice(StructureDefinitions::NAMING, 0, 6);
 
-                $gTemp = [];
-                $sTemp = [];
-                $tTemp = [];
+                foreach ($temp as $segment) {
+                    $salesGroups[$segment]   = [];
+                    $segmentGroups[$segment] = [];
+                }
+
+                $totalGroups = [];
+
+                $this->loopArticleGroups2($currentMonth, $sales, $salesGroups, $segmentGroups, $totalGroups);
+
+                $salesGroups2   = [];
+                $segmentGroups2 = [];
+
+                foreach ($temp as $segment) {
+                    $salesGroups2[$segment]   = [];
+                    $segmentGroups2[$segment] = [];
+                }
+
+                $totalGroups2 = [];
+
+                $this->loopArticleGroups2(12, $sales, $salesGroups2, $segmentGroups2, $totalGroups2);
 
                 $dso = $this->selectDSO('selectOPByAccountDebit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $current, $company, (int) $request->getData('customer')) ?? 0;
@@ -230,9 +247,12 @@ class AnalysisController extends DashboardController
                 $view->setData('salesAcc', $accSalesCustomer);
                 $view->setData('salesGroups', $accGroupSales);
                 $view->setData('salesGroupsTotal', $accGroupSalesTotal);
-                $view->setData('gTemp', $gTemp);
-                $view->setData('sTemp', $sTemp);
-                $view->setData('tTemp', $tTemp);
+                $view->setData('gTemp', $salesGroups);
+                $view->setData('sTemp', $segmentGroups);
+                $view->setData('tTemp', $totalGroups);
+                $view->setData('gTemp2', $salesGroups2);
+                $view->setData('sTemp2', $segmentGroups2);
+                $view->setData('tTemp2', $totalGroups2);
                 $view->setData('date', $current);
                 $view->setData('dso', $customerDSO);
                 $view->setData('op', $customerOP);
@@ -242,6 +262,49 @@ class AnalysisController extends DashboardController
         }
 
         return $view;
+    }
+
+    private function loopArticleGroups2(int $limit, array $resultset, array &$salesGroups, array &$segmentGroups, array &$totalGroups)
+    {
+        foreach ($resultset as $line) {
+            $month = $this->getFiscalMonth($line['months']);
+
+            if($month > $limit) {
+                continue;
+            }
+
+            $group = StructureDefinitions::getGroupOfArticle($line['costcenter']);
+
+            if ($group === 0) {
+                continue;
+            }
+
+            $segment = StructureDefinitions::getSegmentOfArticle($line['costcenter']);
+
+            if (!isset(StructureDefinitions::NAMING[$segment]) || !isset(StructureDefinitions::NAMING[$group])) {
+                continue;
+            }
+
+            $period = $this->getFiscalYear($line['years'], $line['months'], $this->app->config['fiscal_year']);
+
+            /** @noinspection PhpUnreachableStatementInspection */
+            if (!isset($salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period])) {
+                $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period]      = 0.0;
+            }
+
+            if (!isset($segmentGroups[StructureDefinitions::NAMING[$segment]][$period])) {
+                $segmentGroups[StructureDefinitions::NAMING[$segment]][$period]      = 0.0;
+            }
+
+            $salesGroups[StructureDefinitions::NAMING[$segment]][StructureDefinitions::NAMING[$group]][$period] += $line['sales'];
+            $segmentGroups[StructureDefinitions::NAMING[$segment]][$period] += $line['sales'];
+
+            if(!isset($totalGroups[$period])) {
+                $totalGroups[$period] = 0.0;
+            }
+
+            $totalGroups[$period] += $line['sales'];
+        }
     }
 
     protected function selectDSO(string $selectQuery, \DateTime $end, string $company, int $account)

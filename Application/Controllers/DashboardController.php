@@ -25,6 +25,21 @@ class DashboardController
         return abs(($mod < 0 ? 12 + $mod : $mod) % 12);
     }
 
+    protected function getFiscalYear(int $year, int $month, int $beg) : int
+    {
+        if($month < $beg) {
+            return $year - 1;
+        } 
+
+        return $year;
+    }
+
+    protected function getFiscalMonth(int $month) : int
+    {
+        $mod          = (int) $month - $this->app->config['fiscal_year'];
+        return (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+    }
+
     protected function getFiscalYearStart(SmartDateTime $date) : SmartDateTime
     {
         $newDate = new SmartDateTime($date->format('Y') . '-' . $date->format('m') . '-01');
