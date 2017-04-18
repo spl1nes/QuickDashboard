@@ -31,6 +31,8 @@ $salesDevUndev = $this->getData('salesDevUndev');
 $salesRegion = $this->getData('salesRegion');
 $salesCountry = $this->getData('salesCountry');
 
+$monthlyNewCustomer = $this->getData('monthlyNewCustomer');
+
 $reps = $this->getData('repsSales');
 ?>
 <?php if(!empty($salesAcc)) : ?>
@@ -77,6 +79,12 @@ $reps = $this->getData('repsSales');
 
 <div class="box" style="width: 100%; float: left">
     <canvas id="customers-count" height="100"></canvas>
+</div>
+
+<p>The follwoing chart shows the amount of new customers per month.</p>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="new-customers-count" height="100"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -715,6 +723,67 @@ $reps = $this->getData('repsSales');
         }
     };
 
+    let configNewCustomerCount = {
+        type: 'bar',
+        data: {
+            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
+            datasets: [{
+                label: 'Two Years Ago',
+                backgroundColor: "rgba(255, 206, 86, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current_2][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }, {
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current_1][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"New Customers per Month"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + Math.round(tooltipItem.yLabel).toString();
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return value.toString(); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxConsolidated = document.getElementById("overview-consolidated-sales").getContext("2d");
         window.consolidatedLine = new Chart(ctxConsolidated, configConsolidated);
@@ -744,6 +813,9 @@ $reps = $this->getData('repsSales');
 
         let ctxTopCountries = document.getElementById("top-countries-chart");
         window.salesTopCountries = new Chart(ctxTopCountries, configTopCountries);
+
+        let ctxSalesNewCustomersCount = document.getElementById("new-customers-count");
+        window.salesNewCustomersCount = new Chart(ctxSalesNewCustomersCount, configNewCustomerCount);
     };
 </script>
 <?php endif; endif; ?>

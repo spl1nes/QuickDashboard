@@ -790,6 +790,8 @@ class SalesController extends DashboardController
             $accounts[] = 8591;
         }
 
+        $monthlyNewCustomer = [];
+
         if ($request->getData('u') !== 'gdf') {
             $groupsSD        = $this->select('selectCustomerGroup', $startCurrent, $endCurrent, 'sd', $accounts);
             $groupsSDLast    = $this->select('selectCustomerGroup', $startLast, $endLast, 'sd', $accounts);
@@ -801,6 +803,9 @@ class SalesController extends DashboardController
 
             $newCustomers += count($newCustomersSD);
             $lostCustomers += count($lostCustomersSD);
+
+            $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'sd', $accounts, null, null, null);
+            $this->loopNewCustomerMonthly($newCustomersSD, $monthlyNewCustomer);
 
             $this->loopCustomerGroups('now', $groupsSD, 'sd', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersSD, $salesCustomers);
@@ -822,6 +827,9 @@ class SalesController extends DashboardController
 
             $newCustomers += count($newCustomersGDF);
             $lostCustomers += count($lostCustomersGDF);
+
+            $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, null, null, null);
+            $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
 
             $this->loopCustomerGroups('now', $groupsGDF, 'gdf', $salesGroups, $totalGroups);
             $this->loopCustomer('now', $customersGDF, $salesCustomers);
@@ -853,6 +861,7 @@ class SalesController extends DashboardController
         $view->setData('date', $endCurrent);
         $view->setData('newCustomers', $newCustomers);
         $view->setData('lostCustomers', $lostCustomers);
+        $view->setData('monthlyNewCustomer', $monthlyNewCustomer);
 
         return $view;
     }
@@ -899,6 +908,25 @@ class SalesController extends DashboardController
             }
 
             $salesCustomers[$period][$customer] += $line['sales'];
+        }
+    }
+
+    public function loopNewCustomerMonthly(array $result, array &$data) {
+        foreach($result as $line) {
+            $split = explode('.', $line['first']);
+
+            $year = self::getFiscalYear((int) $split[0], (int) $split[1], (int) $this->app->config['fiscal_year']);
+            $month = self::getFiscalMonth((int) $split[1]);
+
+            if(!isset($data[$year])) {
+                $data[$year] = [];
+            }
+
+            if(!isset($data[$year][$month])) {
+                $data[$year][$month] = 0;
+            }
+
+            $data[$year][$month]++;
         }
     }
 

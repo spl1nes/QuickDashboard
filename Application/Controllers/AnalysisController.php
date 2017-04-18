@@ -401,6 +401,8 @@ class AnalysisController extends DashboardController
             $newCustomers = 0;
             $lostCustomers = 0;
 
+            $monthlyNewCustomer = [];
+
             if ($request->getData('u') !== 'gdf') {
                 $customersSD     = $this->selectAddon('selectGroupCustomer', $startCurrent, $endCurrent, 'sd', $accounts, $groups);
                 $customersSDLast = $this->selectAddon('selectGroupCustomer', $startLast, $endLast, 'sd', $accounts, $groups);
@@ -416,6 +418,9 @@ class AnalysisController extends DashboardController
 
                 $newCustomers += count($newCustomersSD);
                 $lostCustomers += count($lostCustomersSD);
+
+                $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'sd', $accounts, null, $groups, null);
+                $this->loopNewCustomerMonthly($newCustomersSD, $monthlyNewCustomer);
             }
 
             if ($request->getData('u') !== 'sd') {
@@ -433,6 +438,9 @@ class AnalysisController extends DashboardController
 
                 $newCustomers += count($newCustomersGDF);
                 $lostCustomers += count($lostCustomersGDF);
+
+                $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, null, $groups, null);
+                $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
             }
 
             $gini = [];
@@ -557,6 +565,7 @@ class AnalysisController extends DashboardController
             $view->setData('newCustomers', $newCustomers);
             $view->setData('lostCustomers', $lostCustomers);
             $view->setData('repsSales', $repsSales);
+            $view->setData('monthlyNewCustomer', $monthlyNewCustomer);
         }
 
         return $view;
@@ -1116,6 +1125,9 @@ class AnalysisController extends DashboardController
                 $this->loopCustomerCount($customerGDF, $customerCount);
                 $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
                 $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
+
+                $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, null, $groups, null);
+                $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
             }
 
             $gini = null;
@@ -1262,6 +1274,8 @@ class AnalysisController extends DashboardController
             $reps = $request->getData('rep') === null || $request->getData('rep') === 'All' ? null : [$request->getData('rep')];
             $repsSales = [];
 
+            $monthlyNewCustomer = [];
+
             if ($request->getData('u') !== 'gdf') {
                 $salesSD = $this->selectSalesAnalysis('showCustomOverviewAnalysis', $start, $current, 'sd', $accounts, $countries, $groups, $reps);
                 $customersSD     = $this->selectSalesAnalysis('showCustomCustomerAnalysis', $startCurrent, $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
@@ -1275,6 +1289,9 @@ class AnalysisController extends DashboardController
 
                 $newCustomers += count($newCustomersSD);
                 $lostCustomers += count($lostCustomersSD);
+
+                $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
+                $this->loopNewCustomerMonthly($newCustomersSD, $monthlyNewCustomer);
 
                 $repsSD = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startCurrent, $endCurrent, 'sd', $accounts, $countries, $groups, $reps);
                 $repsSDLast = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startLast, $endLast, 'sd', $accounts, $countries, $groups, $reps);
@@ -1302,6 +1319,9 @@ class AnalysisController extends DashboardController
 
                 $newCustomers += count($newCustomersGDF);
                 $lostCustomers += count($lostCustomersGDF);
+
+                $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
+                $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
 
                 $repsGDF = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startCurrent, $endCurrent, 'gdf', $accounts, $countries, $groups, $reps);
                 $repsGDFLast = $this->selectSalesAnalysis('showCustomRepsAnalysis', $startLast, $endLast, 'gdf', $accounts, $countries, $groups, $reps);
@@ -1354,6 +1374,7 @@ class AnalysisController extends DashboardController
             $view->setData('date', $current);
             $view->setData('customer', $salesCustomers);
             $view->setData('customerCount', $customerCount);
+            $view->setData('monthlyNewCustomer', $monthlyNewCustomer);
             $view->setData('gini', $gini);
             $view->setData('salesGroups', $salesGroups);
             $view->setData('segmentGroups', $segmentGroups);
@@ -1366,5 +1387,24 @@ class AnalysisController extends DashboardController
         $view->setData('repNames', $repNames);
 
         return $view;
+    }
+
+    public function loopNewCustomerMonthly(array $result, array &$data) {
+        foreach($result as $line) {
+            $split = explode('.', $line['first']);
+
+            $year = self::getFiscalYear((int) $split[0], (int) $split[1], (int) $this->app->config['fiscal_year']);
+            $month = self::getFiscalMonth((int) $split[1]);
+
+            if(!isset($data[$year])) {
+                $data[$year] = [];
+            }
+
+            if(!isset($data[$year][$month])) {
+                $data[$year][$month] = 0;
+            }
+
+            $data[$year][$month]++;
+        }
     }
 }
