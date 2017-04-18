@@ -1068,8 +1068,9 @@ class AnalysisController extends DashboardController
         }
 
         asort($repNames);
+        $monthlyNewCustomer = [];
 
-        if ($request->getData('rep') !== null && in_array($request->getData('rep'), $repNames)) {
+        if ($request->getData('rep') !== null && array_key_exists($request->getData('rep'), $repNames)) {
             $totalSales    = [];
             $accTotalSales = [];
 
@@ -1103,6 +1104,9 @@ class AnalysisController extends DashboardController
                 $groupsSD     = $this->selectAddon('selectRepSalesArticleGroups', $startCurrent, $endCurrent, 'sd', $accounts, array ($request->getData('rep')));
                 $groupsSDLast = $this->selectAddon('selectRepSalesArticleGroups', $startLast, $endLast, 'sd', $accounts, array ($request->getData('rep')));
 
+                $newCustomersSD = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'sd', $accounts, null, null, array ($request->getData('rep')));
+                $this->loopNewCustomerMonthly($newCustomersSD, $monthlyNewCustomer);
+
                 $this->loopOverview($salesSD, $totalSales);
                 $this->loopCustomer('now', $customersSD, $salesCustomers);
                 $this->loopCustomer('old', $customersSDLast, $salesCustomers);
@@ -1119,15 +1123,15 @@ class AnalysisController extends DashboardController
                 $groupsGDF     = $this->selectAddon('selectRepSalesArticleGroups', $startCurrent, $endCurrent, 'gdf', $accounts, array ($request->getData('rep')));
                 $groupsGDFLast = $this->selectAddon('selectRepSalesArticleGroups', $startLast, $endLast, 'gdf', $accounts, array ($request->getData('rep')));
 
+                $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, null, null, array ($request->getData('rep')));
+                $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
+
                 $this->loopOverview($salesGDF, $totalSales);
                 $this->loopCustomer('now', $customersGDF, $salesCustomers);
                 $this->loopCustomer('old', $customersGDFLast, $salesCustomers);
                 $this->loopCustomerCount($customerGDF, $customerCount);
                 $this->loopArticleGroups('now', $groupsGDF, $salesGroups, $segmentGroups, $totalGroups);
                 $this->loopArticleGroups('old', $groupsGDFLast, $salesGroups, $segmentGroups, $totalGroups);
-
-                $newCustomersGDF = $this->selectSalesAnalysis('selectCustomNewCustomerAnalysis', $startCurrent->createModify(-2), $endCurrent, 'gdf', $accounts, null, $groups, null);
-                $this->loopNewCustomerMonthly($newCustomersGDF, $monthlyNewCustomer);
             }
 
             $gini = null;
@@ -1170,6 +1174,7 @@ class AnalysisController extends DashboardController
             $view->setData('salesGroups', $salesGroups);
             $view->setData('segmentGroups', $segmentGroups);
             $view->setData('totalGroups', $totalGroups);
+            $view->setData('monthlyNewCustomer', $monthlyNewCustomer);
         }
 
         $view->setData('repNames', $repNames);
@@ -1186,7 +1191,7 @@ class AnalysisController extends DashboardController
 
         foreach($result as $line) {
             if(!in_array($line['name'], $reps)) {
-                $reps[$line['id']] = trim($line['name']);
+                $reps[trim($line['id'])] = trim($line['name']);
             }
         }
 
@@ -1271,7 +1276,7 @@ class AnalysisController extends DashboardController
             }
 
             // Set sales reps
-            $reps = $request->getData('rep') === null || $request->getData('rep') === 'All' ? null : [$request->getData('rep')];
+            $reps = $request->getData('rep') === null || $request->getData('rep') === 'All' || !array_key_exists($request->getData('rep'), $repNames) ? null : [$request->getData('rep')];
             $repsSales = [];
 
             $monthlyNewCustomer = [];

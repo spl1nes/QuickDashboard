@@ -5,7 +5,7 @@
             <td><label for="rep">Employees:</label>
             <td><select id="rep" name="rep">
             <?php foreach($repNames as $id => $name) : if(preg_match('/^[0-9]*$/', trim($id)) === 1) : ?>
-                <option value="<?= trim($name); ?>"<?= $this->request->getData('rep') == trim($name) ? ' selected' : ''; ?>><?= trim($name); ?>
+                <option value="<?= trim($id); ?>"<?= $this->request->getData('rep') == trim($name) ? ' selected' : ''; ?>><?= trim($name); ?>
             <?php endif; endforeach; ?>
             </select>
             <td style="width: 100%">
@@ -28,6 +28,7 @@ $segmentGroups = $this->getData('segmentGroups');
 $totalGroups = $this->getData('totalGroups');
 $topCustomers = $this->getData('customer');
 $customerCount = $this->getData('customerCount');
+$monthlyNewCustomer = $this->getData('monthlyNewCustomer');
 $gini = $this->getData('gini');
 ?>
 <?php if(!empty($salesAcc)) : ?>
@@ -78,6 +79,12 @@ $gini = $this->getData('gini');
 
 <div class="box" style="width: 100%; float: left">
     <canvas id="customers-count" height="100"></canvas>
+</div>
+
+<p>The follwoing chart shows the amount of new customers per month.</p>
+
+<div class="box" style="width: 100%; float: left">
+    <canvas id="new-customers-count" height="100"></canvas>
 </div>
 
 <div class="clear"></div>
@@ -463,6 +470,67 @@ $gini = $this->getData('gini');
         }
     };
 
+    let configNewCustomerCount = {
+        type: 'bar',
+        data: {
+            labels: ["July", "August", "September", "October", "November", "December", "January","February", "March", "April", "May", "June"],
+            datasets: [{
+                label: 'Two Years Ago',
+                backgroundColor: "rgba(255, 206, 86, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current_2][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }, {
+                label: 'Last Year',
+                backgroundColor: "rgba(54, 162, 235, 1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current_1][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }, {
+                label: 'Current',
+                backgroundColor: "rgba(255,99,132,1)",
+                yAxisID: "y-axis-1",
+                data: [<?php $data = []; for($i = 1; $i < 13; $i++) { $data[$i] = $monthlyNewCustomer[$current][$i] ?? 0; } echo implode(',', $data ?? []); ?>]
+            }]
+        },
+        options: {
+            responsive: true,
+            hoverMode: 'label',
+            hoverAnimationDuration: 400,
+            stacked: false,
+            title:{
+                display:true,
+                text:"New Customers per Month"
+            },
+            tooltips: {
+                mode: 'label',
+                callbacks: {
+                    label: function(tooltipItem, data) {
+                        let datasetLabel = data.datasets[tooltipItem.datasetIndex].label || 'Other';
+
+                        return ' ' + datasetLabel + ': ' + Math.round(tooltipItem.yLabel).toString();
+                    }
+                }
+            },
+            scales: {
+                xAxes: [{
+                    ticks: {
+                        autoSkip: false
+                    }
+                }],
+                yAxes: [{
+                    type: "linear",
+                    display: true,
+                    position: "left",
+                    id: "y-axis-1",
+                    ticks: {
+                        userCallback: function(value, index, values) { return value.toString(); },
+                        beginAtZero: true,
+                        min: 0
+                    }
+                }],
+            }
+        }
+    };
+
     window.onload = function() {
         let ctxConsolidated = document.getElementById("overview-consolidated-sales").getContext("2d");
         window.consolidatedLine = new Chart(ctxConsolidated, configConsolidated);
@@ -481,6 +549,9 @@ $gini = $this->getData('gini');
 
         let ctxSalesCustomersCount = document.getElementById("customers-count");
         window.salesCustomersCount = new Chart(ctxSalesCustomersCount, configCustomerCount);
+
+        let ctxSalesNewCustomersCount = document.getElementById("new-customers-count");
+        window.salesNewCustomersCount = new Chart(ctxSalesNewCustomersCount, configNewCustomerCount);
     };
 </script>
 <?php endif; endif; ?>

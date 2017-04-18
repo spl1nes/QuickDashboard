@@ -915,7 +915,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                         AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -933,7 +933,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
                         AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -993,7 +993,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                         AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1007,7 +1007,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
                         AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1030,7 +1030,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                         AND FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1047,7 +1047,7 @@ class Queries
                         KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
                         AND FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1072,7 +1072,7 @@ class Queries
                         FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ')
                         AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungsArchiv.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1087,7 +1087,7 @@ class Queries
                         FiBuchungen.Konto IN (' . implode(',', $accounts) . ')
                         AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
                         AND Personalstamm.Personalnummer = KUNDENADRESSE.VERKAEUFER
-                        AND Personalstamm.Name = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
+                        AND Personalstamm.Personalnummer = (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) >= CONVERT(datetime, \'' . $start->format('Y.m.d') . '\', 102) 
                         AND CONVERT(VARCHAR(30), FiBuchungen.Buchungsdatum, 104) <= CONVERT(datetime, \'' . $end->format('Y.m.d') . '\', 102)
                     GROUP BY
@@ -1261,7 +1261,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1286,7 +1286,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -1369,7 +1369,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1394,7 +1394,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -1425,7 +1425,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1452,7 +1452,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1485,7 +1485,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1512,7 +1512,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1545,7 +1545,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1572,7 +1572,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1605,7 +1605,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
@@ -1634,7 +1634,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
@@ -1724,7 +1724,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1749,7 +1749,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -1832,7 +1832,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1857,7 +1857,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -1888,7 +1888,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1915,7 +1915,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1948,7 +1948,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -1975,7 +1975,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -2008,7 +2008,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -2035,7 +2035,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -2068,7 +2068,7 @@ class Queries
                             WHERE 
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
-                                AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                 AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
@@ -2097,7 +2097,7 @@ class Queries
                                 WHERE 
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
-                                    AND KUNDENADRESSE.KONTO = FiBuchungen.GegenKonto
+                                    AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
                                     AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
