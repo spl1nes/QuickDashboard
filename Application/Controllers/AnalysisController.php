@@ -225,7 +225,7 @@ class AnalysisController extends DashboardController
 
                 $dso = $this->selectDSO('selectOPByAccountDebit', $current, $company, (int) $request->getData('customer')) ?? 0;
                 $dso -= $this->selectDSO('selectOPByAccountCredit', $current, $company, (int) $request->getData('customer')) ?? 0;
-                $customerDSO['now'] = (int) round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
+                $customerDSO['now'] = (int) $accSalesCustomer[$currentYear][$currentMonth] === 0 ? 0 : round(!isset($accSalesCustomer[$currentYear][$currentMonth]) ? 0 : $dso / ($accSalesCustomer[$currentYear][$currentMonth] / $days));
                 $customerOP['now'] = $dso;
 
                 $due = $this->selectDSO('selectOPByAccountDebitDue', $current, $company, (int) $request->getData('customer')) ?? 0;
