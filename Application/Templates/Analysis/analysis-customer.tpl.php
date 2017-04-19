@@ -121,10 +121,10 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
     <?php endforeach; ?>
     <tr>
         <th colspan="2">Total
-        <th><?= number_format($tTemp[$current_1], 0, ',', '.') ?>
-        <th><?= number_format($tTemp[$current], 0, ',', '.') ?>
-        <th><?= number_format($tTemp[$current]-$tTemp[$current_1], 0, ',', '.') ?>
-        <th><?= number_format(!is_numeric($tTemp[$current_1]) || $tTemp[$current_1] == 0 ? 0 : (($tTemp[$current] ?? 0)/$tTemp[$current_1]-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($tTemp[$current_1] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($tTemp[$current] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($tTemp[$current] ?? 0)-($tTemp[$current_1] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($tTemp[$current_1]) || !is_numeric($tTemp[$current_1]) || $tTemp[$current_1] == 0 ? 0 : (($tTemp[$current] ?? 0)/$tTemp[$current_1]-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="clear"></div>
@@ -163,10 +163,10 @@ $salesGroupTotal = $this->getData('salesGroupsTotal');
     <?php endforeach; ?>
     <tr>
         <th colspan="2">Total
-        <th><?= number_format($tTemp2[$current_1], 0, ',', '.') ?>
-        <th><?= number_format($tTemp2[$current], 0, ',', '.') ?>
-        <th><?= number_format($tTemp2[$current]-$tTemp2[$current_1], 0, ',', '.') ?>
-        <th><?= number_format(!is_numeric($tTemp2[$current_1]) || $tTemp2[$current_1] == 0 ? 0 : (($tTemp2[$current] ?? 0)/$tTemp2[$current_1]-1)*100, 0, ',', '.') ?> %
+        <th><?= number_format($tTemp2[$current_1] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format($tTemp2[$current] ?? 0, 0, ',', '.') ?>
+        <th><?= number_format(($tTemp2[$current] ?? 0)-($tTemp2[$current_1] ?? 0), 0, ',', '.') ?>
+        <th><?= number_format(!isset($tTemp2[$current_1]) || !is_numeric($tTemp2[$current_1]) || $tTemp2[$current_1] == 0 ? 0 : (($tTemp2[$current] ?? 0)/$tTemp2[$current_1]-1)*100, 0, ',', '.') ?> %
 </table>
 
 <div class="clear"></div>
