@@ -5,4 +5,4 @@
         <div class="clear"></div>
     </div>
 </footer>
-<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}Application/js/logic.js'); ?>"></script>
+<script type="text/javascript" src="<?= \phpOMS\Uri\UriFactory::build('{/base}/Application/js/logic.js'); ?>"></script>

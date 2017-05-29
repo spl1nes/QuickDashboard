@@ -1,5 +1,5 @@
 <?php $repNames = $this->getData('repNames'); ?>
-<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/reps?{?}'); ?>">
+<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}/analysis/reps?{?}'); ?>">
     <table>
         <tr>
             <td><label for="rep">Employees:</label>

@@ -1,4 +1,4 @@
-<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/account?{?}'); ?>">
+<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}/analysis/account?{?}'); ?>">
     <table>
         <tr>
             <td><label for="account">Account:</label>

@@ -1,3 +1,8 @@
+AuthUserFile C:/xampp/htdocs/QuickDashboard/.htpasswd
+AuthName "Authorized personnel only."
+AuthType Basic
+Require valid-user
+
 # BEGIN Gzip Compression
 <ifmodule mod_rewrite.c>
      AddEncoding gzip .gz
@@ -57,7 +62,7 @@ AddType application/vnd.ms-fontobject .eot
 
     RewriteCond %{REQUEST_FILENAME} !-d
     RewriteCond %{REQUEST_FILENAME} !-f
-    RewriteRule ^(.*)$ /?{QUERY_STRING} [QSA]
+    RewriteRule ^(.*)$ /QuickDashboard/?{QUERY_STRING} [QSA]
 </ifmodule>
 # END URL rewrite
 

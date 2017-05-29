@@ -1,4 +1,4 @@
-<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}{/rootPath}analysis/opex?{?}'); ?>">
+<form method="GET" action="<?= \phpOMS\Uri\UriFactory::build('{/base}/analysis/opex?{?}'); ?>">
     <table>
         <tr>
             <td><label for="opex">OPEX:</label>
