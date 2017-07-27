@@ -1546,7 +1546,7 @@ class Queries
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
                                 AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1573,7 +1573,7 @@ class Queries
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
                                     AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -1949,7 +1949,7 @@ class Queries
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
                                 AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -1976,7 +1976,7 @@ class Queries
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
                                     AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -2009,7 +2009,7 @@ class Queries
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
                                 AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
                         UNION ALL 
@@ -2036,7 +2036,7 @@ class Queries
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
                                     AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
                             UNION ALL 
@@ -2069,7 +2069,7 @@ class Queries
                                 FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                 AND FiBuchungsArchiv.Betrag < 0 
                                 AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                 AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                 AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                             GROUP BY FiBuchungsArchiv.GegenKonto 
@@ -2098,7 +2098,7 @@ class Queries
                                     FiBuchungsArchiv.Konto IN (' . implode(',', $accounts) . ') 
                                     AND FiBuchungsArchiv.Betrag < 0 
                                     AND KUNDENADRESSE.KONTO = FiBuchungsArchiv.GegenKonto
-                                    AND FiBuchungen.KST IN (' . implode(',', $costcenters) . ')
+                                    AND FiBuchungsArchiv.KST IN (' . implode(',', $costcenters) . ')
                                     AND KUNDENADRESSE.LAENDERKUERZEL IN (\'' . rtrim(implode(' \',\'', $countries), ',\'')  . ' \')
                                     AND KUNDENADRESSE.VERKAEUFER IN (\'' . rtrim(implode(' \',\'', $reps), ',\'')  . ' \')
                                 GROUP BY FiBuchungsArchiv.GegenKonto 
