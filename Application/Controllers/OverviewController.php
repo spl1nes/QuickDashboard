@@ -64,9 +64,10 @@ class OverviewController extends DashboardController
             }
         }
 
-        $fc = new ExponentialSmoothing($fcData);
-        $totalSalesFC = $fc->getForecast(12 - $currentMonth + 1, TrendType::NONE, SeasonalType::NONE, 12, 1);
-        $totalSalesFC = array_merge(array_slice($totalSales[$currentYear], -1), array_slice($totalSalesFC, $currentMonth - 12 - 1));
+        //$fc = new ExponentialSmoothing($fcData);
+        //$totalSalesFC = $fc->getForecast(12 - $currentMonth + 1, TrendType::NONE, SeasonalType::NONE, 12, 1);
+        //$totalSalesFC = array_merge(array_slice($totalSales[$currentYear], -1), array_slice($totalSalesFC, $currentMonth - 12 - 1));
+        $totalSalesFC = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
 
         $accTotalSalesFC[$currentMonth] = $accTotalSales[$currentYear][$currentMonth-1];
         for($i = $currentMonth + 1; $i < 12 + 2; $i++) {
