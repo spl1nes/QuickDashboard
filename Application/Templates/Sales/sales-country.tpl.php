@@ -17,8 +17,8 @@ $sum = ['old' => 0, 'now' => 0];
     <?php foreach($salesCountry as $code => $value) : $sum['old'] += $salesCountry[$code]['old'] ?? 0; $sum['now'] += $salesCountry[$code]['now'] ?? 0; ?>
     <tr>
         <td><?= $code; ?>
-        <td><?= number_format($salesCountry[$code]['old'] ?? 0, 0, ',', '.') ?>
-        <td><?= number_format($salesCountry[$code]['now'] ?? 0, 0, ',', '.') ?>
+        <td><?= number_format($salesCountry[$code]['old'] ?? 0, 2, ',', '.') ?>
+        <td><?= number_format($salesCountry[$code]['now'] ?? 0, 2, ',', '.') ?>
         <td><?= number_format(($salesCountry[$code]['now'] ?? 0)-($salesCountry[$code]['old'] ?? 0), 0, ',', '.') ?>
         <td><?= number_format(!isset($salesCountry[$code]['old']) || $salesCountry[$code]['old'] == 0 ? 0 : (($salesCountry[$code]['now'] ?? 0)/$salesCountry[$code]['old']-1)*100, 0, ',', '.') ?> %
     <?php endforeach; ?>
