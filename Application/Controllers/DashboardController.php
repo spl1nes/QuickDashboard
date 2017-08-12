@@ -3,7 +3,7 @@
 namespace QuickDashboard\Application\Controllers;
 
 use phpOMS\DataStorage\Database\Query\Builder;
-use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Stdlib\Base\SmartDateTime;
 use QuickDashboard\Application\Models\Queries;
 use QuickDashboard\Application\WebApplication;
 

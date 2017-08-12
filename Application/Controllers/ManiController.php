@@ -2,8 +2,8 @@
 
 namespace QuickDashboard\Application\Controllers;
 
-use phpOMS\Datatypes\Location;
-use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Stdlib\Base\Location;
+use phpOMS\Stdlib\Base\SmartDateTime;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;
