@@ -2,7 +2,7 @@
 
 namespace QuickDashboard\Application\Controllers;
 
-use phpOMS\Stdlib\Base\SmartDateTime;
+use phpOMS\Datatypes\SmartDateTime;
 use phpOMS\Message\RequestAbstract;
 use phpOMS\Message\ResponseAbstract;
 use phpOMS\Views\View;
