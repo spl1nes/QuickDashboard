@@ -211,7 +211,7 @@ $diffs = [];
         <td><?= number_format($pl['Doubtful Accounts']['old'] ?? 0, 0, ',', '.') ?>
         <td><?= number_format($pl['Doubtful Accounts']['now'] ?? 0, 0, ',', '.') ?>
         <td><?= $diffs['Doubtful'] = number_format(($pl['Doubtful Accounts']['now'] ?? 0) - ($pl['Doubtful Accounts']['old'] ?? 0), 0, ',', '.') ?>
-        <td><?= !isset($pl['Doubtful Accounts']['old']) ? 0 : number_format((($pl['Doubtful Accounts']['now'] ?? 0)/$pl['Doubtful Accounts']['old'] - 1)*100, 2, ',', '.')?> %
+        <td><?= !isset($pl['Doubtful Accounts']['old']) || $pl['Doubtful Accounts']['old'] == 0 ? 0 : number_format((($pl['Doubtful Accounts']['now'] ?? 0)/$pl['Doubtful Accounts']['old'] - 1)*100, 2, ',', '.')?> %
     <tr>
         <th>Total Other OPEX
         <th><?= number_format($pl['Total Other OPEX']['old'] ?? 0, 0, ',', '.') ?>

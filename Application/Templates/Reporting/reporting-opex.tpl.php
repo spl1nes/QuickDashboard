@@ -21,18 +21,18 @@ $opexGroup = $this->getData('opexGroups');
     <tbody>
     <tr>
         <td>Isolated Month
-        <td><?= '€  ' . number_format($opex[$current_2][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opex[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opex[$current][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opex[$current][$currentMonth-1]-$opex[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= number_format(($opex[$current][$currentMonth-1]/$opex[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
+        <td><?= '€  ' . number_format($opex[$current_2][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opex[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opex[$current][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opex[$current][$currentMonth]-$opex[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <td><?= number_format(($opex[$current][$currentMonth]/$opex[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
     <tr>
         <td>Accumulated Year
-        <td><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1]-$opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <td><?= number_format(($opexAcc[$current][$currentMonth-1]/$opexAcc[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
+        <td><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth], 0, ',', '.');  ?>
+        <td><?= '€  ' . number_format($opexAcc[$current][$currentMonth]-$opexAcc[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <td><?= number_format(($opexAcc[$current][$currentMonth]/$opexAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
 </table>
 <p>The following chart shows the consolidated OPEX on a monthly basis for the last 3 years.</p>
 <div style="width: 100%;">
@@ -73,11 +73,11 @@ $opexGroup = $this->getData('opexGroups');
     <?php endforeach; ?>
     <tr>
         <th>Accumulated Year
-        <th><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth-1], 0, ',', '.');  ?>
-        <th><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1], 0, ',', '.');  ?>
-        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth-1]-$opexAcc[$current_1][$currentMonth-1], 0, ',', '.');  ?>
-        <th><?= number_format(($opexAcc[$current][$currentMonth-1]/$opexAcc[$current_1][$currentMonth-1]-1)*100, 2, ',', '.') . '%';  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current_2][$currentMonth], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth], 0, ',', '.');  ?>
+        <th><?= '€  ' . number_format($opexAcc[$current][$currentMonth]-$opexAcc[$current_1][$currentMonth], 0, ',', '.');  ?>
+        <th><?= number_format(($opexAcc[$current][$currentMonth]/$opexAcc[$current_1][$currentMonth]-1)*100, 2, ',', '.') . '%';  ?>
 </table>
 
 <script>

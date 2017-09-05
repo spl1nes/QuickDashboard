@@ -406,16 +406,19 @@ class ReportingController extends DashboardController
 
         $currentYear  = $current->format('m') - $this->app->config['fiscal_year'] < 0 ? $current->format('Y') - 1 : $current->format('Y');
         $mod          = (int) $current->format('m') - $this->app->config['fiscal_year'];
-        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12) + 1;
+        $currentMonth = (($mod < 0 ? 12 + $mod : $mod) % 12);
 
         foreach ($opexCosts as $year => $months) {
             ksort($opexCosts[$year]);
+            $prev = 0;
 
             foreach ($opexCosts[$year] as $month => $value) {
-                $prev                         = $accTotalOpex[$year][$month - 1] ?? 0.0;
-                $accTotalOpex[$year][$month] = $prev + $value;
+                $prev                       += $value;
+                $accTotalOpex[$year][$month] = $prev;
 
-                foreach ($groupOpex[$year][$month] ?? [] as $group => $value2) {
+                $groups = $groupOpex[$year][$month] ?? [];
+
+                foreach ($groups as $group => $value2) {
                     if (!isset($accGroupOpex[$year][$group])) {
                         $accGroupOpex[$year][$group]      = 0.0;
                     }
@@ -426,9 +429,6 @@ class ReportingController extends DashboardController
                 }
             }
         }
-
-        unset($opexCosts[$currentYear][$currentMonth]);
-        unset($accTotalOpex[$currentYear][$currentMonth]);
 
         $view->setData('currentFiscalYear', $currentYear);
         $view->setData('currentMonth', $currentMonth);
@@ -449,6 +449,7 @@ class ReportingController extends DashboardController
 
             if (!isset($totalSales[$fiscalYear][$fiscalMonth])) {
                 $totalSales[$fiscalYear][$fiscalMonth] = 0.0;
+                $totalGroup[$fiscalYear][$fiscalMonth] = [];
             }
 
             $department = StructureDefinitions::getDepartmentByCostCenter((int) ($line['costcenter'] ?? 0), $company);
