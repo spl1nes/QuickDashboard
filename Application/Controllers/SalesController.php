@@ -2,7 +2,7 @@
 
 namespace QuickDashboard\Application\Controllers;
 
-use phpOMS\Datatypes\SmartDateTime;
+use phpOMS\Stdlib\Base\SmartDateTime;
 use phpOMS\Localization\ISO3166TwoEnum;
 use phpOMS\Math\Finance\Lorenzkurve;
 use phpOMS\Message\RequestAbstract;

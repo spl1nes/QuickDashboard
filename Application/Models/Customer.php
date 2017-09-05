@@ -2,7 +2,7 @@
 
 namespace QuickDashboard\Application\Models;
 
-use phpOMS\Datatypes\Location;
+use phpOMS\Stdlib\Base\Location;
 
 class Customer
 {
